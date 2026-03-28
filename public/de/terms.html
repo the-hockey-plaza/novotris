@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Novotris, the better Tetris kostenlos online spielen</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<meta name="description"
+	content="Novotris, ein kostenloses Tetris-Spiel mit mehr Spaß, Ranglisten und herausfordernden Levels!">
+<meta name="keywords"
+	content="tetris, novotris, game, spiel, free, kostenlos, online, spielen, steidlinger">
+<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
+<meta name="Author" content="Armin Steidlinger Softwareentwicklung">
+<meta property="og:site_name" content="Novotris">
+<meta property="og:locale" content="de_DE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tetris">
+<meta property="og:description"
+	content="Novotris, ein kostenloses Tetris-Spiel mit mehr Spaß, Ranglisten und herausfordernden Levels.">
+<meta property="article:opinion" content="false">
+
+<link rel="icon" type="image/x-icon" href="../icons/novotris-icon.png">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async
+	src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+
+	gtag('config', 'G-9GL47VN2C7');
+</script>
+
+<link rel="stylesheet" type="text/css" href="../novotris.css" />
+
+</head>
+
+
+<!-- ---------------------------------------------------- -->
+
+<body>
+		<div class="pseudoBody">
+		<div class="container" id="div-container">
+			<div class="novHeader"
+				style="border-top-left-radius: 4px; border-top-right-radius: 4px;">
+				<div id="lblTitle" style="flex: 80; font-size: 36px;padding-top: 40px;">Nutzungsbedingungen</div>
+				<div style="flex: 20">
+					<img src="../logo bing v8.jpg" width="135" height="auto"
+						align="right" alt="novotris logo">
+				</div>
+			</div>
+
+			<div class="novBody">
+
+			<div class="help-header">Allgemeines</div>
+			<div class="help-text">
+				<li style="margin-left: 2em; padding-left: 0.5em;">Du musst
+					eine gültige Email-Adresse angeben.</li>
+				<li style="margin-left: 2em; padding-left: 0.5em;">Du kannst
+					deinen Account jederzeit löschen lassen.</li>
+				<li style="margin-left: 2em; padding-left: 0.5em;">Wenn du dich
+					12 Monate lang nicht einloggst, wird dein Account automatisch
+					gelöscht.</li>
+				<li style="margin-left: 2em; padding-left: 0.5em;">Du musst
+					mindestens 6 Jahre alt sein, um Novotris zu spielen.</li>
+				<li style="margin-left: 2em; padding-left: 0.5em;">Jeder
+					Spieler sollte nur einen aktiven Account haben.</li>
+				<li style="margin-left: 2em; padding-left: 0.5em;">Accounts
+					können jederzeit ohne Angeben von Gründen gelöscht werden.</li>
+				<li style="margin-left: 2em; padding-left: 0.5em;">Usernamen
+					dürfen nicht anstössig sein.</li>
+			</div>
+
+				<div class="help-header">Änderungen</div>
+			<div class="help-text">Wir behalten uns das Recht vor, diese
+				Regeln jederzeit zu ändern oder zu ergänzen. Grundlegende Änderungen
+				werden 30 Tage im voraus angekündigt.</div>
+
+			<div class="help-header">Kontakt</div>
+			<div class="help-text">Bei Fragen schreibe bitte eine Mail an
+				novotris (at) steidlinger.de</div>
+
+
+		</div>
+		
+			<div class="novFooter">
+				<div class="row-footer-box">
+					<a class="footer-label" onmouseover="this.style.cursor='pointer'"
+						onclick="window.location.href='index.php'">Tetriswelt</a>
+				</div>
+				<div class="row-footer-box">
+					<a class="footer-label" onmouseover="this.style.cursor='pointer'"
+						onclick="window.location.href='index.php'">Spielen</a>
+				</div>
+				<div class="row-footer-box">
+					<a class="footer-label" onmouseover="this.style.cursor='pointer'"
+						onclick="window.location.href='index.php'">Ranglisten</a>
+				</div>
+				<div class="row-footer-box">
+					<a class="footer-label" onmouseover="this.style.cursor='pointer'"
+						onclick="window.location.href='index.php'">Anleitung</a>
+				</div>
+			</div>
+
+			<div class="novFooter"
+				style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+				<div class="row-footer-box">
+					<a id="footer-user" class="footer-label"
+						onmouseover="this.style.cursor='pointer'">footer-user</a>
+				</div>
+				<div class="row-footer-box">
+					<a id="footer-login" class="footer-label"
+						onclick="glUser.loginLogout('index.php')"
+						onmouseover="this.style.cursor='pointer'">footer-login</a>
+				</div>
+				<div class="row-footer-box">
+					<a id="footer-user3" class="footer-label"
+						onmouseover="this.style.cursor='pointer'" onclick="showNovotrisInfoDialog();">Version</a>
+				</div>
+				<div class="row-footer-box" style="margin-left: 0px;">
+					<!-- 									<a id="footer-label">footer-label</a> -->
+					<select id="drp-language" class="footer-label"
+						style="padding-left: 1.0em;">
+						<option>deutsch</option>
+						<option>english</option>
+					</select>
+				</div>
+			</div>
+			
+	</div>
+
+	</div>
+
+	<!-- ---------------------------------------------------- -->
+
+	<script src="https://code.jquery.com/jquery-latest.js"></script>
+
+	<script src="../js/global.js?v=<?php echo filemtime('../js/global.js'); ?>"></script>
+	<script src="../js/main.js?v=<?php echo filetime('../js/main.js'); ?>"></script>
+
+	<script>
+		var glUser;
+
+		mainInit();
+		mainUpdateFooter();
+		$("body").fadeIn("slow");
+	</script>
+</body>
+</html>

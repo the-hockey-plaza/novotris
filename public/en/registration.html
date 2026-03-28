@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Novotris, the better Tetris play online free</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<meta name="description"
+	content="Novotris: Play Tetris online for free in your browser, try out challenging variants, compete with other users and enter the rankings.">
+<meta name="keywords"
+	content="tetris, registration">
+<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
+<meta name="Author" content="Armin Steidlinger Softwareentwicklung">
+
+<link rel="icon" type="image/x-icon" href="../icons/novotris-icon.png">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async
+	src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+
+	gtag('config', 'G-9GL47VN2C7');
+</script>
+
+<link rel="stylesheet" type="text/css" href="../novotris.css" />
+
+</head>
+
+<body>
+<div class="pseudoBody">
+		<div class="container" id="div-container">
+			<div class="novHeader"
+				style="border-top-left-radius: 4px; border-top-right-radius: 4px;">
+				<div id="lblTitle" style="flex: 80">Registration</div>
+				<div style="flex: 20">
+					<img src="../logo bing v8.jpg" width="135" height="auto"
+						align="right"  alt="novotris logo">
+				</div>
+			</div>
+
+			<div class="novBody">
+			
+		
+			<div class="standardform" id="form_registration"
+				style="position: absolute;">
+				<span id="lbl_registration_error_message"
+					style="font-size: 12pt; font-weight: bold; color: red"> </span> <br>
+				
+
+				<br> <span style="font-size: 12pt; font-weight: bold">Username</span><br>
+				<input type="text" id="input_registration_user_name" class="inpText"
+					onkeyup="classDialog.keyUp()" name="input_registration_user_name"
+					autocomplete="off" pattern="[a-zA-Z0-9äöüßÄÖÜ\-]*" size="30"
+					maxlength="20"> <br> <span
+					style="font-size: 12pt; font-weight: bold">Email</span><br> <input
+					type="text" id="input_registration_email" class="inpText"
+					onkeyup="classDialog.keyUp()" name="input_registration_email"
+					autocomplete="off" pattern="[a-zA-Z0-9äöüßÄÖÜ\-]*" size="30"
+					maxlength="50"> <br> <span
+					style="font-size: 12pt; font-weight: bold">Password</span><br>
+				<input type="password" id="input_registration_password" class="inpText"
+					onkeyup="classDialog.keyUp()" onkeyup="classDialog.keyUp()"
+					name="input_registration_password" autocomplete="off"
+					pattern="[a-zA-Z0-9äöüßÄÖÜ\-]*" size="30" maxlength="20"> <br>
+				<span style="font-size: 12pt; font-weight: bold">Password
+					(Repeat)</span><br> <input type="password"
+					id="input_registration_password_repeat" class="inpText"
+					onkeyup="classDialog.keyUp()"
+					name="input_registration_password_repeat" autocomplete="off"
+					pattern="[a-zA-Z0-9äöüßÄÖÜ\-]*" size="30" maxlength="20"> <br>
+				<br>
+				<div>
+
+					<label
+						style="display: block; padding-left: 25px; text-indent: -20px; width: calc(100% - 80px);">
+						<input id="chk-inherit" type="checkbox" /> Take over previous games
+					</label>
+					
+					 <label
+						style="display: block; padding-left: 25px; text-indent: -20px; width: calc(100% - 80px);">
+						<input id="chk-privacy" type="checkbox"
+						onclick="classDialog.checkRegistration();" /> I agree to the <a
+						href='terms.html'>terms of use</a> and the <a
+						href='privacy.html'>privacy policy</a> zu
+					</label>
+				</div>
+				<br>
+				<br>
+				<div>
+					<button class="dialog-button" style="margin-left: 1px;"
+						onclick="window.location.href='login.html';">Cancel</button>
+					<button class="dialog-button" id="btn_registration_ok"
+						onclick="classDialog.registrationOk();" disabled>OK</button>
+				</div>
+
+			</div>
+		</div>
+
+				<div class="novFooter">
+				<div class="row-footer-box">
+					<a class="footer-label" href="index.php">Tetris World</a>
+				</div>
+				<div class="row-footer-box">
+					<a class="footer-label" onmouseover="this.style.cursor='pointer'"
+					href="play.php"
+						style="color: var(--play-color);">Play</a>
+				</div>
+				<div class="row-footer-box">
+					<a class="footer-label" onmouseover="this.style.cursor='pointer'" 
+						href="ranking.php">Rankings</a>
+				</div>
+				<div class="row-footer-box">
+					<a class="footer-label" onmouseover="this.style.cursor='pointer'"
+						href="help.php">Help</a>
+				</div>
+			</div>
+
+			<div class="novFooter"
+				style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+					<div class="row-footer-box">
+					<a id="footer-user" class="footer-label-only">footer-user</a>
+				</div>
+				<div class="row-footer-box">
+					<a id="footer-login" class="footer-label-only">footer-login</a>
+				</div>
+				<div class="row-footer-box">
+					<a id="footer-version" class="footer-label-only">Version</a>
+				</div>
+				<div class="row-footer-box" style="margin-left: 0px;">
+					<!-- 									<a id="footer-label">footer-label</a> -->
+					<select id="drp-language" class="footer-label"
+						style="padding-left: 1.0em;">
+						<option>deutsch</option>
+						<option>english</option>
+					</select>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+
+	<!-- ---------------------------------------------------- -->
+
+	<div class="standardmessage" id="div-message-dialog"
+		style="position: absolute; z-index: 4; flex-direction: column; display: none; overflow: hidden;">
+		<div
+			style="flex: 15; font-size: 16pt; margin-top: 30px; margin-bottom: 1px; margin-left: 25px; margin-right: 25px">
+			<span id="span-msg-header">msg-header</span>
+		</div>
+		<div
+			style="flex: 70; overflow-y: auto; font-size: 12pt; margin-top: 1px; margin-left: 25px; margin-right: 25px">
+			<span id="span-msg-text">msg-txt</span>
+		</div>
+
+		<div style="flex: 15; margin-top: 15px;">
+			<button id="btn_msg_ok" class="dialog-button-modal"
+				onclick="classDialog.msgDialogOk()">OK</button>
+		</div>
+	</div>
+
+	<div id="div-cnv-message" style="position: absolute; z-index: 3;">
+		<canvas id="cnv-message" style="z-index: 3;" hidden="true"></canvas>
+	</div>
+
+	<!-- ---------------------------------------------------- -->
+
+	<script src="https://code.jquery.com/jquery-latest.js"></script>
+
+	<script src="../js/global.js?v=<?php echo filemtime('../js/global.js'); ?>"></script>
+	<script src="../js/main.js?v=<?php echo filemtime('../js/main.js'); ?>"></script>
+	<script src="../js/dialog.js?v=<?php echo filemtime('../js/dialog.js'); ?>"></script>
+	<script src="../js/novotris.js?v=<?php echo filetime('../js/novotris.js'); ?>"></script>
+	<script src="../js/rendering.js?v=<?php echo filemtime('../js/rendering.js'); ?>"></script>
+	<script src="../js/highscore.js?v=<?php echo filemtime('../js/highscore.js'); ?>"></script>
+	<script src="../js/user.js?v=<?php echo filemtime('../js/user.js'); ?>"></script>
+
+	<script>
+		var glUser = new User();
+
+		mainAssignRegistrationElements();
+		mainInit();
+		classDialogModus = "registration";
+		classDialog.initMessages();
+		glUser.init(false);
+		classDialog.init();
+		initLoginRendering();
+		$("body").fadeIn("slow");
+	</script>
+
+	<!-- ---------------------------------------------------- -->
+
+</body>
+</html>
