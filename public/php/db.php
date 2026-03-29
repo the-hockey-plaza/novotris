@@ -17,13 +17,7 @@ function dbLog($msg)
 function createPdo($db_name)
 {
   global $pdo;
-
-  $v_db_name = $db_name;
-
-  if ($v_db_name == null)
-    $v_db_name = 'novotris_work';
-
-  // if ($pdo == null) 
+  $v_db_name = $db_name ?? 'novotris_work';
   $pdo = new PDO('mysql:host=localhost;dbname=' . $v_db_name, 'novotris_admin', 'NovForEver');
 }
 
@@ -54,10 +48,9 @@ function getIp()
 function logToDb($nov_release, $aktion, $params, $log_order)
 {
   global $pdo;
-  $myDate = date('m/d/Y h:i:s a', time());
-  $datetime = date_create()->format('Y-m-d H:i:s');
+  $datetime = date('Y-m-d H:i:s');
   $statement = $pdo->prepare("INSERT INTO nov_log (timestamp, ip, nov_release, aktion, params, log_order) VALUES (?,?,?,?,?,?)");
-  $statement->execute(array($datetime, getIp(), $nov_release, $aktion, $params, $log_order));
+  $statement->execute([$datetime, getIp(), $nov_release, $aktion, $params, $log_order]);
 }
 
 // -----------------------------------------------------------------------------
@@ -65,12 +58,10 @@ function logToDb($nov_release, $aktion, $params, $log_order)
 function saveScoreToDb($table, $nov_release, $level, $score, $user_id)
 {
   global $pdo;
-  $myDate = date('m/d/Y h:i:s a', time());
-  $datetime = date_create()->format('Y-m-d H:i:s');
-  $sql = "INSERT INTO " . $table . " (timestamp, ip, nov_release, level, score, user_id)";
-  $sql = $sql . " VALUES (?,?,?,?,?,?)";
+  $datetime = date('Y-m-d H:i:s');
+  $sql = "INSERT INTO {$table} (timestamp, ip, nov_release, level, score, user_id) VALUES (?,?,?,?,?,?)";
   $statement = $pdo->prepare($sql);
-  $statement->execute(array($datetime, getIp(), $nov_release, $level, $score, $user_id));
+  $statement->execute([$datetime, getIp(), $nov_release, $level, $score, $user_id]);
 }
 
 // -----------------------------------------------------------------------------
@@ -447,15 +438,8 @@ function saveUserNameToDb($id, $name)
 {
   global $pdo;
 
-  // check on invalid characters:
-  /*
-  if (!preg_match("[a-zA-Z0-9äöüßÄÖÜ]-", $name)) {
-    echo "N";
-    return;
-  }
-  */
-
-  if (strcmp(strtolower(substr($name, 0, 4)), "user") == 0) {
+  // Prevent guest usernames
+  if (strtolower(substr($name, 0, 4)) === "user") {
     echo "N";
     return;
   }
@@ -479,22 +463,21 @@ function saveUserNameToDb($id, $name)
 function startGameOnDb($user_id, $nov_release, $level, $mode)
 {
   global $pdo;
-  $game_id = null;
 
-  // create initial record set:
+  // Create initial record
   $statement = $pdo->prepare("INSERT INTO game (user_id) VALUES (?)");
-  $statement->execute(array($user_id));
+  $statement->execute([$user_id]);
 
-  // get id:
-  $sql = "SELECT id FROM game WHERE user_id = '" . $user_id . "' AND level is null ORDER BY id desc";
-  foreach ($pdo->query($sql) as $row) {
-    $game_id = $row['id'];
-    break;
-  }
+  // Get the created game ID
+  $sql = "SELECT id FROM game WHERE user_id = ? AND level IS NULL ORDER BY id DESC";
+  $statement = $pdo->prepare($sql);
+  $statement->execute([$user_id]);
+  $row = $statement->fetch();
+  $game_id = $row['id'];
 
-  // update record set with more values:
-  $sql = "UPDATE game set nov_release = '" . $nov_release . "', level = " . $level . ", beginn = now(), nov_mode = " . $mode . " WHERE id = " . $game_id;
-  $pdo->query($sql);
+  // Update record with game details
+  $statement = $pdo->prepare("UPDATE game SET nov_release = ?, level = ?, beginn = now(), nov_mode = ? WHERE id = ?");
+  $statement->execute([$nov_release, $level, $mode, $game_id]);
 
   echo $game_id;
 }
@@ -503,12 +486,9 @@ function startGameOnDb($user_id, $nov_release, $level, $mode)
 
 function stopGameOnDb($game_id, $score)
 {
-  dbLog("stopGameOnDb, game_id = " . $game_id);
-
   global $pdo;
-  $sql = "UPDATE game set score = " . $score . ", ende = now() WHERE id = " . $game_id . " AND ende is null";
-  $pdo->query($sql);
-
+  $statement = $pdo->prepare("UPDATE game SET score = ?, ende = now() WHERE id = ? AND ende IS NULL");
+  $statement->execute([$score, $game_id]);
   echo getIp();
 }
 
@@ -521,32 +501,25 @@ function activate($activation_code)
   $user_id = 0;
   $old_user_id = 0;
 
-  $sql = "SELECT id, old_user_id FROM nov_user WHERE activation_code = '" . crypt($activation_code, $pw_salt) . "'";
-  $sql = $sql . " AND active = 'N' AND activated_at IS NULL";
-
-  echo "db.php activate sql" . $sql;
+  $sql = "SELECT id, old_user_id FROM nov_user WHERE activation_code = '" . crypt($activation_code, $pw_salt) . "' AND active = 'N' AND activated_at IS NULL";
 
   foreach ($pdo->query($sql) as $row) {
-    $user_id =  $row['id'];
-    $old_user_id =  $row['old_user_id'];
-
+    $user_id = $row['id'];
+    $old_user_id = $row['old_user_id'];
     break;
   }
 
-  echo "db.php activate sql" . $user_id;
-
-
   if ($user_id > 0) {
-    $sql = "UPDATE nov_user set activated_at = now(), active = 'Y' WHERE id = " . $user_id;
-    $pdo->query($sql);
+    $statement = $pdo->prepare("UPDATE nov_user SET activated_at = now(), active = 'Y' WHERE id = ?");
+    $statement->execute([$user_id]);
   }
 
   if ($old_user_id > 0) {
-    $sql = "UPDATE game set user_id = " . $user_id . " WHERE user_id = " . $old_user_id;
-    $pdo->query($sql);
+    $statement = $pdo->prepare("UPDATE game SET user_id = ? WHERE user_id = ?");
+    $statement->execute([$user_id, $old_user_id]);
   }
 
-  echo ($user_id);
+  echo $user_id;
 }
 
 // -----------------------------------------------------------------------------
@@ -556,18 +529,17 @@ function getChangePasswordUser($activation_code)
   global $pdo;
   global $pw_salt;
   $user_id = 0;
-  $retValue = new stdClass();
 
   $sql = "SELECT id FROM nov_user WHERE activation_code = '" . crypt($activation_code, $pw_salt) . "'";
 
   foreach ($pdo->query($sql) as $row) {
-    $user_id =  $row['id'];
+    $user_id = $row['id'];
     break;
   }
 
+  $retValue = new stdClass();
   $retValue->user_id = $user_id;
   echo json_encode($retValue);
-  return;
 }
 
 // -----------------------------------------------------------------------------
@@ -577,66 +549,25 @@ function updatePassword($activation_code, $user_password)
   global $pdo;
   global $pw_salt;
 
-  $sql = "UPDATE nov_user set password = '" . crypt($user_password, $pw_salt) . "' WHERE activation_code = '" . crypt($activation_code, $pw_salt) . "'";
-  $pdo->query($sql);
+  $statement = $pdo->prepare("UPDATE nov_user SET password = ? WHERE activation_code = ?");
+  $statement->execute([crypt($user_password, $pw_salt), crypt($activation_code, $pw_salt)]);
 
   echo "ok";
-  return;
 }
 
 // -----------------------------------------------------------------------------
 
 function saveLanguageToDb($user_id, $language)
 {
-  dbLog("saveLanguageToDb");
-  dbLog("saveLanguageToDb, user_id = " .  $user_id . ", language = " .  $language);
-
   global $pdo;
-  $sql = "UPDATE nov_user set language = '" . $language . "' WHERE id = " . $user_id;
-  $pdo->query($sql);
-
-  dbLog("vor return");
+  $statement = $pdo->prepare("UPDATE nov_user SET language = ? WHERE id = ?");
+  $statement->execute([$language, $user_id]);
   echo "ok";
-  return;
 }
 
 // -----------------------------------------------------------------------------
 
-function updateIps()
-{
-  global $pdo;
-  $retValue = new stdClass();
-
-  /*
-  $retValue->city = "Karlsruhe";  
-
-  echo json_encode ($retValue);
-*/
-
-  $client = new HttpClient();
-  $response = $client->get('http://ipinfo.io/66.249.70.123');
-
-  echo $response->getStatusCode();
-
-  /*
-  echo $response->getBody();
-
-
-  try {
-	// get json
-	$json = file_get_contents("");
-
-  echo json_encode ($json);
-
-
-	// convert json to object
-	//$obj = json_decode($json);
-
-  }catch (Exception $ex) {
-	echo "ERROR: " . $ex->getMessage();
-}
-*/
-}
+// TODO: Implement IP geolocation lookup if needed
 
 // -----------------------------------------------------------------------------
 
@@ -718,50 +649,15 @@ function getNovotrisInfo()
     "nrUsers" => $nrUsers,
     "nrGames" => $nrGames
   ];
-
-
-
-
   echo json_encode($response);
 }
 
 // -----------------------------------------------------------------------------
 
-function logRequestData($data)
-{
-  $logFile = 'request_log.txt';
-  $timestamp = date('Y-m-d H:i:s');
-
-  // Verwandelt das Array/Objekt in eine lesbare Struktur
-  $formattedData = print_r($data, true);
-
-  $entry = "[$timestamp] NEUE ANFRAGE:\n" . $formattedData . "\n" . str_repeat("-", 40) . "\n";
-
-  // In die Datei schreiben (anhängen und sperren)
-  file_put_contents($logFile, $entry, FILE_APPEND | LOCK_EX);
-}
-
-// -----------------------------------------------------------------------------
-
-
-// Rohdaten vom Client empfangen
-$rawInput = file_get_contents('php://input');
-$decodedInput = json_decode($rawInput, true);
-
-// Alles loggen, was ankommt:
-/*
-logRequestData([
-    'URL' => $_SERVER['REQUEST_URI'],
-    'METHOD' => $_SERVER['REQUEST_METHOD'],
-    'RAW_JSON' => $rawInput,
-    'DECODED' => $decodedInput
-]);
-*/
-
-// Verhindert, dass Fehlermeldungen das JSON-Format zerstören
+// Prevent error messages from corrupting JSON response
 header('Content-Type: application/json');
 
-// Hier empfangen wir die Daten vom JavaScript
+// Receive data from JavaScript
 $input = json_decode(file_get_contents('php://input'), true);
 
 $functionname = $input['functionname'] ?? $_POST["functionname"];
@@ -769,15 +665,6 @@ $db_name = $input['db_name'] ?? $_POST["db_name"];
 
 dbLog('functionname = ' . $functionname . ', db_name = ' . $db_name);
 
-$user_id;
-$language;
-$pdo;
-$activation_code;
-$user_password;
-$game_id;
-$score;
-
-//  $pw_hash = "$2y$10$SsMswRx3b467.KvMNXVI8e8ZtRiazudG8pTaWGQoupLVMdmMkpBX2"; 
 $pw_salt = '$1$novotris$';
 
 createPdo($db_name);
@@ -866,10 +753,6 @@ switch ($functionname) {
     $user_id = $input['user_id'] ?? $_POST["user_id"];
     $language = $input['language'] ?? $_POST["language"];
     saveLanguageToDb($user_id, $language);
-    break;
-
-  case 'updateIps':
-    updateIps();
     break;
 
   // getestet:
