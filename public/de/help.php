@@ -29,7 +29,7 @@
 	});
 </script>
 
-<link rel="stylesheet" type="text/css" href="../novotris.css" />
+<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
 
 <?php include '../php/navi.php'; ?>
 

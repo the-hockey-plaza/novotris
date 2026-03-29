@@ -1,12 +1,6 @@
 /*----------------------------------------------------------------------------*/
 
 
-//const cMatrixSize.width = 10;
-//const cMatrixSize.height = 20;
-//
-//const cMatrixSize = { width: 10, height: 20 };
-//
-
 // arrow keys:
 const c_key_blank = 32;
 const c_key_left = 37;
@@ -18,9 +12,6 @@ const c_key_small_p = 80;
 
 const cImgStart = "../icons/icons8-play-32.png";
 const cImgPause = "../icons/icons8-pause-32.png";
-
-//var glTxtLevel;
-//var glLblLevel;
 
 var glTxtRows;
 var glLblRows;
@@ -42,12 +33,8 @@ var glCurrentBrick;
 var glFirstRoundAfterBottom = false;
 var glGameId;
 
-//var v_left_x = 30;
-//var v_top = 30;
 var v_matrix;
 var v_colors;
-//var c_nr_colors;
-//var btn_start;
 
 const glStartInterval = 1000;
 const glIntervalStep = 5;
@@ -58,9 +45,6 @@ var glIntervalId;
 var v_rows;
 
 var glRemoveIntervalId;
-
-var v_stone_top;
-
 
 // game status:
 var v_status;
@@ -85,97 +69,39 @@ function setStatus(status) {
 }
 
 function novInitMatrixFilter() {
+	const width = cMatrixSize.width;
+	const height = cMatrixSize.height;
 
 	glMatrixFilter = new Array();
-	for (var x = 0; x < cMatrixSize.width; x++)
-		glMatrixFilter[x] = new Array();
+	for (let x = 0; x < width; x++) {
+		glMatrixFilter[x] = new Array(height).fill(1);
+	}
 
-	for (var x = 0; x < cMatrixSize.width; x++)
-		for (var y = 0; y < cMatrixSize.height; y++)
-			glMatrixFilter[x][y] = 1;
+	if (glUser.getLevel() !== 6) return;
 
-	if (glUser.getLevel() != 6)
-		return;
-
-	// Variante 1:
-	glMatrixFilter[0][0] = 0;
-	glMatrixFilter[1][0] = 0;
-	glMatrixFilter[0][1] = 0;
-
-	glMatrixFilter[cMatrixSize.width - 1][0] = 0;
-	glMatrixFilter[cMatrixSize.width - 2][0] = 0;
-	glMatrixFilter[cMatrixSize.width - 1][1] = 0;
-
-	glMatrixFilter[0][cMatrixSize.height - 1] = 0;
-	glMatrixFilter[1][cMatrixSize.height - 1] = 0;
-	glMatrixFilter[0][cMatrixSize.height - 2] = 0;
-
-	glMatrixFilter[cMatrixSize.width - 1][cMatrixSize.height - 1] = 0;
-	glMatrixFilter[cMatrixSize.width - 2][cMatrixSize.height - 1] = 0;
-	glMatrixFilter[cMatrixSize.width - 1][cMatrixSize.height - 2] = 0;
-
-	//	
-	//	
-	//	for (var x = 0; x < 2; x++)
-	//		for (var y = 0; y < 2; y++) {
-	//			glMatrixFilter[x][y] = 0;
-	//			glMatrixFilter[cMatrixSize.width - 1 - x][cMatrixSize.height - 1 - y] = 0;
-	//	
-	//			if (x == 0 || y == ) {
-	//			glMatrixFilter[x][cMatrixSize.height - 1 - y] = 0;
-	//				glMatrixFilter[cMatrixSize.width - 1 - x][y] = 0;
-	//			}
-	//}
-
-
-
-
-	// Variante 2:
-	//			for (var y = 0; y < 9; y++) {
-	//				glMatrixFilter[0][y] = 0;
-	//				glMatrixFilter[cMatrixSize.width - 1][y] = 0;
-	//				glMatrixFilter[1][y] = 0;
-	//				glMatrixFilter[cMatrixSize.width - 2][y] = 0;
-	//			}
-	//	
-
-
-	//	// Variante 3:
-	//	for (var y = 0; y < 4; y++) {
-	//		glMatrixFilter[0][y] = 0;
-	//		glMatrixFilter[cMatrixSize.width - 1][y] = 0;
-	//		glMatrixFilter[1][y] = 0;
-	//		glMatrixFilter[cMatrixSize.width - 2][y] = 0;
-	//	}
-	//	for (var y = 4; y < 9; y++) {
-	//		glMatrixFilter[0][y] = 0;
-	//		glMatrixFilter[cMatrixSize.width - 1][y] = 0;
-	//	}
-
-	//	// Variante 4:
-	//		for (var y = 8; y < 12; y++) {
-	//			glMatrixFilter[4][y] = 0;
-	//			glMatrixFilter[5][y] = 0;
-	//		}
-	//
-	//	
-	//	// Variante 5:
-	//		for (var y = cMatrixSize.height-3; y < cMatrixSize.height; y++) {
-	//			glMatrixFilter[4][y] = 0;
-	//			glMatrixFilter[5][y] = 0;
-	//		}
-
-	// Variante 6 (für )
-
+	// Level 6: Corner blocks filter
+	const corners = [
+		[[0, 0], [1, 0], [0, 1]],
+		[[width - 1, 0], [width - 2, 0], [width - 1, 1]],
+		[[0, height - 1], [1, height - 1], [0, height - 2]],
+		[[width - 1, height - 1], [width - 2, height - 1], [width - 1, height - 2]]
+	];
+	corners.forEach(corner => {
+		corner.forEach(([x, y]) => {
+			glMatrixFilter[x][y] = 0;
+		});
+	});
 }
 
 /*
  * clear the matrix
  */
 function clearMatrix() {
-	for (var i = 0; i < cMatrixSize.width; i++)
-		for (var j = 0; j < cMatrixSize.height; j++)
+	for (let i = 0; i < cMatrixSize.width; i++) {
+		for (let j = 0; j < cMatrixSize.height; j++) {
 			v_matrix[i][j] = "e";
+		}
+	}
 }
 
 /*
@@ -183,55 +109,44 @@ function clearMatrix() {
  */
 function setSpecialTiles() {
 	const specialTileFrequency = 250; // standard = 250
-	if (glUser.getLevel() != 5)
-		return;
+	if (glUser.getLevel() !== 5) return;
 
 	// look for all empty tiles:
-	for (var x = 0; x < cMatrixSize.width; x++)
-		for (var y = Math.floor(cMatrixSize.height * 0.5); y < cMatrixSize.height; y++)
-			if (tileIsEmpty(x, y))
-				if (Math.random() <= (1 / specialTileFrequency))
-					v_matrix[x][y] = "s";
+	const threshold = 1 / specialTileFrequency;
+	for (let x = 0; x < cMatrixSize.width; x++) {
+		for (let y = Math.floor(cMatrixSize.height * 0.5); y < cMatrixSize.height; y++) {
+			if (tileIsEmpty(x, y) && Math.random() <= threshold) {
+				v_matrix[x][y] = "s";
+			}
+		}
+	}
 }
 
 function setGroundTiles() {
-	var countTiles = 20 + Math.floor(Math.random() * 50);
-	//var countTiles = 30;
-	var x;
-	var y;
+	const countTiles = 20 + Math.floor(Math.random() * 50);
 
-	if (glUser.getLevel() != 3)
-		return;
+	if (glUser.getLevel() !== 3) return;
 
-	for (var idx = 0; idx < countTiles; idx++) {
-		var done = false;
+	for (let idx = 0; idx < countTiles; idx++) {
+		let done = false;
 
 		while (!done) {
-			var v_full = true;
+			let isFull = true;
+			const x = Math.floor(Math.random() * cMatrixSize.width);
+			const y = 10 + Math.floor(Math.random() * 10);
 
-			x = Math.floor(Math.random() * cMatrixSize.width);
-			//y = Math.floor(Math.random() * cMatrixSize.height);
-			y = 10 + Math.floor(Math.random() * 10);
-
-			// is this row full?
-			for (var i = 0; i < cMatrixSize.width; i++) {
-				if (i != x && tileIsEmpty(i, y)) {
-					v_full = false;
+			// Check if row is full
+			for (let i = 0; i < cMatrixSize.width; i++) {
+				if (i !== x && tileIsEmpty(i, y)) {
+					isFull = false;
 				}
 			}
 
-			//			if (!v_full && v_matrix[x][y] != "g") {
-			//				if (y == cMatrixSize.height - 1)
-			//					done = true;
-			//				else if (tileIsFull(x, y + 1))
-			//					done = true;
-			//			}
-			if (!v_full && v_matrix[x][y] != "g")
+			if (!isFull && v_matrix[x][y] !== "g") {
+				v_matrix[x][y] = "g";
 				done = true;
-
+			}
 		}
-
-		v_matrix[x][y] = "g";
 	}
 }
 
@@ -240,16 +155,10 @@ function setGroundTiles() {
  * create randomly the next brick
  */
 function createNewBrick() {
+	const typeIdx = Math.floor(Math.random() * glLevelTypes.length);
+	const brickTypeId = glLevelTypes[typeIdx];
 
-	//var idx = Math.floor(Math.random() * glNumberOfTypes);
-	var idx = Math.floor(Math.random() * glLevelTypes.length);
-	var idx = glLevelTypes[idx];
-	var done = false;
-
-
-	//glCurrentBrick = glConfig.types[idx];
-	glCurrentBrick = null;
-	glCurrentBrick = JSON.parse(JSON.stringify(glConfig.types[idx]));
+	glCurrentBrick = JSON.parse(JSON.stringify(glConfig.types[brickTypeId]));
 	glCurrentBrick.rotateIdx = 0;
 
 	// moved to "insertBrickToMatrix"
@@ -282,32 +191,17 @@ function playSetTitle(msg, size) {
 	textElement.style.color = "yellow";
 	textElement.textContent = msg;
 
-	//let highscore1 = getModeHighscore(mode, level) {
-	//		return this.highscores[mode - 1][level - 1];
-	//	}
-
 	setTimeout(() => {
 		textElement.style.color = "var(--light-text-color)";
 	}, 5000);
 }
-
-//function playSetTitle(msg, size) {
-//	document.getElementById('divTitle').style.fontSize = size;
-//
-//		textElement.innerHTML = msg;
-//		
-//}
-//
 function do_start() {
-	if (glCnvMessage.hidden == false)
-		return;
-
-	if (v_status == cStatusRunning || v_status == cStatusPause) {
+	if (glCnvMessage.hidden === false) return;
+	if (v_status === cStatusRunning || v_status === cStatusPause) {
 		do_pause();
 		return;
 	}
 
-	//classPlay.init();
 	game_init();
 
 	clearInterval(glIntervalId);
@@ -330,12 +224,8 @@ function do_start() {
 
 	glIntervalId = setInterval(brickDown, glCurrentInterval);
 	v_status = cStatusRunning;
-	//glTxtLevel.innerHTML = glUser.getLevel();
 	glTxtRows.innerHTML = v_rows;
-	//glBtnPause.innerHTML = "Pause";
 	glBtnStart.innerHTML = getText("play_button_running");
-	//glBtnStart.src = "icons/743894_pause_control_line_play_stop_icon.png";
-	//setPlayBtnImg(cImgPause);
 
 	hidePlayIcons(false);
 	glDropLevel.disabled = true;
@@ -345,34 +235,25 @@ function do_start() {
 	scoreLevel = 500;
 	playSetTitle(getText("play_title_running"), titleSizeMedium);
 	glBtnStart.style.setProperty('--anim', 'paused');
-
 }
 
 /*----------------------------------------------------------------------------*/
 
 function do_pause() {
-	if (v_status == cStatusPause) {
+	if (v_status === cStatusPause) {
 		glIntervalId = setInterval(brickDown, glCurrentInterval);
-		//	glBtnPause.value = "Pause";
 		glBtnStart.innerHTML = getText("play_button_running");
-		//setPlayBtnImg(cImgPause);
 		v_status = cStatusRunning;
 		playSetTitle(getText("play_title_running"), titleSizeMedium);
 		glBtnStart.style.setProperty('--anim', 'paused');
-	}
-	else if (v_status == cStatusRunning) {
+	} else if (v_status === cStatusRunning) {
 		clearInterval(glIntervalId);
-		//	glBtnPause.value = "Resume";
 		glBtnStart.innerHTML = getText("play_button_pause");
-		//	setPlayBtnImg(cImgStart);
 		v_status = cStatusPause;
 		playSetTitle(getText("play_title_pause", reduceScore()), titleSizeMedium);
 		glBtnStart.style.setProperty('--anim', 'paused');
-
 	}
-	//	glBtnPause.blur();
 	glBtnStart.blur();
-	// glBtnStart.style.setProperty('--anim', 'running');		
 }
 
 
@@ -381,88 +262,63 @@ function do_pause() {
  * check if the current brick is at bottom
  */
 function touchedBottom() {
-	for (var x = 0; x < getBrickWidth(); x++)
-		for (var y = 0; y < getBrickHeight(); y++)
+	for (let x = 0; x < getBrickWidth(); x++) {
+		for (let y = 0; y < getBrickHeight(); y++) {
 			if (getBrickValue(x, y) > 0) {
-				// unten fertig?
-				if (y + glCurrentBrick.y >= cMatrixSize.height - 1)
-					return true;
-
-				// kein Platz mehr?
-				if (!(tileIsEmpty(x + glCurrentBrick.x, y + glCurrentBrick.y + 1)))
-					return true;
-
-				// matrix filter:
-				if (glMatrixFilter[x + glCurrentBrick.x][y + glCurrentBrick.y + 1] == 0)
-					return true;
-
-
+				// At bottom?
+				if (y + glCurrentBrick.y >= cMatrixSize.height - 1) return true;
+				// No space below?
+				if (!tileIsEmpty(x + glCurrentBrick.x, y + glCurrentBrick.y + 1)) return true;
+				// Matrix filter check
+				if (glMatrixFilter[x + glCurrentBrick.x][y + glCurrentBrick.y + 1] === 0) return true;
 			}
+		}
+	}
 	return false;
 }
 
 /*
- * check if a tile of the matrix is empty:
+ * Get first character of tile to determine its type
  */
+function getTileType(x, y) {
+	return v_matrix[x][y].charAt(0);
+}
+
 function tileIsEmpty(x, y) {
-	var tile = v_matrix[x][y];
-
-	return (tile.substring(0, 1) == "e");
+	return getTileType(x, y) === "e";
 }
 
-/*
- * check if a tile of the matrix is full an could be removed
- */
 function tileIsFull(x, y) {
-	var tile = v_matrix[x][y];
-	var firstChar = tile.substring(0, 1);
-
-	return (firstChar == "c" || firstChar == "s" || firstChar == "g");
+	const type = getTileType(x, y);
+	return type === "c" || type === "s" || type === "g";
 }
 
-/*
- * check if a tile of the matrix is colored:
- */
 function tileIsColored(x, y) {
-	var tile = v_matrix[x][y];
-
-	return (tile.substring(0, 1) == "c");
+	return getTileType(x, y) === "c";
 }
 
 function tileIsSpecial(x, y) {
-	var tile = v_matrix[x][y];
-
-	return (tile.substring(0, 1) == "s");
+	return getTileType(x, y) === "s";
 }
 
 /*
  * move the current brick one to left
  */
 function stone_left() {
-	if (v_status != cStatusRunning)
-		return;
+	if (v_status !== cStatusRunning) return;
 
-	for (var x = 0; x < getBrickWidth(); x++)
-		for (var y = 0; y < getBrickHeight(); y++) {
+	for (let x = 0; x < getBrickWidth(); x++) {
+		for (let y = 0; y < getBrickHeight(); y++) {
 			if (getBrickValue(x, y) > 0) {
-				// links fertig?
-				if (x + glCurrentBrick.x <= 0)
-					return;
-
-				// kein Platz mehr?
-				if (!(tileIsEmpty(x + glCurrentBrick.x - 1, y + glCurrentBrick.y)))
-					return;
-
-				// matrix filter:
-				if (glMatrixFilter[x + glCurrentBrick.x - 1][y + glCurrentBrick.y] == 0)
-					return;
+				if (x + glCurrentBrick.x <= 0) return;
+				if (!tileIsEmpty(x + glCurrentBrick.x - 1, y + glCurrentBrick.y)) return;
+				if (glMatrixFilter[x + glCurrentBrick.x - 1][y + glCurrentBrick.y] === 0) return;
 			}
 		}
-
+	}
 
 	drawCurrentBrick(true);
-	glCurrentBrick.x = glCurrentBrick.x - 1;
-
+	glCurrentBrick.x--;
 	drawMatrix();
 	drawCurrentBrick(false);
 }
@@ -470,29 +326,20 @@ function stone_left() {
 /*----------------------------------------------------------------------------*/
 
 function stone_right() {
-	if (v_status != cStatusRunning)
-		return;
+	if (v_status !== cStatusRunning) return;
 
-	for (var x = 0; x < getBrickWidth(); x++)
-		for (var y = 0; y < getBrickHeight(); y++) {
+	for (let x = 0; x < getBrickWidth(); x++) {
+		for (let y = 0; y < getBrickHeight(); y++) {
 			if (getBrickValue(x, y) > 0) {
-				// rechts fertig?
-				if (x + glCurrentBrick.x >= cMatrixSize.width - 1)
-					return;
-
-				// kein Platz mehr?
-				if (!(tileIsEmpty(x + glCurrentBrick.x + 1, y + glCurrentBrick.y)))
-					return;
-
-				// matrix filter:
-				if (glMatrixFilter[x + glCurrentBrick.x + 1][y + glCurrentBrick.y] == 0)
-					return;
+				if (x + glCurrentBrick.x >= cMatrixSize.width - 1) return;
+				if (!tileIsEmpty(x + glCurrentBrick.x + 1, y + glCurrentBrick.y)) return;
+				if (glMatrixFilter[x + glCurrentBrick.x + 1][y + glCurrentBrick.y] === 0) return;
 			}
 		}
+	}
 
 	drawCurrentBrick(true);
-	glCurrentBrick.x = glCurrentBrick.x + 1;
-
+	glCurrentBrick.x++;
 	drawMatrix();
 	drawCurrentBrick(false);
 }
@@ -546,15 +393,6 @@ function stone_rotate_left() {
 /*
  * handle the bottom actions
  */
-//function handleBottom() {
-//	clearInterval(glIntervalId);
-//	v_status = cStatusBottom;
-//	drawCurrentBrickOutline();
-//	glFirstRoundAfterBottom = true;
-//	window.setTimeout(nextRound, 10);
-//
-//}
-
 function handleBottom() {
 	glFirstRoundAfterBottom = true;
 	nextRound();
@@ -582,29 +420,17 @@ function stone_drop() {
 }
 
 
-/*
- * put the current brick into the matrix
- */
-//function insertBrickToMatrix() {
-//	// the brick is at bottom and now part of the matrix:
-//	for (var x = 0; x < getBrickWidth(); x++)
-//		for (var y = 0; y < getBrickHeight(); y++) {
-//			if (getBrickValue(x, y) > 0)
-//				v_matrix[x + glCurrentBrick.x][y + glCurrentBrick.y] = "c" + glCurrentBrick.color;
-//		}
-//}
-
 function calculateScore() {
 	let points;
 
-	if (glUser.getMode() == glModeSpeed) {
-		let speed = 1000 / glCurrentInterval;
-		let timeDiff = (Date.now() - glCurrentBrick.startTime) / 1000; // seconds
-		let factor = Math.sqrt((glCurrentBrick.y / timeDiff) / speed);
+	if (glUser.getMode() === glModeSpeed) {
+		const speed = 1000 / glCurrentInterval;
+		const timeDiff = (Date.now() - glCurrentBrick.startTime) / 1000; // seconds
+		const factor = Math.sqrt((glCurrentBrick.y / timeDiff) / speed);
 		points = Math.floor(glCurrentBrick.points * factor);
-	}
-	else
+	} else {
 		points = glCurrentBrick.points;
+	}
 
 	increaseScore(points);
 }
@@ -612,44 +438,53 @@ function calculateScore() {
 function insertBrickToMatrix() {
 	calculateScore();
 
-	// the brick is at bottom and now part of the matrix:
-	for (var x = 0; x < getBrickWidth(); x++)
-		for (var y = 0; y < getBrickHeight(); y++) {
-			if (getBrickValue(x, y) > 0)
+	// Add brick to matrix
+	for (let x = 0; x < getBrickWidth(); x++) {
+		for (let y = 0; y < getBrickHeight(); y++) {
+			if (getBrickValue(x, y) > 0) {
 				v_matrix[x + glCurrentBrick.x][y + glCurrentBrick.y] = "c" + glCurrentBrick.color;
+			}
 		}
+	}
 
-	// evtl. vollständige Reihen entfernen:
-	for (var j = cMatrixSize.height - 1; j > 0; j--) {
-		v_full = true;
-		for (var i = 0; i < cMatrixSize.width; i++) {
-			if (tileIsEmpty(i, j) && glMatrixFilter[i][j] == 1) {
-				v_full = false;
+	// Remove complete rows
+	for (let j = cMatrixSize.height - 1; j > 0; j--) {
+		let rowComplete = true;
+
+		// Check if row is complete
+		for (let i = 0; i < cMatrixSize.width; i++) {
+			if (tileIsEmpty(i, j) && glMatrixFilter[i][j] === 1) {
+				rowComplete = false;
+				break;
 			}
 		}
 
-		if (v_full) {
-			// Reihe leer machen:
-			for (var i = 0; i < cMatrixSize.width; i++)
+		if (rowComplete) {
+			// Clear row
+			for (let i = 0; i < cMatrixSize.width; i++) {
 				v_matrix[i][j] = "e";
+			}
 
-			// jede Reihe eins nach unten:
-			for (var k = j; k > 0; k--)
-				for (var m = 0; m < cMatrixSize.width; m++)
-					//					if (!(tileIsSpecial(m, k - 1)) && tileIsEmpty(m, k)) {
-					if ((!(tileIsSpecial(m, k - 1))) && tileIsEmpty(m, k) && ((k == cMatrixSize.height - 1) || glMatrixFilter[m][k + 1] == 1)) {
+			// Move rows down
+			for (let k = j; k > 0; k--) {
+				for (let m = 0; m < cMatrixSize.width; m++) {
+					if (!tileIsSpecial(m, k - 1) && tileIsEmpty(m, k) && (k === cMatrixSize.height - 1 || glMatrixFilter[m][k + 1] === 1)) {
 						v_matrix[m][k] = v_matrix[m][k - 1];
 						v_matrix[m][k - 1] = "e";
 					}
+				}
+			}
 
-			// oberste Reihe ist dann leer:
-			for (var m = 0; m < cMatrixSize.width; m++)
+			// Clear top row
+			for (let m = 0; m < cMatrixSize.width; m++) {
 				v_matrix[m][0] = "e";
+			}
 
-			v_rows = v_rows + 1;
+			v_rows++;
 			glTxtRows.innerHTML = v_rows;
 
-			if (v_rows % glIntervalStep == 0) {
+			// Increase game speed
+			if (v_rows % glIntervalStep === 0) {
 				glCurrentInterval = glCurrentInterval / 1.1;
 				clearInterval(glIntervalId);
 				glIntervalId = setInterval(brickDown, glCurrentInterval);
@@ -657,100 +492,81 @@ function insertBrickToMatrix() {
 
 			showSpeed();
 
-			// diese Reihe noch mal checken, weil sie voll war:
-			j = j + 1;
+			// Check this row again as it was full
+			j++;
 		}
 	}
 }
 
 
 function showSpeed() {
-	var speed = 1000 / glCurrentInterval;
-
-	glTxtSpeed.innerHTML = speed.toFixed(2)
+	glTxtSpeed.innerHTML = (1000 / glCurrentInterval).toFixed(2);
 }
 
 /*
  * remove full rows from the matrix
  */
 function removeFullRow(j, isFull) {
-	var v_full;
-	var rowIdx = j;
-	var delay;
-	var dummy;
 	clearInterval(glRemoveIntervalId);
 
-	if (j == 19)
-		dummy = 0;
-
 	if (isFull) {
-		// Reihe leer machen:
-		for (var i = 0; i < cMatrixSize.width; i++)
+		// Clear row
+		for (let i = 0; i < cMatrixSize.width; i++) {
 			v_matrix[i][j] = "e";
+		}
 
-		// jede Reihe eins nach unten:
-		for (var k = j; k > 1; k--)
-			for (var m = 0; m < cMatrixSize.width; m++)
-				if ((!(tileIsSpecial(m, k - 1))) && tileIsEmpty(m, k) && ((k == cMatrixSize.height - 1) || glMatrixFilter[m][k + 1] == 1)) {
-					//		if ((!(tileIsSpecial(m, k - 1))) && tileIsEmpty(m, k) && ((k == cMatrixSize.height - 1) || glMatrixFilter[m][k ] == 1)) {
+		// Move rows down
+		for (let k = j; k > 1; k--) {
+			for (let m = 0; m < cMatrixSize.width; m++) {
+				if (!tileIsSpecial(m, k - 1) && tileIsEmpty(m, k) && (k === cMatrixSize.height - 1 || glMatrixFilter[m][k + 1] === 1)) {
 					v_matrix[m][k] = v_matrix[m][k - 1];
 					v_matrix[m][k - 1] = "e";
 				}
+			}
+		}
 
-		// oberste Reihe ist dann leer:
-		for (var m = 0; m < cMatrixSize.width; m++)
+		// Clear top row
+		for (let m = 0; m < cMatrixSize.width; m++) {
 			v_matrix[m][0] = "e";
+		}
 
-		v_rows = v_rows + 1;
+		v_rows++;
 		glTxtRows.innerHTML = v_rows;
 
-		if (v_rows % glIntervalStep == 0) {
-			//			glCurrentInterval / 1.1;
-			var speed = (1000 / glCurrentInterval) * 1.1;
-
+		// Increase game speed
+		if (v_rows % glIntervalStep === 0) {
+			const speed = (1000 / glCurrentInterval) * 1.1;
 			glCurrentInterval = 1000 / speed;
-
 			clearInterval(glIntervalId);
 			glIntervalId = setInterval(brickDown, glCurrentInterval);
 		}
 
 		showSpeed();
-
-		// diese Reihe noch mal checken, weil sie voll war:
-		//	j = j + 1;
-
 		drawMatrix();
 	}
 
-	// is row "j" full?
-	v_full = true;
-	for (var i = 0; i < cMatrixSize.width; i++) {
-		if (tileIsEmpty(i, j) && glMatrixFilter[i][j] == 1) {
-			v_full = false;
+	// Check if row "j" is full
+	let rowComplete = true;
+	for (let i = 0; i < cMatrixSize.width; i++) {
+		if (tileIsEmpty(i, j) && glMatrixFilter[i][j] === 1) {
+			rowComplete = false;
+			break;
 		}
 	}
 
-	if (!v_full)
-		rowIdx--;
-
-	// removeFullRow(rowIdx, v_full)
-
-	if (rowIdx > 0) {
-		//		removeFullRow.j = rowIdx;
-		//	removeFullRow.isFull = v_full;
-		if (v_full) {
-			delay = 200;
-			markFullRow(rowIdx);
-		}
-		else
-			delay = 0;
-
-		glRemoveIntervalId = setInterval(removeFullRow, delay, rowIdx, v_full);
+	if (!rowComplete) {
+		j--;
 	}
-	else {
+
+	if (j > 0) {
+		const delay = rowComplete ? 200 : 0;
+		if (rowComplete) {
+			markFullRow(j);
+		}
+		glRemoveIntervalId = setInterval(removeFullRow, delay, j, rowComplete);
+	} else {
 		setSpecialTiles();
 		drawMatrix();
-
 		createNewBrick();
 		v_status = cStatusRunning;
 		clearInterval(glIntervalId);
@@ -773,7 +589,6 @@ function stop_game() {
 	hidePlayIcons(false);
 
 	glBtnStart.innerHTML = "Start";
-	//setPlayBtnImg(cImgStart);
 	stopGameOnDb(glScore);
 	setRankingPosition(false); // false = new
 	glDropLevel.disabled = false;
@@ -820,24 +635,11 @@ async function getNovotrisInfo() {
 }
 
 async function showNovotrisInfoDialog() {
-	var msgText = "";
-	let novInfo = await getNovotrisInfo();
-
-
-
-	//	msgText += "user name: <b>" + glUser.getName() + "</b><br>";
-	//	msgText += "user language: <b>" + glUser.getLanguage() + "</b><br>";
-	//	msgText += "highscore level 1 (classic): <b>" + glUser.getModeHighscore(1, 1) + "</b><br>";
-	//	msgText += "highscore level 1 (speed): <b>" + glUser.getModeHighscore(2, 1) + "</b><br>";
-	//
-
-	msgText += getText("nr_users") + ": <b>" + novInfo.nrUsers + "</b><br>";
-	msgText += getText("nr_games") + ": <b>" + novInfo.nrGames + "</b><br>";
+	const msgText = getText("nr_users") + ": <b>" + (await getNovotrisInfo()).nrUsers + "</b><br>" +
+		getText("nr_games") + ": <b>" + (await getNovotrisInfo()).nrGames + "</b><br>";
 
 	classDialogModus = "finished";
 	classDialog.showMessageDialog("Novotris " + glRelease, msgText);
-
-
 }
 
 async function getUserInfo() {
@@ -887,11 +689,7 @@ function do_stop() {
  * prepare the next round
  */
 function nextRound() {
-	var isFull = false;
-	var delay;
-
 	glFirstRoundAfterBottom = false;
-
 	insertBrickToMatrix();
 	removeFullRow(cMatrixSize.height - 1, false);
 }
@@ -904,18 +702,14 @@ function brickDown() {
 		if (c_new_stone) {
 			drawCurrentBrick();
 			stop_game();
-		}
-		else {
+		} else {
 			c_new_stone = false;
 			insertBrickToMatrix();
-
 			setSpecialTiles();
 			drawMatrix();
 			createNewBrick();
-
 		}
-	}
-	else {
+	} else {
 		c_new_stone = false;
 		glCurrentBrick.y++;
 		drawMatrix();
@@ -926,37 +720,33 @@ function brickDown() {
 /*----------------------------------------------------------------------------*/
 
 function taste(e) {
-	if (!e)
-		e = window.event;
+	e = e || window.event;
 
-	if (e.keyCode == c_key_small_p) {
+	if (e.keyCode === c_key_small_p) {
 		if (!glBtnStart.disabled) {
-			if (v_status == cStatusFinished || v_status == cStatusLevel || v_status == cStatusPause)
+			if (v_status === cStatusFinished || v_status === cStatusLevel || v_status === cStatusPause) {
 				do_start();
-			else if (v_status == cStatusRunning)
+			} else if (v_status === cStatusRunning) {
 				do_pause();
+			}
 		}
 		return;
-	};
+	}
 
-	if (v_status == cStatusRunning) {
+	if (v_status === cStatusRunning) {
 		switch (e.keyCode) {
 			case c_key_blank:
 				stone_drop();
 				break;
-
 			case c_key_left:
 				stone_left();
 				break;
-
 			case c_key_up:
 				stone_rotate_left();
 				break;
-
 			case c_key_right:
 				stone_right();
 				break;
-
 			case c_key_down:
 				brickDown();
 				break;
@@ -967,29 +757,26 @@ function taste(e) {
 function choose_level() {
 	v_status = cStatusLevel;
 	clearInterval(glIntervalId);
-
-	//	glUser.create();
-	//	glMainFooter.hidden = true;
 	initPreview();
 	showPreview();
 	playSetTitle(getText("play_title_init"), titleSizeMedium);
-
 }
 
 /*----------------------------------------------------------------------------*/
 
 function game_init() {
-	var level = glUser.getLevel();
-
-	v_matrix = new Array();
-	for (var i = 0; i < cMatrixSize.width; i++)
+	// Initialize matrix
+	v_matrix = new Array(cMatrixSize.width);
+	for (let i = 0; i < cMatrixSize.width; i++) {
 		v_matrix[i] = new Array();
+	}
 	clearMatrix();
 
 	// get the brick types for this level:
 	glLevelTypes.length = 0;
-	for (var i = 0; i < glConfig.types.length; ++i) {
-		if (glConfig.types[i].levels.includes(glUser.getLevel())) {
+	const currentLevel = glUser.getLevel();
+	for (let i = 0; i < glConfig.types.length; i++) {
+		if (glConfig.types[i].levels.includes(currentLevel)) {
 			glLevelTypes.push(i);
 		}
 	}
@@ -1004,30 +791,14 @@ function game_init() {
 
 	glCurrentInterval = glStartInterval;
 	showSpeed();
-
-	//	if (glTxtLevel != null)
-	//		glTxtLevel.innerHTML = level;
 }
-
-//function logToDb(aktion, params) {
-//	glLogOrder += 1;
-//
-//	jQuery.ajax({
-//		type: "POST",
-//		url: '../php/db.php',
-//		data: { db_name: glDbName, functionname: 'logToDb', nov_release: glRelease, aktion: aktion, params: params, log_order: glLogOrder },
-//		success: function() {
-//			console.log("logToDb success");
-//		}
-//	});
-//}
 
 function startGameOnDb() {
 	jQuery.ajax({
 		type: "POST",
 		url: '../php/db.php',
 		data: { db_name: glDbName, functionname: 'startGameOnDb', user_id: glUser.getId(), nov_release: glRelease, level: glUser.getLevel(), mode: glUser.getMode() },
-		success: function(result) {
+		success: function (result) {
 			startGameOnDbSuccess(result);
 		}
 	});
@@ -1037,26 +808,11 @@ function startGameOnDbSuccess(result) {
 	glGameId = result;
 }
 
-//function stopGameOnDb() {
-//	jQuery.ajax({
-//		type: "POST",
-//		url: '../php/db.php',
-//		data: { db_name: glDbName, functionname: 'stopGameOnDb', game_id: glGameId, score: glScore },
-//		success: function() {
-//			stopGameOnDbSuccess();
-//		}
-//	});
-//}
-
 async function stopGameOnDb(score) {
 	try {
-//		const response = await fetch('../php/db.php', {
-	const myPath = phpDir + 'db.php';
-	
+		const myPath = phpDir + 'db.php';
 
-	const myPath1 = '../../../php/dbtest1.php';
-
-		const response = await fetch(myPath1, {
+		const response = await fetch(myPath, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ db_name: glDbName, functionname: 'stopGameOnDb', game_id: glGameId, score: glScore })
@@ -1086,22 +842,6 @@ async function stopGameOnDb(score) {
 	}
 }
 
-
-//function stopGameOnDbSuccess(result) {
-//	console.log("stopGameOnDbSuccess");
-//
-//	let mailContent;
-//	mailContent = "alert type: <b>stopGame</b><br>";
-//	mailContent += "user_name: <b>" + glUser.getName() + "</b><br>";
-//	mailContent += "level: <b>" + glUser.getLevel() + "</b><br>";
-//	mailContent += "mode: <b>" + glUser.getMode() + "</b><br>";
-//	mailContent += "score: <b>" + glScore + "</b><br>";
-//
-//	glUser.sendSysLoadMail(mailContent);
-//
-//}
-
-
 /*
  * onLoad
  */
@@ -1125,65 +865,51 @@ function onContentLoaded() {
 	mailContent += "name: <b>" + glUser.getName() + "</b><br>";
 	mailContent += "language: <b>" + glUser.getLanguage() + "</b><br>";
 	mailContent += "mobile: <b>" + isMobile + "</b><br>";
-
-
-	//glUser.sendSysLoadMail(mailContent);
-
-	//fullscreen
-	//	enterFullscreen(document.documentElement);
 }
 
 function onFullscreenChanged(event) {
 	return;
 }
 
-
-function novTest() {
-	console.log("novTest");
-
-	for (var i = 0; i < 100; ++i) {
-		var idx = Math.floor(Math.random() * 5);
-		console.log(idx);
-	}
-}
-
-
-function novGetDevice() {
-	var device = new DeviceUUID().get();
-}
-
-
 function novInit() {
 	document.onkeydown = taste;
 
+	// Cache DOM elements
+	const elements = {
+		glBtnStart: 'do_start',
+		glLblHighscore: 'lbl_highscore',
+		glLblRows: 'lbl_rows',
+		glLblScore: 'lbl_score',
+		glLblSpeed: 'lbl_speed',
+		glTxtHighscore: 'txt_highscore',
+		glTxtReset: 'p-reset',
+		glTxtRows: 'txt_rows',
+		glTxtScore: 'txt_score',
+		glTxtSpeed: 'txt_speed'
+	};
+
+	Object.entries(elements).forEach(([varName, id]) => {
+		window[varName] = document.getElementById(id);
+	});
+
 	glBtnStart = document.getElementById('do_start');
 
-	glLblHighscore = document.getElementById('lbl_highscore');
-	glLblRows = document.getElementById('lbl_rows');
-	glLblScore = document.getElementById('lbl_score');
-	glLblSpeed = document.getElementById('lbl_speed');
-	glTxtHighscore = document.getElementById('txt_highscore');
-	glTxtReset = document.getElementById('p-reset');
-	glTxtRows = document.getElementById('txt_rows');
-	glTxtScore = document.getElementById('txt_score');
-	glTxtSpeed = document.getElementById('txt_speed');
-
+	// Setup event listeners
 	glDropLevel.addEventListener('change', selectLevel);
 	glDropMode.addEventListener('change', selectMode);
 
+	// Initialize level settings
 	glDropLevel.disabled = false;
 	glDropLevel.selectedIndex = 0;
 	glUser.setLevel(1);
 
+	// Initialize mode settings
 	glDropMode.disabled = false;
 	glDropMode.selectedIndex = 0;
 	glUser.setMode(1);
 
 	glScore = 0;
-
 	playSetTitle(getText("play_title_init"), titleSizeMedium);
-
-
 }
 
 /*----------------------------------------------------------------------------*/

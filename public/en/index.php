@@ -31,7 +31,7 @@
 	gtag('config', 'G-9GL47VN2C7');
 </script>
 
-<link rel="stylesheet" type="text/css" href="../novotris.css" />
+<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
 
 <?php include '../php/navi.php'; ?>
 
@@ -85,7 +85,7 @@
 						<td width="40%">
 							<p style="margin-top: 10" align="center">
 								<a href="<?= $nov_url_news ?>"><img
-									src="../pictures/newspaper-1753579_640.jpg" width="140"
+									src="../images/newspaper-1753579_640.jpg" width="140"
 									height="auto"></a>
 
 							</p>
@@ -98,7 +98,7 @@
 						<td width="40%">
 							<p style="margin-top: 25" align="center">
 								<a href="<?= $nov_url_alternatives ?>"><img
-									src="../pictures/running-78192_640.jpg" width="140"
+									src="../images/running-78192_640.jpg" width="140"
 									height="auto"></a>
 							</p>
 						</td>
@@ -127,7 +127,7 @@
 						<td width="40%">
 							<p style="margin-top: 10" align="center">
 								<a href="<?= $nov_url_bonanza ?>"><img
-									src="../pictures/globe-967305_640.jpg" width="140"
+									src="../images/globe-967305_640.jpg" width="140"
 									height="auto"></a>
 							</p>
 						</td>

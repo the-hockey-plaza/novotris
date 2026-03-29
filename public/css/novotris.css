@@ -40,7 +40,7 @@ a:visited {
 /* } */
 
 .pseudoBody {
-	background: url('background-1.png') no-repeat center center fixed;
+	background: url('../images/background-1.png') no-repeat center center fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -52,7 +52,7 @@ a:visited {
 }
 
 .container {
-	background: url('background-marmor.jpg');
+	background: url('../images/background-marmor.jpg');
 	font-family:  var(--novotris-font);
 	display: flex;
 	flex-direction: column;

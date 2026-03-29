@@ -27,7 +27,7 @@ var glLevelNeedsScore = glLevelNeedsScoreDesktop;
 const glLevelNeedsScoreModeClassic = 1000;
 const glLevelNeedsScoreModeSpeed = 1500;
 
-const phpDir = "../../../php/";
+const phpDir = "../php/";
 
 /* ----------------------------------------------------------------------------
  * color management
