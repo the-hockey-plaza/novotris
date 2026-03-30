@@ -1,44 +1,45 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
-<title>Novotris, the better Tetris kostenlos online spielen</title>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, user-scalable=no">
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
-<meta name="description"
-	content="Novotris: Tetris kostenlos online im Browser spielen, mit oder ohne Anmeldung, herausfordernde Varianten probieren, mit anderen Nutzern vergleichen und in Rangliste eintragen.">
-<meta name="keywords"
-	content="tetris, novotris, game, spiel, free, kostenlos, online, spielen, browser, steidlinger, gratis">
-<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
-<meta name="Author" content="Armin Steidlinger Softwareentwicklung">
+	<title>Novotris, the better Tetris kostenlos online spielen</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<meta name="description"
+		content="Novotris: Tetris kostenlos online im Browser spielen, mit oder ohne Anmeldung, herausfordernde Varianten probieren, mit anderen Nutzern vergleichen und in Rangliste eintragen.">
+	<meta name="keywords"
+		content="tetris, novotris, game, spiel, free, kostenlos, online, spielen, browser, steidlinger, gratis">
+	<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
+	<meta name="Author" content="Armin Steidlinger Softwareentwicklung">
 
-<link rel="icon" type="image/x-icon" href="../icons/novotris-icon.png">
+	<link rel="icon" type="image/x-icon" href="../icons/novotris-icon.png">
 
-<link rel="alternate" hreflang="de"
-	href="https://novotris.bplaced.net/de/play.php" />
-<link rel="alternate" hreflang="en"
-	href="https://novotris.bplaced.net/en/play.php" />
-<link rel="alternate" hreflang="x-default"
-	href="https://novotris.bplaced.net/de/play.php/" />
+	<link rel="alternate" hreflang="de"
+		href="https://novotris.bplaced.net/de/play.php" />
+	<link rel="alternate" hreflang="en"
+		href="https://novotris.bplaced.net/en/play.php" />
+	<link rel="alternate" hreflang="x-default"
+		href="https://novotris.bplaced.net/de/play.php/" />
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async
-	src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
-<script>
-	window.dataLayer = window.dataLayer || [];
-	function gtag() {
-		dataLayer.push(arguments);
-	}
-	gtag('js', new Date());
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async
+		src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
 
-	gtag('config', 'G-9GL47VN2C7');
-</script>
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag('js', new Date());
+
+		gtag('config', 'G-9GL47VN2C7');
+	</script>
 
 
 
-<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
+	<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
 
-<?php include '../php/navi.php'; ?>
+	<?php include '../php/navi.php'; ?>
 
 </head>
 
@@ -50,18 +51,15 @@
 				<div id="divTitle" style="flex: 80">
 					<a class="animatedTitle" id="animatedTitle">Spielen</a>
 				</div>
-				<div style="flex: 20">
-					<img src="../logo bing v8.jpg" width="135" height="auto"
-						align="right" alt="novotris logo">
+				<div style="flex: 20; display: flex; justify-content: flex-end; align-items: center;">
+					<img src="../logo bing v8.jpg" width="135" height="auto" alt="novotris logo">
 				</div>
 			</div>
 
 			<div class="novBody" style="display: flex;">
 				<div id="div-play-frame" style="flex: 70;">
 					<div>
-						<canvas id="mainCanvas"
-							style="z-index: 1; width: 100px; height: 100px;">		
-						</canvas>
+						<canvas id="mainCanvas" style="z-index: 1; width: 100px; height: 100px;"></canvas>
 					</div>
 				</div>
 				<div style="flex: 30">
@@ -76,9 +74,7 @@
 						style="margin-top: 3px">Highscore</div>
 					<div id="txt_highscore" class="game-data-text">1234</div>
 
-					<div style="padding-top: 3px;"></div>
-
-					<div class="game-data-label">
+					<div class="game-data-label" style="margin-top: 3px;">
 						Level<br> <select id="drp-play-level" class="drpMenu"
 							style="width: 75px;">
 							<option>1</option>
@@ -98,17 +94,8 @@
 						</select>
 					</div>
 
-					<div style="text-align: center;">
-						<!-- 						<button id="do_start" class="main-button" -->
-						<!-- 							style="margin-top: 24px;" onclick="do_start();"> -->
-						<!-- 							<img src="../icons/icons8-play-32.png"> -->
-						<!-- 						</button> -->
-					</div>
-
 					<div style="text-align: center; margin-top: 32px;">
-						<!--  button class="play-button" id="do_start" onclick="do_start();">Start</button> -->
-						<button class="animated-border-btn" id="do_start"
-							onclick="do_start();">Start</button>
+						<button class="animated-border-btn" id="do_start" onclick="do_start();">Start</button>
 					</div>
 
 
@@ -123,36 +110,25 @@
 					<a class="footer-label-only" style="color: var(--play-color);">Spielen</a>
 				</div>
 				<div class="row-footer-box">
-					<a class="footer-label" onmouseover="this.style.cursor='pointer'"
-						href="<?= $nov_url_ranking ?>">Ranglisten</a>
+					<a class="footer-label footer-clickable" href="<?= $nov_url_ranking ?>">Ranglisten</a>
 				</div>
 				<div class="row-footer-box">
-					<a class="footer-label" onmouseover="this.style.cursor='pointer'"
-						href="<?= $nov_url_help ?>">Anleitung</a>
+					<a class="footer-label footer-clickable" href="<?= $nov_url_help ?>">Anleitung</a>
 				</div>
 			</div>
 
-			<div class="novFooter"
-				style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+			<div class="novFooter" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
 				<div class="row-footer-box">
-					<a id="footer-user" class="footer-label"
-						onmouseover="this.style.cursor='pointer'"
-						onclick="showUserInfoDialog();"></a>
+					<a id="footer-user" class="footer-label footer-clickable" onclick="showUserInfoDialog();"></a>
 				</div>
 				<div class="row-footer-box">
-					<a id="footer-login" class="footer-label"
-						onclick="glUser.loginLogout('index.php')"
-						onmouseover="this.style.cursor='pointer'"></a>
+					<a id="footer-login" class="footer-label footer-clickable" onclick="glUser.loginLogout('index.php')"></a>
 				</div>
 				<div class="row-footer-box">
-					<a id="footer-version" class="footer-label"
-						onmouseover="this.style.cursor='pointer'"
-						onclick="showNovotrisInfoDialog();">Version</a>
+					<a id="footer-version" class="footer-label footer-clickable" onclick="showNovotrisInfoDialog();">Version</a>
 				</div>
 				<div class="row-footer-box" style="margin-left: 0px;">
-					<!-- 									<a id="footer-label">footer-label</a> -->
-					<select id="drp-language" class="footer-label"
-						style="padding-left: 1.0em;">
+					<select id="drp-language" class="footer-label" style="padding-left: 1.0em;">
 						<option>deutsch</option>
 						<option>english</option>
 					</select>
@@ -183,7 +159,7 @@
 	</div>
 
 	<div id="div-cnv-message" style="position: absolute; z-index: 3;">
-		<canvas id="cnv-message" style="z-index: 3;" hidden="true"></canvas>
+		<canvas id="cnv-message" style="z-index: 3; display: none;"></canvas>
 	</div>
 
 	<!-- ---------------------------------------------------- -->
@@ -210,16 +186,15 @@
 
 
 	<script>
-  	document.addEventListener('DOMContentLoaded', onContentLoaded, false); // currently empty! 	
-  	document.addEventListener('contextmenu', event => event.preventDefault());
-	  var glUser = new User();
-	  mainInit();
-	  glUser.init(true);
+		document.addEventListener('contextmenu', event => event.preventDefault());
+		var glUser = new User();
+		mainInit();
+		glUser.init(true);
 
 		classDialog.initMessages();
 		classDialog.init();
-		
-		initLoginRendering();		
+
+		initLoginRendering();
 		initStaticRendering();
 
 		if (glUser.getId() > 0) {
@@ -227,8 +202,9 @@
 			choose_level();
 			classDialog.showLevelDialog();
 		}
-		
-		$("body").fadeIn("slow");	
+
+		$("body").fadeIn("slow");
 	</script>
 </body>
+
 </html>

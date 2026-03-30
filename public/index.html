@@ -2,16 +2,15 @@
 <html>
 <head>
 <title>Novotris, the better Tetris</title>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, user-scalable=no">
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
-<meta name="description"
-	content="novotris, a free tetris like game with more fun and challenging levels">
-<meta name="keywords"
-	content="tetris, novotris, game, spiel, free, kostenlos, online, spielen,steidlinger">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="novotris, a free tetris like game with more fun and challenging levels">
+<meta name="keywords" content="tetris, novotris, game, spiel, free, kostenlos, online, spielen,steidlinger">
 <meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
 <meta name="Author" content="Armin Steidlinger Softwareentwicklung">
 <link rel="icon" type="image/x-icon" href="icons/novotris-icon.png">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="preconnect" href="https://pagead2.googlesyndication.com">
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async
@@ -39,25 +38,19 @@
 	</noscript>
 	<!-- End Google Tag Manager (noscript) -->
 
+	<script src="https://code.jquery.com/jquery-latest.js" defer></script>
 
-
-	<!-- ---------------------------------------------------- -->
-
-	<script src="https://code.jquery.com/jquery-latest.js"></script>
-
-	<script src="js/global.js?v=<?php echo filemtime('global.js'); ?>"></script>
-	<script src="js/user.js?v=<?php echo filemtime('user.js'); ?>"></script>
-	<script src="js/main.js?v=<?php echo filetime('main.js'); ?>"></script>
+	<script src="js/global.js?v=<?php echo filemtime('global.js'); ?>" defer></script>
+	<script src="js/user.js?v=<?php echo filemtime('user.js'); ?>" defer></script>
+	<script src="js/main.js?v=<?php echo filemtime('main.js'); ?>" defer></script>
 
 
 	<script>
-		var partUrl = '';
 		var urlParams = new URLSearchParams(window.location.search);
 		var glUser = new User();
 
 		glUser.init(false);
 
-		// mainLog ("index.php (1), urlParams = " + urlParams);
 		if (urlParams.get('m') > 0)
 			glIsMobile = true;
 		else
@@ -66,25 +59,14 @@
 		if (glIsMobile)
 			window.location.href = 'de/no-mobile.html';
 		else {
-
-			// mainLog ("index.php (2), partUrl = " + partUrl);
-
-			var resetParam = urlParams.get('reset');
-			// mainLog ("index.php (3), resetParam = " + resetParam);
-
-			var glUser = new User();
-			glUser.init(false);
 			var lang = glUser.getLanguage();
-
-			var newUrl = partUrl + lang + '/play.php';
+			var newUrl = lang + '/play.php';
+			var resetParam = urlParams.get('reset');
 			if (resetParam != null)
 				newUrl += "?reset=" + resetParam;
-			// mainLog ("index.php (4), newUrl = " + newUrl);
 
-			//		window.location.href = partUrl + lang + '/index.php';
 			window.location.href = newUrl;
 		}
-		//mainInit();
 	</script>
 </body>
 </html>
