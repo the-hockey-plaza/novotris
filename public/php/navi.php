@@ -1,12 +1,22 @@
 <?php
-  $nov_domain = "https://" . $_SERVER['HTTP_HOST'];
-  $nov_path = dirname($_SERVER['PHP_SELF']);
-  $nov_url = $nov_domain . $nov_path . '/';
-  $nov_url_index = $nov_url . 'index.php';
-  $nov_url_play = $nov_url . 'play.php';
-  $nov_url_ranking = $nov_url . 'ranking.php';
-  $nov_url_help = $nov_url . 'help.php';
-  $nov_url_news = $nov_url . 'news.php';
-  $nov_url_alternatives = $nov_url . 'alternatives.php';
-  $nov_url_bonanza = $nov_url . 'bonanza.php';
-?>
+// Sichere Domain-Ermittlung
+$nov_domain = "https://" . ($_SERVER['SERVER_NAME'] ?? 'localhost');
+$nov_path = dirname($_SERVER['PHP_SELF'] ?? '');
+$nov_url = $nov_domain . $nov_path . '/';
+
+// Array mit allen Seiten für DRY-Prinzip
+$nav_pages = [
+  'index' => 'index.php',
+  'play' => 'play.php',
+  'ranking' => 'ranking.php',
+  'help' => 'help.php',
+  'news' => 'news.php',
+  'alternatives' => 'alternatives.php',
+  'bonanza' => 'bonanza.php',
+];
+
+// Dynamisch alle URLs erstellen
+foreach ($nav_pages as $key => $page) {
+  $var_name = 'nov_url_' . $key;
+  $$var_name = $nov_url . $page;
+}
