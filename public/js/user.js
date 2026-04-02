@@ -80,7 +80,7 @@ class User {
 			type: "POST",
 			url: '../php/db.php',
 			data: { db_name: glDbName, functionname: 'saveUserNameToDb', id: this.id, name: this.tmpName },
-			success: function(result) {
+			success: function (result) {
 				glUser.saveUserNameToDbSuccess(result);
 			}
 		});
@@ -173,8 +173,11 @@ class User {
 			type: "POST",
 			url: '../php/db.php',
 			data: { db_name: glDbName, functionname: 'getUserFromDb', id: this.id, mobile: mobile },
-			success: function(result) {
+			success: function (result) {
 				glUser.loadFromDbSuccess(result, forceCreate);
+			},
+			error: function (xhr, status, error) {
+				console.error('loadFromDb error:', status, error, xhr.responseText);
 			}
 		});
 	}
@@ -186,7 +189,7 @@ class User {
 			data: {
 				functionname: 'sendSysLoadMail', mail_content: mailContent
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.sendSysLoadMailSuccess(result);
 			}
 		});
@@ -237,7 +240,7 @@ class User {
 			data: {
 				functionname: 'sendActivationMail', to: to, activation_code: activationCode, user_name: this.tmpName, user_language: language
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.sendActivationMailSuccess(result);
 			}
 		});
@@ -254,7 +257,7 @@ class User {
 			data: {
 				functionname: 'sendResetPasswordMail', to: to, activation_code: activationCode, user_name: userName
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.sendResetPasswordMailSuccess(result);
 			}
 		});
@@ -287,7 +290,7 @@ class User {
 				user_email: glInputRegistrationEmail.value, user_password: glInputRegistrationPassword.value, mobile: mobile,
 				activation_code: activationCode, old_user_id: oldUserId
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.registerSuccess(result, glInputRegistrationEmail.value, activationCode);
 			}
 		});
@@ -325,7 +328,7 @@ class User {
 				db_name: glDbName, functionname: 'resetPassword', user_name: glInputRegistrationUserName.value,
 				user_email: glInputRegistrationEmail.value, mobile: mobile, activation_code: activationCode
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.resetPasswordSuccess(result, glInputRegistrationEmail.value, glInputRegistrationUserName.value, activationCode);
 			}
 		});
@@ -425,7 +428,7 @@ class User {
 			data: {
 				db_name: glDbName, functionname: 'getChangePasswordUser', activation_code: activationCode
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.getChangePasswordUserSuccess(result, activationCode);
 			}
 		});
@@ -457,7 +460,7 @@ class User {
 				db_name: glDbName, functionname: 'login', user_name: glInputLoginUserName.value,
 				password: glInputLoginPassword.value, mobile: mobile
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.loginSuccess(result);
 			}
 		});
@@ -537,7 +540,7 @@ class User {
 			data: {
 				db_name: glDbName, functionname: 'activate', activation_code: activationCode
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.activateSuccess(result);
 			}
 		});
@@ -591,24 +594,24 @@ class User {
 				window.location.href = url;
 			}
 
-//			jQuery.ajax({
-//				type: "POST",
-//				url: '../php/db.php',
-//				data: { db_name: glDbName, functionname: 'saveLanguageToDb', user_id: this.id, language: this.language },
-//				success: function(result) {
-//					glUser.setLanguageSuccess(result, oldLang, lang);
-//				}
-//			});
+			//			jQuery.ajax({
+			//				type: "POST",
+			//				url: '../php/db.php',
+			//				data: { db_name: glDbName, functionname: 'saveLanguageToDb', user_id: this.id, language: this.language },
+			//				success: function(result) {
+			//					glUser.setLanguageSuccess(result, oldLang, lang);
+			//				}
+			//			});
 
 		}
 	}
 
-//	setLanguageSuccess(result, oldLang, newLang) {
-//		let url = window.location.href;
-//
-//		url = url.replace("/" + oldLang + "/", "/" + newLang + "/");
-//		window.location.href = url;
-//	}
+	//	setLanguageSuccess(result, oldLang, newLang) {
+	//		let url = window.location.href;
+	//
+	//		url = url.replace("/" + oldLang + "/", "/" + newLang + "/");
+	//		window.location.href = url;
+	//	}
 
 	chooseLanguage() {
 		let drpLanguage = document.getElementById('drp-language');
