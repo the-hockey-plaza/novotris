@@ -1,44 +1,51 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Novotris, the better Tetris play online free</title>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, user-scalable=no">
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
-<meta name="description"
-	content="Novotris: Play Tetris online for free in your browser, try out challenging variants, compete with other users and enter the rankings.">
-<meta name="keywords"
-	content="tetris, ranking">
-<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
-<meta name="Author" content="Armin Steidlinger Softwareentwicklung">
+	<title>Novotris, the better Tetris play online free</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+	<meta name="description"
+		content="Novotris: Play Tetris online for free in your browser, try out challenging variants, compete with other users and enter the rankings.">
+	<meta name="keywords"
+		content="tetris, ranking">
+	<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
+	<meta name="Author" content="Armin Steidlinger Softwareentwicklung">
 
-<link rel="icon" type="image/x-icon" href="../icons/novotris-icon.png">
+	<link rel="icon" type="image/x-icon" href="../icons/novotris-icon.png">
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async
-	src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
-<script>
-	window.dataLayer = window.dataLayer || [];
-	function gtag() {
-		dataLayer.push(arguments);
-	}
-	gtag('js', new Date());
+	<link rel="alternate" hreflang="de" href="https://novotris.bplaced.net/de/ranking.php" />
+	<link rel="alternate" hreflang="en" href="https://novotris.bplaced.net/en/ranking.php" />
+	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/ranking.php/" />
+	<link rel="canonical" href="https://novotris.bplaced.net/en/ranking.php" />
 
-	gtag('config', 'G-9GL47VN2C7');
-</script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async
+		src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag('js', new Date());
+
+		gtag('config', 'G-9GL47VN2C7');
+	</script>
 
 
-<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
+	<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
 
-<?php include '../php/navi.php'; ?>
+	<?php include '../php/navi.php'; ?>
 
-<style>
-.box22 {
-	flex: 2;
-	text-align: center;
-	padding-top: 20px;
-}
-</style>
+	<style>
+		.box22 {
+			flex: 2;
+			text-align: center;
+			padding-top: 20px;
+		}
+	</style>
 </head>
 
 <!-- ---------------------------------------------------- -->
@@ -50,7 +57,7 @@
 				style="border-top-left-radius: 4px; border-top-right-radius: 4px;">
 				<div id="lblTitle" style="flex: 80">Rankings</div>
 				<div style="flex: 20">
-					<img src="../logo bing v8.jpg" width="135" height="auto"
+					<img src="../images/logo bing v8.jpg" width="135" height="auto"
 						align="right" alt="novotris logo">
 				</div>
 			</div>
@@ -227,14 +234,14 @@
 	<script src="../js/main.js?v=<?php echo filemtime('../js/main.js'); ?>"></script>
 	<script
 		src="../js/highscore.js?v=<?php echo filemtime('../js/highscore.js'); ?>"></script>
-  <script
+	<script
 		src="../js/rendering.js?v=<?php echo filemtime('../js/rendering.js'); ?>"></script>
 	<script
 		src="../js/ranking.js?v=<?php echo filemtime('../js/ranking.js'); ?>"></script>
 	<script
 		src="../js/novotris.js?v=<?php echo filemtime('../js/novotris.js'); ?>"></script>
 	<script
-			src="../js/dialog.js?v=<?php echo filemtime('../js/dialog.js'); ?>"></script>
+		src="../js/dialog.js?v=<?php echo filemtime('../js/dialog.js'); ?>"></script>
 
 	<script>
 		var glUser = new User();
@@ -250,4 +257,5 @@
 	</script>
 
 </body>
+
 </html>

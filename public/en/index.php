@@ -1,39 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<title>Novotris, the better Tetris play online free</title>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, user-scalable=no">
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
-<meta name="description"
-	content="Novotris: Play Tetris online for free in your browser, try out challenging variants, compete with other users and enter the rankings.">
-<meta name="keywords"
-	content="tetris, novotris">
-<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
-<meta name="Author" content="Armin Steidlinger Softwareentwicklung">
+	<title>Novotris, the better Tetris play online free</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+	<meta name="description"
+		content="Novotris: Play Tetris online for free in your browser, try out challenging variants, compete with other users and enter the rankings.">
+	<meta name="keywords"
+		content="tetris, novotris">
+	<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
+	<meta name="Author" content="Armin Steidlinger Softwareentwicklung">
 
-<link rel="icon" type="image/x-icon" href="../icons/novotris-icon.png">
+	<link rel="icon" type="image/x-icon" href="../icons/novotris-icon.png">
 
-<link rel="alternate" hreflang="de" href="https://novotris.bplaced.net/de/index.php" />
-<link rel="alternate" hreflang="en" href="https://novotris.bplaced.net/en/index.php" />
-<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/index.php/" />
+	<link rel="alternate" hreflang="de" href="https://novotris.bplaced.net/de/index.php" />
+	<link rel="alternate" hreflang="en" href="https://novotris.bplaced.net/en/index.php" />
+	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/index.php/" />
+	<link rel="canonical" href="https://novotris.bplaced.net/en/index.php" />
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async
-	src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
-<script>
-	window.dataLayer = window.dataLayer || [];
-	function gtag() {
-		dataLayer.push(arguments);
-	}
-	gtag('js', new Date());
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async
+		src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
 
-	gtag('config', 'G-9GL47VN2C7');
-</script>
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag('js', new Date());
 
-<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
+		gtag('config', 'G-9GL47VN2C7');
+	</script>
 
-<?php include '../php/navi.php'; ?>
+	<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
+
+	<?php include '../php/navi.php'; ?>
 
 </head>
 
@@ -62,8 +65,8 @@
 				<!-- 				<div id="lblTitle" style="flex: 80">Titel</div> -->
 
 				<div style="flex: 20">
-					<img src="../logo bing v8.jpg" width="135" height="auto"
-						align="right"  alt="novotris logo" alt="novotris logo">
+					<img src="../images/logo bing v8.jpg" width="135" height="auto"
+						align="right" alt="novotris logo" alt="novotris logo">
 				</div>
 			</div>
 
@@ -85,8 +88,8 @@
 						<td width="40%">
 							<p style="margin-top: 10" align="center">
 								<a href="<?= $nov_url_news ?>"><img
-									src="../images/newspaper-1753579_640.jpg" width="140"
-									height="auto"></a>
+										src="../images/newspaper-1753579_640.jpg" width="140"
+										height="auto"></a>
 
 							</p>
 						</td>
@@ -98,8 +101,8 @@
 						<td width="40%">
 							<p style="margin-top: 25" align="center">
 								<a href="<?= $nov_url_alternatives ?>"><img
-									src="../images/running-78192_640.jpg" width="140"
-									height="auto"></a>
+										src="../images/running-78192_640.jpg" width="140"
+										height="auto"></a>
 							</p>
 						</td>
 
@@ -107,8 +110,8 @@
 							<p
 								style="margin-top: 15; padding-left: 8px; padding-right: 24px;">
 								It doesn't hurt to take a look at the competition, because there are unbelievably
-							many sites where you can play Tetris in the browser. A small
-							selection you can find <a href="<?= $nov_url_alternatives ?>">here</a>.
+								many sites where you can play Tetris in the browser. A small
+								selection you can find <a href="<?= $nov_url_alternatives ?>">here</a>.
 							</p>
 						</td>
 					</tr>
@@ -120,15 +123,15 @@
 							<p
 								style="margin-top: 10; padding-left: 28px;">
 								<a href="bonanza.php">Here</a> you will find a large selection of
-							articles about Tetris, which will probably amaze you. One
-							hardly guess who has already dealt with it and who has
-							 illuminated the different aspects of this classic game.
+								articles about Tetris, which will probably amaze you. One
+								hardly guess who has already dealt with it and who has
+								illuminated the different aspects of this classic game.
 						</td>
 						<td width="40%">
 							<p style="margin-top: 10" align="center">
 								<a href="<?= $nov_url_bonanza ?>"><img
-									src="../images/globe-967305_640.jpg" width="140"
-									height="auto"></a>
+										src="../images/globe-967305_640.jpg" width="140"
+										height="auto"></a>
 							</p>
 						</td>
 					</tr>
@@ -153,7 +156,7 @@
 						href="<?= $nov_url_help ?>">Help</a>
 				</div>
 			</div>
-			
+
 			<div class="novFooter"
 				style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
 				<div class="row-footer-box">
@@ -244,4 +247,5 @@
 		$("body").fadeIn("slow");
 	</script>
 </body>
+
 </html>

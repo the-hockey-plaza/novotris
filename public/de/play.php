@@ -14,12 +14,10 @@
 
 	<link rel="icon" type="image/x-icon" href="../icons/novotris-icon.png">
 
-	<link rel="alternate" hreflang="de"
-		href="https://novotris.bplaced.net/de/play.php" />
-	<link rel="alternate" hreflang="en"
-		href="https://novotris.bplaced.net/en/play.php" />
-	<link rel="alternate" hreflang="x-default"
-		href="https://novotris.bplaced.net/de/play.php/" />
+	<link rel="alternate" hreflang="de" href="https://novotris.bplaced.net/de/play.php" />
+	<link rel="alternate" hreflang="en" href="https://novotris.bplaced.net/en/play.php" />
+	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/play.php/" />
+	<link rel="canonical" href="https://novotris.bplaced.net/de/play.php" />
 
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async
@@ -52,7 +50,7 @@
 					<a class="animatedTitle" id="animatedTitle">Spielen</a>
 				</div>
 				<div style="flex: 20; display: flex; justify-content: flex-end; align-items: center;">
-					<img src="../logo bing v8.jpg" width="135" height="auto" alt="novotris logo">
+					<img src="../images/logo bing v8.jpg" width="135" height="auto" alt="novotris logo">
 				</div>
 			</div>
 
@@ -159,7 +157,7 @@
 	</div>
 
 	<div id="div-cnv-message" style="position: absolute; z-index: 3;">
-		<canvas id="cnv-message" style="z-index: 3; display: none;"></canvas>
+		<canvas id="cnv-message" style="z-index: 3;" hidden="true"></canvas>
 	</div>
 
 	<!-- ---------------------------------------------------- -->

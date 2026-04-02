@@ -1,42 +1,49 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Novotris, the better Tetris kostenlos online spielen</title>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, user-scalable=no">
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
-<meta name="description"
-	content="Novotris: Tetris kostenlos online im Browser spielen, herausfordernde Varianten probieren, mit anderen Nutzern messen und in Rangliste eintragen.">
-<meta name="keywords"
-	content="tetris, changepassword">
-<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
-<meta name="Author" content="Armin Steidlinger Softwareentwicklung">
-<meta property="og:site_name" content="Novotris">
-<meta property="og:locale" content="de_DE">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Tetris">
-<meta property="og:description"
-	content="Novotris, ein kostenloses Tetris-Spiel mit mehr Spaß, Ranglisten und herausfordernden Levels.">
-<meta property="article:opinion" content="false">
+	<title>Novotris, the better Tetris kostenlos online spielen</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+	<meta name="description"
+		content="Novotris: Tetris kostenlos online im Browser spielen, herausfordernde Varianten probieren, mit anderen Nutzern messen und in Rangliste eintragen.">
+	<meta name="keywords"
+		content="tetris, changepassword">
+	<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
+	<meta name="Author" content="Armin Steidlinger Softwareentwicklung">
+	<meta property="og:site_name" content="Novotris">
+	<meta property="og:locale" content="de_DE">
+	<meta property="og:type" content="article">
+	<meta property="og:title" content="Tetris">
+	<meta property="og:description"
+		content="Novotris, ein kostenloses Tetris-Spiel mit mehr Spaß, Ranglisten und herausfordernden Levels.">
+	<meta property="article:opinion" content="false">
 
-<link rel="icon" type="image/x-icon" href="../icons/novotris-icon.png">
+	<link rel="icon" type="image/x-icon" href="../icons/novotris-icon.png">
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async
-	src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
-<script>
-	window.dataLayer = window.dataLayer || [];
-	function gtag() {
-		dataLayer.push(arguments);
-	}
-	gtag('js', new Date());
+	<link rel="alternate" hreflang="de" href="https://novotris.bplaced.net/de/change-password.php" />
+	<link rel="alternate" hreflang="en" href="https://novotris.bplaced.net/en/change-password.php" />
+	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/change-password.php/" />
+	<link rel="canonical" href="https://novotris.bplaced.net/de/change-password.php" />
 
-	gtag('config', 'G-9GL47VN2C7');
-</script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async
+		src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
 
-<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag('js', new Date());
 
-<?php include '../php/navi.php'; ?>
+		gtag('config', 'G-9GL47VN2C7');
+	</script>
+
+	<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
+
+	<?php include '../php/navi.php'; ?>
 
 </head>
 
@@ -49,7 +56,7 @@
 					style="flex: 80; font-size: 36px; padding-top: 40px;">Passwort
 					zurücksetzen</div>
 				<div style="flex: 20">
-					<img src="../logo bing v8.jpg" width="135" height="auto"
+					<img src="../images/logo bing v8.jpg" width="135" height="auto"
 						align="right" alt="novotris logo">
 				</div>
 			</div>
@@ -178,4 +185,5 @@
 	<!-- ---------------------------------------------------- -->
 
 </body>
+
 </html>

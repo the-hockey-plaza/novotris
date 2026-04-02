@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Novotris, the better Tetris play online free</title>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, user-scalable=no">
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
-<meta name="description"
-	content="Novotris: Play Tetris online for free in your browser, try out challenging variants, compete with other users and enter the rankings.">
-<meta name="keywords"
-	content="tetris, alternatives>
-<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
-<meta name="Author" content="Armin Steidlinger Softwareentwicklung">
+	<title>Novotris, the better Tetris play online free</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+	<meta name="description"
+		content="Novotris: Play Tetris online for free in your browser, try out challenging variants, compete with other users and enter the rankings.">
+	<meta name="keywords"
+		content="tetris, alternatives>
+<meta name=" Copyright" content="Armin Steidlinger Softwareentwicklung">
+	<meta name="Author" content="Armin Steidlinger Softwareentwicklung">
 
-<link rel="icon" type="image/x-icon" href="../icons/novotris-icon.png">
+	<link rel="icon" type="image/x-icon" href="../icons/novotris-icon.png">
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async
-	src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
-<script>
-	window.dataLayer = window.dataLayer || [];
-	function gtag() {
-		dataLayer.push(arguments);
-	}
-	gtag('js', new Date());
+	<link rel="alternate" hreflang="de" href="https://novotris.bplaced.net/de/alternatives.php" />
+	<link rel="alternate" hreflang="en" href="https://novotris.bplaced.net/en/alternatives.php" />
+	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/alternatives.php/" />
+	<link rel="canonical" href="https://novotris.bplaced.net/en/alternatives.php" />
 
-	gtag('config', 'G-9GL47VN2C7');
-</script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async
+		src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
 
-<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag('js', new Date());
 
-<?php include '../php/navi.php'; ?>
+		gtag('config', 'G-9GL47VN2C7');
+	</script>
+
+	<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
+
+	<?php include '../php/navi.php'; ?>
 
 </head>
 
@@ -44,7 +51,7 @@
 					style="flex: 80; font-size: 36px; padding-top: 40px;">Novotris
 					is not alone...</div>
 				<div style="flex: 20">
-					<img src="../logo bing v8.jpg" width="135" height="auto"
+					<img src="../images/logo bing v8.jpg" width="135" height="auto"
 						align="right" alt="novotris logo">
 				</div>
 			</div>
@@ -59,49 +66,49 @@
 
 					<ul style="line-height: 120%">
 						<li>Reissued: <br> <a
-							href="https://www.gamesbasis.com/games/classic/tetris/">gamesbasis</a></li>
+								href="https://www.gamesbasis.com/games/classic/tetris/">gamesbasis</a></li>
 						<br>
 						<li>Not only for kids: <br> <a
-							href="https://www.geo.de/geolino/spiele/13349-rtkl-onlinespiel-tetris">Tetris
+								href="https://www.geo.de/geolino/spiele/13349-rtkl-onlinespiel-tetris">Tetris
 								at Geolino</a></li>
 						<br>
 						<li>Not only for seniors: <br> <a
-							href="https://www.50plus.de/spiele/tetris.html">The
+								href="https://www.50plus.de/spiele/tetris.html">The
 								50plus-Games</a></li>
 						<br>
 						<li>Not a fairy tale: <br> <a
-							href="https://www.1001spiele.de/g/tetris">1001 Games</a></li>
+								href="https://www.1001spiele.de/g/tetris">1001 Games</a></li>
 						<br>
 						<li>At Migano in double pack: <br> <a
-							href="https://migano.de/tetris.php">Tetris</a> <a
-							href="https://migano.de/tetris_deluxe.php">Tetris Deluxe</a></li>
+								href="https://migano.de/tetris.php">Tetris</a> <a
+								href="https://migano.de/tetris_deluxe.php">Tetris Deluxe</a></li>
 						<br>
 						<li>Very popular: <br> <a
-							href="https://tetris.com/play-tetris">Play Tetris</a></li>
+								href="https://tetris.com/play-tetris">Play Tetris</a></li>
 						<br>
 						<li>More than just games: <br> <a
-							href="https://www.bernhard-gaul.de/spiele/tetris/tetris.php">Bernhard
+								href="https://www.bernhard-gaul.de/spiele/tetris/tetris.php">Bernhard
 								Gaul's website</a></li>
 						<br>
 						<li>Probably most users: <br> <a href="https://tetr.io">TETR.IO</a></li>
 						<br>
 						<li>Special Challenges: <br> <a
-							href="https://kingofstackers.com/">King of Stackers</a></li>
+								href="https://kingofstackers.com/">King of Stackers</a></li>
 						<br>
 						<li>Schedule time for commercials: <br> <a
-							href="https://spielspiele.de/tetris-spiel/">SPIELSPIELE</a></li>
+								href="https://spielspiele.de/tetris-spiel/">SPIELSPIELE</a></li>
 						<br>
 						<li>Rather not so exciting: <br> <a
-							href="https://www.spielaffe.de/Spiel/Tetris/">spielaffe</a></li>
+								href="https://www.spielaffe.de/Spiel/Tetris/">spielaffe</a></li>
 						<br>
 						<li>There are variants with pre-filled fields: <br> <a
-							href="https://de.games68.com/games.php?id=8836/">Games68</a></li>
+								href="https://de.games68.com/games.php?id=8836/">Games68</a></li>
 						<br>
 						<li>Apart from the nice 3D look, rather bland: <br> <a
-							href="https://www.silvergames.com/de/tetris/">Silver Games</a></li>
+								href="https://www.silvergames.com/de/tetris/">Silver Games</a></li>
 						<br>
 						<li>Well...<br> <a
-							href="https://www.silvergames.com/de/tetris/">t-online calls
+								href="https://www.silvergames.com/de/tetris/">t-online calls
 								it Tetra</a></li>
 						<br>
 					</ul>
@@ -209,4 +216,5 @@
 		$("body").fadeIn("slow");
 	</script>
 </body>
+
 </html>

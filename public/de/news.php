@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Novotris, the better Tetris kostenlos online spielen</title>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, user-scalable=no">
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
-<meta name="description"
-	content="Novotris: Tetris kostenlos online im Browser spielen, mit oder ohne Anmeldung, herausfordernde Varianten probieren, mit anderen Nutzern vergleichen und in Rangliste eintragen.">
-<meta name="keywords"
-	content="tetris, news">
-<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
-<meta name="Author" content="Armin Steidlinger Softwareentwicklung">
+	<title>Novotris, the better Tetris kostenlos online spielen</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+	<meta name="description"
+		content="Novotris: Tetris kostenlos online im Browser spielen, mit oder ohne Anmeldung, herausfordernde Varianten probieren, mit anderen Nutzern vergleichen und in Rangliste eintragen.">
+	<meta name="keywords"
+		content="tetris, news">
+	<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
+	<meta name="Author" content="Armin Steidlinger Softwareentwicklung">
 
-<link rel="icon" type="image/x-icon" href="../icons/novotris-icon.png">
+	<link rel="icon" type="image/x-icon" href="../icons/novotris-icon.png">
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async
-	src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
-<script>
-	window.dataLayer = window.dataLayer || [];
-	function gtag() {
-		dataLayer.push(arguments);
-	}
-	gtag('js', new Date());
+	<link rel="alternate" hreflang="de" href="https://novotris.bplaced.net/de/news.php" />
+	<link rel="alternate" hreflang="en" href="https://novotris.bplaced.net/en/news.php" />
+	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/news.php/" />
+	<link rel="canonical" href="https://novotris.bplaced.net/de/news.php" />
 
-	gtag('config', 'G-9GL47VN2C7');
-</script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async
+		src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
 
-<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag('js', new Date());
 
-<?php include '../php/navi.php'; ?>
+		gtag('config', 'G-9GL47VN2C7');
+	</script>
+
+	<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
+
+	<?php include '../php/navi.php'; ?>
 
 </head>
 
@@ -43,7 +50,7 @@
 				style="border-top-left-radius: 4px; border-top-right-radius: 4px;">
 				<div id="lblTitle" style="flex: 80">News & Facts</div>
 				<div style="flex: 20">
-					<img src="../logo bing v8.jpg" width="135" height="auto"
+					<img src="../images/logo bing v8.jpg" width="135" height="auto"
 						align="right" alt="novotris logo">
 				</div>
 			</div>
@@ -217,7 +224,7 @@
 		</div>
 
 	</div>
-	
+
 	<!-- ---------------------------------------------------- -->
 
 	<div class="standardmessage" id="div-message-dialog"
@@ -266,4 +273,5 @@
 		$("body").fadeIn("slow");
 	</script>
 </body>
+
 </html>

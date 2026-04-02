@@ -18,6 +18,7 @@
 	<link rel="alternate" hreflang="de" href="https://novotris.bplaced.net/de/play.php" />
 	<link rel="alternate" hreflang="en" href="https://novotris.bplaced.net/en/play.php" />
 	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/play.php/" />
+	<link rel="canonical" href="https://novotris.bplaced.net/en/play.php" />
 
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async
@@ -35,7 +36,7 @@
 
 	<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
 
-	<style>
+	<!-- 	<style>
 		body {
 			opacity: 0;
 			transition: opacity 0.6s ease;
@@ -51,7 +52,7 @@
 		#footer-version {
 			cursor: pointer;
 		}
-	</style>
+	</style> -->
 
 	<?php include '../php/navi.php'; ?>
 
@@ -66,7 +67,7 @@
 					<a class="animatedTitle" id="animatedTitle">Spielen</a>
 				</div>
 				<div style="flex: 20; display: flex; align-items: center; justify-content: flex-end;">
-					<img src="../logo bing v8.jpg" width="135" height="auto" alt="Novotris logo">
+					<img src="../images/logo bing v8.jpg" width="135" height="auto" alt="Novotris logo">
 				</div>
 			</div>
 
@@ -181,6 +182,7 @@
 
 	<!-- ---------------------------------------------------- -->
 
+	<script src="https://code.jquery.com/jquery-latest.js"></script>
 	<script
 		src="../js/global.js?v=<?php echo filemtime('../js/global.js'); ?>"></script>
 	<script src="../js/user.js?v=<?php echo filemtime('../js/user.js'); ?>"></script>
@@ -200,7 +202,7 @@
 		src="../js/dialog.js?v=<?php echo filemtime('../js/dialog.js'); ?>"></script>
 
 	<script>
-		document.addEventListener('DOMContentLoaded', onContentLoaded, false);
+		//	document.addEventListener('DOMContentLoaded', onContentLoaded, false);
 		document.addEventListener('contextmenu', event => event.preventDefault());
 		var glUser = new User();
 		mainInit();
@@ -218,7 +220,7 @@
 			classDialog.showLevelDialog();
 		}
 
-		document.body.classList.add('loaded');
+		$("body").fadeIn("slow");
 	</script>
 </body>
 
