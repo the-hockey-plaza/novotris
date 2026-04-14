@@ -7,16 +7,19 @@ class User {
 
 	}
 
-	init(forceCreate) {
+	async init(forceCreate) {
 		let storedUserUnparsed = window.localStorage.getItem(glUserKey);
 		let storedUser = JSON.parse(storedUserUnparsed);
 
-		if (storedUser === null) {
+		// hotfix 2026-04-12
+		// if (storedUser === null) {
+		if (storedUser === null || typeof storedUser.id === 'undefined' || storedUser.id === 'undefined' || storedUser.id === null) {
+
 			this.name = "";
 			if (forceCreate) {
 				this.id = -1; // enforces creation of a new user
 				this.gast_id = null;
-				this.#loadFromDb(forceCreate);
+				await this.loadFromDb(forceCreate);
 			}
 		}
 		else {
@@ -27,7 +30,7 @@ class User {
 			this.maxlevel = storedUser.maxlevel;
 			this.highscores = storedUser.highscores;
 			this.language = storedUser.language;
-			this.#loadFromDb(false);
+			await this.loadFromDb(false);
 
 			if (typeof this.language === 'undefined')
 				this.language = "de";
@@ -47,7 +50,7 @@ class User {
 		this.uuid = create_UUID();
 		//	this.id = 0;
 		window.localStorage.setItem(glUserUuidKey, this.uuid);
-		this.#loadFromDb(false);
+		this.loadFromDb(false);
 	}
 
 	getId() {
@@ -98,6 +101,21 @@ class User {
 			classDialog.showChangeUserNameDialog("invalid");
 
 		this.tmpName = null;
+	}
+
+	saveUserSettingsToDb(userId, mode) {
+		jQuery.ajax({
+			type: "POST",
+			url: '../php/db.php',
+			data: { db_name: glDbName, functionname: 'saveUserSettingsToDb', id: this.id, mode: this.mode },
+			success: function (result) {
+				glUser.saveUserNameToDbSuccess(result);
+			}
+		});
+	}
+
+	saveUserSettingsToDbSuccess(result) {
+		console.log("saveUserSettingsToDbSuccess, result = " + result);
 	}
 
 	setHighscore(level, score) {
@@ -158,7 +176,7 @@ class User {
 		return this.mode;
 	}
 
-	#loadFromDb(forceCreate) {
+	async loadFromDb(forceCreate) {
 		var mobile;
 
 		if (glIsMobile)
@@ -169,17 +187,23 @@ class User {
 		if (typeof this.id === 'undefined')
 			return;
 
-		jQuery.ajax({
-			type: "POST",
-			url: '../php/db.php',
-			data: { db_name: glDbName, functionname: 'getUserFromDb', id: this.id, mobile: mobile },
-			success: function (result) {
-				glUser.loadFromDbSuccess(result, forceCreate);
-			},
-			error: function (xhr, status, error) {
-				console.error('loadFromDb error:', status, error, xhr.responseText);
+		try {
+			const response = await fetch('../php/db.php', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ db_name: glDbName, functionname: 'getUserFromDb', id: this.id, mobile: mobile })
+			});
+
+			if (!response.ok) {
+				throw new Error('HTTP-Fehler: ' + response.status);
 			}
-		});
+
+			const result = await response.json();
+			glUser.loadFromDbSuccess(result, forceCreate);
+		}
+		catch (error) {
+			console.error('loadFromDb error:', error);
+		}
 	}
 
 	sendSysLoadMail(mailContent) {
@@ -210,6 +234,7 @@ class User {
 		this.highscores = userDataDb.user_scores;
 		this.level = 1;
 		this.language = userDataDb.user_language;
+		this.mode = userDataDb.user_mode;
 
 		let userDataLocal = JSON.stringify(this);
 		window.localStorage.setItem(glUserKey, userDataLocal);
@@ -499,7 +524,7 @@ class User {
 		this.id = this.gast_id;
 		this.gast_id = null;
 		this.tmpName = "logout";
-		this.#loadFromDb(false);
+		this.loadFromDb(false);
 	}
 
 	loginLogout(source) {

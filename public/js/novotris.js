@@ -905,8 +905,9 @@ function novInit() {
 
 	// Initialize mode settings
 	glDropMode.disabled = false;
-	glDropMode.selectedIndex = 0;
-	glUser.setMode(1);
+	//glDropMode.selectedIndex = 0;
+	glDropMode.selectedIndex = glUser.getMode() - 1;
+	//glUser.setMode(1);
 
 	glScore = 0;
 	playSetTitle(getText("play_title_init"), titleSizeMedium);

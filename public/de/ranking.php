@@ -17,7 +17,7 @@
 
 	<link rel="alternate" hreflang="de" href="https://novotris.bplaced.net/de/ranking.php" />
 	<link rel="alternate" hreflang="en" href="https://novotris.bplaced.net/en/ranking.php" />
-	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/ranking.php/" />
+	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/ranking.php" />
 	<link rel="canonical" href="https://novotris.bplaced.net/de/ranking.php" />
 
 	<!-- Global site tag (gtag.js) - Google Analytics -->
@@ -243,15 +243,16 @@
 	<script>
 		var glUser = new User();
 		mainInit();
-		glUser.init(false);
+		(async () => {
+			await glUser.init(false);
 
-		classDialog.initMessages();
-		classDialog.init();
+			classDialog.initMessages();
+			classDialog.init();
 
-
-		classRanking.init();
-		classRanking.show();
-		$("body").fadeIn("slow");
+			classRanking.init();
+			classRanking.show();
+			$("body").fadeIn("slow");
+		})();
 	</script>
 
 </body>

@@ -17,7 +17,7 @@
 
 	<link rel="alternate" hreflang="de" href="https://novotris.bplaced.net/de/help.php" />
 	<link rel="alternate" hreflang="en" href="https://novotris.bplaced.net/en/help.php" />
-	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/help.php/" />
+	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/help.php" />
 	<link rel="canonical" href="https://novotris.bplaced.net/en/help.php" />
 
 	<!-- Global site tag (gtag.js) - Google Analytics -->

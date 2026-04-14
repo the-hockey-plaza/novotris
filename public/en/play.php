@@ -17,7 +17,7 @@
 
 	<link rel="alternate" hreflang="de" href="https://novotris.bplaced.net/de/play.php" />
 	<link rel="alternate" hreflang="en" href="https://novotris.bplaced.net/en/play.php" />
-	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/play.php/" />
+	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/play.php" />
 	<link rel="canonical" href="https://novotris.bplaced.net/en/play.php" />
 
 	<!-- Global site tag (gtag.js) - Google Analytics -->
@@ -206,21 +206,23 @@
 		document.addEventListener('contextmenu', event => event.preventDefault());
 		var glUser = new User();
 		mainInit();
-		glUser.init(true);
+		(async () => {
+			await glUser.init(true);
 
-		classDialog.initMessages();
-		classDialog.init();
+			classDialog.initMessages();
+			classDialog.init();
 
-		initLoginRendering();
-		initStaticRendering();
+			initLoginRendering();
+			initStaticRendering();
 
-		if (glUser.getId() > 0) {
-			novInit();
-			choose_level();
-			classDialog.showLevelDialog();
-		}
+			if (glUser.getId() > 0) {
+				novInit();
+				choose_level();
+				classDialog.showLevelDialog();
+			}
 
-		$("body").fadeIn("slow");
+			$("body").fadeIn("slow");
+		})();
 	</script>
 </body>
 
