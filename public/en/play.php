@@ -218,7 +218,9 @@
 			if (glUser.getId() > 0) {
 				novInit();
 				choose_level();
-				classDialog.showLevelDialog();
+				if (shouldShowPlayEntryDialog()) {
+					classDialog.showLevelDialog();
+				}
 			}
 
 			$("body").fadeIn("slow");

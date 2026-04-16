@@ -488,9 +488,8 @@ function insertBrickToMatrix() {
 				glCurrentInterval = glCurrentInterval / 1.1;
 				clearInterval(glIntervalId);
 				glIntervalId = setInterval(brickDown, glCurrentInterval);
+				showSpeed(true);
 			}
-
-			showSpeed();
 
 			// Check this row again as it was full
 			j++;
@@ -498,9 +497,15 @@ function insertBrickToMatrix() {
 	}
 }
 
-
-function showSpeed() {
+function showSpeed(increase) {
 	glTxtSpeed.innerHTML = (1000 / glCurrentInterval).toFixed(2);
+	if (increase) {
+		glTxtSpeed.style.backgroundColor = "yellow";
+
+		setTimeout(() => {
+			glTxtSpeed.style.backgroundColor = "var(--light-text-color)";
+		}, 5000);
+	}
 }
 
 /*
@@ -539,9 +544,9 @@ function removeFullRow(j, isFull) {
 			glCurrentInterval = 1000 / speed;
 			clearInterval(glIntervalId);
 			glIntervalId = setInterval(brickDown, glCurrentInterval);
+			showSpeed(true);
 		}
 
-		showSpeed();
 		drawMatrix();
 	}
 
@@ -846,10 +851,10 @@ async function stopGameOnDb(score) {
  * onLoad
  */
 function onContentLoaded() {
-	console.log("onContentLoaded");
 
 	var url = window.location.href;
 	url = url.substring(url.lastIndexOf('/') + 1);
+	console.log("onContentLoaded", url);
 	mainLog("onContentLoaded", url);
 
 	var isMobile;

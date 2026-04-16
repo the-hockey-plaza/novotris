@@ -29,6 +29,43 @@ const glLevelNeedsScoreModeSpeed = 1500;
 
 const phpDir = "../php/";
 
+function shouldShowPlayEntryDialog() {
+	const currentPath = window.location.pathname.toLowerCase();
+	const sessionKey = "novotris.lastPath";
+
+	let lastPath = "";
+	try {
+		lastPath = (sessionStorage.getItem(sessionKey) || "").toLowerCase();
+		sessionStorage.setItem(sessionKey, currentPath);
+	} catch (error) {
+		// Ignore storage errors; referrer-based logic still works.
+	}
+
+	if (!document.referrer) {
+		if (lastPath && lastPath !== currentPath) {
+			return false;
+		}
+
+		return true;
+	}
+
+	try {
+		const currentUrl = new URL(window.location.href);
+		const referrerUrl = new URL(document.referrer);
+
+		if (currentUrl.origin !== referrerUrl.origin) {
+			return true;
+		}
+
+		const path = referrerUrl.pathname.toLowerCase();
+		const isNovotrisLangPage = /\/(de|en)\//.test(path);
+
+		return !isNovotrisLangPage;
+	} catch (error) {
+		return true;
+	}
+}
+
 /* ----------------------------------------------------------------------------
  * color management
  * ----------------------------------------------------------------------------
@@ -93,9 +130,9 @@ function getText(key, p1, p2, p3, p4) {
 		case 'improved_ranking':
 			switch (lang) {
 				case "de":
-					return "Au&szlig;erdem hast du dich in der Rangliste auf Platz <b>" + p1 + "</b> verbessert!";
+					return "Au&szlig;erdem hast du dich in der 12-Monats-Rangliste auf Platz <b>" + p1 + "</b> verbessert!";
 				case "en":
-					return "You also moved up in the rankings to <b>" + p1 + "</b>!";
+					return "You also moved up in the 12 months rankings to <b>" + p1 + "</b>!";
 			}
 
 		case 'changed_password':
@@ -304,7 +341,7 @@ function getText(key, p1, p2, p3, p4) {
 					return "First game";
 			}
 
-	case 'last_game':
+		case 'last_game':
 			switch (lang) {
 				case "de":
 					return "Letztes Spiel";

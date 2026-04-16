@@ -89,15 +89,15 @@ include '../php/page-head.php';
 					World</a>
 			</div>
 			<div class="row-footer-box">
-				<a class="footer-label" onmouseover="this.style.cursor='pointer'"
-					href="<?= $nov_url_play ?>" style="color: var(--play-color);">Play</a>
+				<a class="footer-label"
+					href="<?= $nov_url_play ?>" style="color: var(--play-color); cursor: pointer;">Play</a>
 			</div>
 			<div class="row-footer-box">
-				<a class="footer-label" onmouseover="this.style.cursor='pointer'"
+				<a class="footer-label" style="cursor: pointer;"
 					href="<?= $nov_url_ranking ?>">Rankings</a>
 			</div>
 			<div class="row-footer-box">
-				<a class="footer-label" onmouseover="this.style.cursor='pointer'"
+				<a class="footer-label" style="cursor: pointer;"
 					href="<?= $nov_url_help ?>">Help</a>
 			</div>
 		</div>
@@ -106,17 +106,17 @@ include '../php/page-head.php';
 			style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
 			<div class="row-footer-box">
 				<a id="footer-user" class="footer-label"
-					onmouseover="this.style.cursor='pointer'"
+					style="cursor: pointer;"
 					onclick="showUserInfoDialog();"></a>
 			</div>
 			<div class="row-footer-box">
 				<a id="footer-login" class="footer-label"
 					onclick="glUser.loginLogout('index.php')"
-					onmouseover="this.style.cursor='pointer'"></a>
+					style="cursor: pointer;"></a>
 			</div>
 			<div class="row-footer-box">
 				<a id="footer-user3" class="footer-label"
-					onmouseover="this.style.cursor='pointer'"
+					style="cursor: pointer;"
 					onclick="showNovotrisInfoDialog();">Version</a>
 			</div>
 			<div class="row-footer-box" style="margin-left: 0px;">
