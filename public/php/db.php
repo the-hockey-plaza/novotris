@@ -152,7 +152,7 @@ function readRankingPosition($level, $mobile, $user_id, $mode)
   $sql = $sql . " from nov_user as u inner join game as g on g.user_id = u.id";
   $sql = $sql . " inner join nov_level on g.level = nov_level.level";
   $sql = $sql . " where g.score > 0  and g.score = (select max(g1.score) from game as g1";
-  $sql = $sql . " where g1.user_id = u.id AND g1.level = nov_level.level)";
+  $sql = $sql . " where g1.user_id = u.id AND g1.level = nov_level.level and g1.beginn > NOW() - INTERVAL 12 MONTH and g1.nov_mode = " . $mode . ")";
   $sql = $sql . " AND u.mobile = '" . $mobile . "'";
   $sql = $sql . " and nov_level.level = " . $level;
   $sql = $sql . " and g.nov_mode = " . $mode;
@@ -198,13 +198,14 @@ function createGuestUser($mobile)
 function getUserFromDb($id, $mobile)
 {
   global $pdo;
-  $sql = "SELECT id, name, credits, level, language FROM nov_user WHERE id = '" . $id . "'";
+  $sql = "SELECT id, name, credits, level, language, mode FROM nov_user WHERE id = '" . $id . "'";
   $user_id = null;
   $user_name = null;
   $user_scores = array();
   $user_credits = null;
   $user_level = null;
   $user_language = null;
+  $user_mode = null;
 
   foreach ($pdo->query($sql) as $row) {
     $user_id = $row['id'];
@@ -212,22 +213,27 @@ function getUserFromDb($id, $mobile)
     $user_credits = $row['credits'];
     $user_level = $row['level'];
     $user_language = $row['language'];
+    $user_mode = $row['mode'];
+
     break;
   }
 
   if ($user_id == null) {
     $user_id = createGuestUser($mobile);
 
-    $sql = "SELECT id, name, credits, level, language FROM nov_user WHERE id = '" . $user_id . "'";
+    $sql = "SELECT id, name, credits, level, language, mode FROM nov_user WHERE id = '" . $user_id . "'";
     foreach ($pdo->query($sql) as $row) {
       $user_id = $row['id'];
       $user_name = $row['name'];
       $user_credits = $row['credits'];
       $user_level = $row['level'];
       $user_language = $row['language'];
+      $user_mode = $row['mode'];
       break;
     }
   }
+
+  dbLog("getUserFromDb, user_mode = " . $user_mode);
 
   $retValue = new stdClass();
   $retValue->user_id = $user_id;
@@ -237,7 +243,7 @@ function getUserFromDb($id, $mobile)
   $retValue->user_credits = $user_credits;
   $retValue->user_level = $user_level;
   $retValue->user_language = $user_language;
-
+  $retValue->user_mode = $user_mode;
 
   /* TODO: anzahl levels dynamisch */
   /* TODO: anzahl modes dynamisch */
@@ -454,6 +460,20 @@ function saveUserNameToDb($id, $name)
 
   // update user name:
   $sql = "UPDATE nov_user set name = '" . $name . "' WHERE id = " . $id;
+  $pdo->query($sql);
+  echo "Y";
+}
+
+// -----------------------------------------------------------------------------
+
+function saveUserSettingsToDb($id, $mode)
+{
+  global $pdo;
+
+  dbLog('saveUserSettingsToDb, id = ' . $id . ', mode = ' . $mode);
+
+  // update current playing mode:
+  $sql = "UPDATE nov_user set mode = '" . $mode . "' WHERE id = " . $id;
   $pdo->query($sql);
   echo "Y";
 }
@@ -683,17 +703,22 @@ switch ($functionname) {
 
   // getestet:
   case 'readRankingPosition':
-    readRankingPosition($_POST['level'], $_POST['mobile'], $_POST['user_id'], $_POST['mode']);
+    //readRankingPosition($_POST['level'], $_POST['mobile'], $_POST['user_id'], $_POST['mode']);
+    readRankingPosition($input['level'], $input['mobile'], $input['user_id'], $input['mode']);
     break;
 
   // getestet:
   case 'getUserFromDb':
-    getUserFromDb($_POST['id'], $_POST['mobile']);
+    getUserFromDb($input['id'] ?? $_POST['id'], $input['mobile'] ?? $_POST['mobile']);
     break;
 
   // getestet:
   case 'saveUserNameToDb':
     saveUserNameToDb($_POST['id'], $_POST['name']);
+    break;
+
+  case 'saveUserSettingsToDb':
+    saveUserSettingsToDb($input['id'], $input['mode']);
     break;
 
   // getestet:

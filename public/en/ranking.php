@@ -17,7 +17,7 @@
 
 	<link rel="alternate" hreflang="de" href="https://novotris.bplaced.net/de/ranking.php" />
 	<link rel="alternate" hreflang="en" href="https://novotris.bplaced.net/en/ranking.php" />
-	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/ranking.php/" />
+	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/ranking.php" />
 	<link rel="canonical" href="https://novotris.bplaced.net/en/ranking.php" />
 
 	<!-- Global site tag (gtag.js) - Google Analytics -->
@@ -159,14 +159,14 @@
 						World</a>
 				</div>
 				<div class="row-footer-box">
-					<a class="footer-label" onmouseover="this.style.cursor='pointer'"
-						href="<?= $nov_url_play ?>" style="color: var(--play-color);">Play</a>
+					<a class="footer-label"
+						href="<?= $nov_url_play ?>" style="color: var(--play-color); cursor: pointer;">Play</a>
 				</div>
 				<div class="row-footer-box">
 					<a class="footer-label-only">Rankings</a>
 				</div>
 				<div class="row-footer-box">
-					<a class="footer-label" onmouseover="this.style.cursor='pointer'"
+					<a class="footer-label" style="cursor: pointer;"
 						href="<?= $nov_url_help ?>">Help</a>
 				</div>
 			</div>
@@ -175,16 +175,16 @@
 				style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
 				<div class="row-footer-box">
 					<a id="footer-user" class="footer-label"
-						onmouseover="this.style.cursor='pointer'" onclick="showUserInfoDialog();"></a>
+						style="cursor: pointer;" onclick="showUserInfoDialog();"></a>
 				</div>
 				<div class="row-footer-box">
 					<a id="footer-login" class="footer-label"
 						onclick="glUser.loginLogout('index.php')"
-						onmouseover="this.style.cursor='pointer'"></a>
+						style="cursor: pointer;"></a>
 				</div>
 				<div class="row-footer-box">
 					<a id="footer-version" class="footer-label"
-						onmouseover="this.style.cursor='pointer'"
+						style="cursor: pointer;"
 						onclick="showNovotrisInfoDialog();">Version</a>
 				</div>
 				<div class="row-footer-box" style="margin-left: 0px;">
@@ -246,14 +246,16 @@
 	<script>
 		var glUser = new User();
 		mainInit();
-		glUser.init(false);
+		(async () => {
+			await glUser.init(false);
 
-		classDialog.initMessages();
-		classDialog.init();
+			classDialog.initMessages();
+			classDialog.init();
 
-		classRanking.init();
-		classRanking.show();
-		$("body").fadeIn("slow");
+			classRanking.init();
+			classRanking.show();
+			$("body").fadeIn("slow");
+		})();
 	</script>
 
 </body>

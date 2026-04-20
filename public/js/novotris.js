@@ -422,8 +422,10 @@ function stone_drop() {
 
 function calculateScore() {
 	let points;
+	let mode = glUser.getMode();
+	// if (glUser.getMode() === glModeSpeed) {
 
-	if (glUser.getMode() === glModeSpeed) {
+	if (mode === glModeSpeed) {
 		const speed = 1000 / glCurrentInterval;
 		const timeDiff = (Date.now() - glCurrentBrick.startTime) / 1000; // seconds
 		const factor = Math.sqrt((glCurrentBrick.y / timeDiff) / speed);
@@ -488,9 +490,8 @@ function insertBrickToMatrix() {
 				glCurrentInterval = glCurrentInterval / 1.1;
 				clearInterval(glIntervalId);
 				glIntervalId = setInterval(brickDown, glCurrentInterval);
+				showSpeed(true);
 			}
-
-			showSpeed();
 
 			// Check this row again as it was full
 			j++;
@@ -498,9 +499,15 @@ function insertBrickToMatrix() {
 	}
 }
 
-
-function showSpeed() {
+function showSpeed(increase) {
 	glTxtSpeed.innerHTML = (1000 / glCurrentInterval).toFixed(2);
+	if (increase) {
+		glTxtSpeed.style.backgroundColor = "yellow";
+
+		setTimeout(() => {
+			glTxtSpeed.style.backgroundColor = "var(--light-text-color)";
+		}, 5000);
+	}
 }
 
 /*
@@ -539,9 +546,9 @@ function removeFullRow(j, isFull) {
 			glCurrentInterval = 1000 / speed;
 			clearInterval(glIntervalId);
 			glIntervalId = setInterval(brickDown, glCurrentInterval);
+			showSpeed(true);
 		}
 
-		showSpeed();
 		drawMatrix();
 	}
 
@@ -846,10 +853,10 @@ async function stopGameOnDb(score) {
  * onLoad
  */
 function onContentLoaded() {
-	console.log("onContentLoaded");
 
 	var url = window.location.href;
 	url = url.substring(url.lastIndexOf('/') + 1);
+	console.log("onContentLoaded", url);
 	mainLog("onContentLoaded", url);
 
 	var isMobile;
@@ -905,8 +912,9 @@ function novInit() {
 
 	// Initialize mode settings
 	glDropMode.disabled = false;
-	glDropMode.selectedIndex = 0;
-	glUser.setMode(1);
+	//glDropMode.selectedIndex = 0;
+	glDropMode.selectedIndex = glUser.getMode() - 1;
+	//glUser.setMode(1);
 
 	glScore = 0;
 	playSetTitle(getText("play_title_init"), titleSizeMedium);

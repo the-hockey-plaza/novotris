@@ -7,16 +7,58 @@ class User {
 
 	}
 
-	init(forceCreate) {
-		let storedUserUnparsed = window.localStorage.getItem(glUserKey);
-		let storedUser = JSON.parse(storedUserUnparsed);
+	initDefaultUserData() {
+		this.id = -1;
+		this.gast_id = null;
+		this.name = "";
+		this.level = 1;
+		this.maxlevel = 1;
+		this.mode = glModeClassic;
+		this.language = "de";
+		this.highscores = [
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0]
+		];
+	}
 
-		if (storedUser === null) {
+	readLocalStorage(key) {
+		try {
+			return window.localStorage.getItem(key);
+		} catch (error) {
+			console.warn("localStorage read blocked for key:", key, error);
+			return null;
+		}
+	}
+
+	writeLocalStorage(key, value) {
+		try {
+			window.localStorage.setItem(key, value);
+		} catch (error) {
+			console.warn("localStorage write blocked for key:", key, error);
+		}
+	}
+
+	async init(forceCreate) {
+		this.initDefaultUserData();
+
+		let storedUserUnparsed = this.readLocalStorage(glUserKey);
+		let storedUser = null;
+
+		try {
+			storedUser = JSON.parse(storedUserUnparsed);
+		} catch (error) {
+			storedUser = null;
+		}
+
+		// hotfix 2026-04-12
+		// if (storedUser === null) {
+		if (storedUser === null || typeof storedUser.id === 'undefined' || storedUser.id === 'undefined' || storedUser.id === null) {
+
 			this.name = "";
 			if (forceCreate) {
 				this.id = -1; // enforces creation of a new user
 				this.gast_id = null;
-				this.#loadFromDb(forceCreate);
+				await this.loadFromDb(forceCreate);
 			}
 		}
 		else {
@@ -27,7 +69,7 @@ class User {
 			this.maxlevel = storedUser.maxlevel;
 			this.highscores = storedUser.highscores;
 			this.language = storedUser.language;
-			this.#loadFromDb(false);
+			await this.loadFromDb(false);
 
 			if (typeof this.language === 'undefined')
 				this.language = "de";
@@ -46,8 +88,8 @@ class User {
 
 		this.uuid = create_UUID();
 		//	this.id = 0;
-		window.localStorage.setItem(glUserUuidKey, this.uuid);
-		this.#loadFromDb(false);
+		this.writeLocalStorage(glUserUuidKey, this.uuid);
+		this.loadFromDb(false);
 	}
 
 	getId() {
@@ -80,7 +122,7 @@ class User {
 			type: "POST",
 			url: '../php/db.php',
 			data: { db_name: glDbName, functionname: 'saveUserNameToDb', id: this.id, name: this.tmpName },
-			success: function(result) {
+			success: function (result) {
 				glUser.saveUserNameToDbSuccess(result);
 			}
 		});
@@ -100,12 +142,67 @@ class User {
 		this.tmpName = null;
 	}
 
+	/* 	saveUserSettingsToDb(userId, mode) {
+			jQuery.ajax({
+				type: "POST",
+				url: '../php/db.php',
+				data: { db_name: glDbName, functionname: 'saveUserSettingsToDb', id: this.id, mode: this.mode },
+				success: function (result) {
+					glUser.saveUserNameToDbSuccess(result);
+				}
+			});
+		}
+	
+		saveUserSettingsToDbSuccess(result) {
+			console.log("saveUserSettingsToDbSuccess, result = " + result);
+		} */
+
+	async saveUserSettingsToDb(userId, mode) {
+		const response = await fetch('../php/db.php', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ db_name: glDbName, functionname: 'saveUserSettingsToDb', id: this.id, mode: this.mode })
+		});
+
+		if (!response.ok) {
+			throw new Error('HTTP-Fehler: ${response.status}');
+		}
+
+		const result = await response.text();
+		console.log("saveUserSettingsToDbSuccess, result = " + result);
+	}
+
+	/*
+		saveUserSettingsToDb(userId, mode) {
+		jQuery.ajax({
+			type: "POST",
+			url: '../php/db.php',
+			data: { db_name: glDbName, functionname: 'saveUserSettingsToDb', id: this.id, mode: this.mode },
+			success: function (result) {
+				glUser.saveUserNameToDbSuccess(result);
+			}
+		});
+	}
+
+	saveUserSettingsToDbSuccess(result) {
+		console.log("saveUserSettingsToDbSuccess, result = " + result);
+	}
+	
+	*/
+
 	setHighscore(level, score) {
 		this.highscores[glUser.getMode() - 1][level - 1] = score;
 	}
 
 	getHighscore(level) {
-		return this.highscores[glUser.getMode() - 1][level - 1];
+		if (!Array.isArray(this.highscores) || !Array.isArray(this.highscores[glUser.getMode() - 1]))
+			return 0;
+
+		let value = this.highscores[glUser.getMode() - 1][level - 1];
+		if (typeof value === 'undefined' || value === null)
+			return 0;
+
+		return value;
 	}
 
 	getModeHighscore(mode, level) {
@@ -115,7 +212,7 @@ class User {
 	setLevel(level) {
 		this.level = level;
 		let userDataLocal = JSON.stringify(this);
-		window.localStorage.setItem(glUserKey, userDataLocal);
+		this.writeLocalStorage(glUserKey, userDataLocal);
 
 		jQuery.ajax({
 			type: "POST",
@@ -147,18 +244,26 @@ class User {
 	}
 
 	setMode(mode) {
-		this.mode = mode;
+		const modeNumber = Number(mode);
+		if (Number.isFinite(modeNumber) && modeNumber > 0) {
+			this.mode = modeNumber;
+		} else {
+			this.mode = glModeClassic;
+		}
 	}
 
 	getMode() {
-		let mode = this.mode;
-		if (typeof mode === 'undefined' || mode == 'undefined' || mode === null)
+		const modeNumber = Number(this.mode);
+		if (!Number.isFinite(modeNumber) || modeNumber <= 0) {
 			this.mode = glModeClassic;
+		} else {
+			this.mode = modeNumber;
+		}
 
 		return this.mode;
 	}
 
-	#loadFromDb(forceCreate) {
+	async loadFromDb(forceCreate) {
 		var mobile;
 
 		if (glIsMobile)
@@ -169,14 +274,23 @@ class User {
 		if (typeof this.id === 'undefined')
 			return;
 
-		jQuery.ajax({
-			type: "POST",
-			url: '../php/db.php',
-			data: { db_name: glDbName, functionname: 'getUserFromDb', id: this.id, mobile: mobile },
-			success: function(result) {
-				glUser.loadFromDbSuccess(result, forceCreate);
+		try {
+			const response = await fetch('../php/db.php', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ db_name: glDbName, functionname: 'getUserFromDb', id: this.id, mobile: mobile })
+			});
+
+			if (!response.ok) {
+				throw new Error('HTTP-Fehler: ' + response.status);
 			}
-		});
+
+			const result = await response.json();
+			glUser.loadFromDbSuccess(result, forceCreate);
+		}
+		catch (error) {
+			console.error('loadFromDb error:', error);
+		}
 	}
 
 	sendSysLoadMail(mailContent) {
@@ -186,7 +300,7 @@ class User {
 			data: {
 				functionname: 'sendSysLoadMail', mail_content: mailContent
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.sendSysLoadMailSuccess(result);
 			}
 		});
@@ -207,9 +321,10 @@ class User {
 		this.highscores = userDataDb.user_scores;
 		this.level = 1;
 		this.language = userDataDb.user_language;
+		this.setMode(userDataDb.user_mode);
 
 		let userDataLocal = JSON.stringify(this);
-		window.localStorage.setItem(glUserKey, userDataLocal);
+		this.writeLocalStorage(glUserKey, userDataLocal);
 
 		this.calculateMaxLevel();
 
@@ -237,7 +352,7 @@ class User {
 			data: {
 				functionname: 'sendActivationMail', to: to, activation_code: activationCode, user_name: this.tmpName, user_language: language
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.sendActivationMailSuccess(result);
 			}
 		});
@@ -254,7 +369,7 @@ class User {
 			data: {
 				functionname: 'sendResetPasswordMail', to: to, activation_code: activationCode, user_name: userName
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.sendResetPasswordMailSuccess(result);
 			}
 		});
@@ -287,7 +402,7 @@ class User {
 				user_email: glInputRegistrationEmail.value, user_password: glInputRegistrationPassword.value, mobile: mobile,
 				activation_code: activationCode, old_user_id: oldUserId
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.registerSuccess(result, glInputRegistrationEmail.value, activationCode);
 			}
 		});
@@ -325,7 +440,7 @@ class User {
 				db_name: glDbName, functionname: 'resetPassword', user_name: glInputRegistrationUserName.value,
 				user_email: glInputRegistrationEmail.value, mobile: mobile, activation_code: activationCode
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.resetPasswordSuccess(result, glInputRegistrationEmail.value, glInputRegistrationUserName.value, activationCode);
 			}
 		});
@@ -345,28 +460,6 @@ class User {
 		}
 	}
 
-	//	updatePasswort() {
-	//		console.log ("updatePasswort");
-	//		let errorMessage = classDialog.validatePassword();
-	//		let urlParams = new URLSearchParams(window.location.search);
-	//		let activationCode = urlParams.get('changepassword');
-	//
-	//		if (errorMessage != null) {
-	//			document.getElementById('lbl_registration_error_message').innerHTML = errorMessage;
-	//			return;
-	//		}
-	//
-	//		jQuery.ajax({
-	//			type: "POST",
-	//			url: '../php/db.php',
-	//			data: {
-	//				db_name: glDbName, functionname: 'updatePassword', activation_code: activationCode, user_password: glInputRegistrationPassword.value
-	//			},
-	//			success: function(result) {
-	//				glUser.updatePasswordSuccess(result);
-	//			}
-	//		});
-	//	}
 
 	async updatePasswort() {
 		console.log("updatePasswort");
@@ -425,7 +518,7 @@ class User {
 			data: {
 				db_name: glDbName, functionname: 'getChangePasswordUser', activation_code: activationCode
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.getChangePasswordUserSuccess(result, activationCode);
 			}
 		});
@@ -457,7 +550,7 @@ class User {
 				db_name: glDbName, functionname: 'login', user_name: glInputLoginUserName.value,
 				password: glInputLoginPassword.value, mobile: mobile
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.loginSuccess(result);
 			}
 		});
@@ -485,7 +578,7 @@ class User {
 
 
 		let userDataLocal = JSON.stringify(this);
-		window.localStorage.setItem(glUserKey, userDataLocal);
+		this.writeLocalStorage(glUserKey, userDataLocal);
 
 
 		mainUpdateFooter();
@@ -496,7 +589,7 @@ class User {
 		this.id = this.gast_id;
 		this.gast_id = null;
 		this.tmpName = "logout";
-		this.#loadFromDb(false);
+		this.loadFromDb(false);
 	}
 
 	loginLogout(source) {
@@ -504,7 +597,7 @@ class User {
 			glUser.logout();
 		else {
 			let tmp = '{"source": "' + source + '"}';
-			window.localStorage.setItem(glGeneralKey, tmp);
+			this.writeLocalStorage(glGeneralKey, tmp);
 			if (source == "play.php")
 				do_stop();
 			window.location.href = 'login.html';
@@ -537,7 +630,7 @@ class User {
 			data: {
 				db_name: glDbName, functionname: 'activate', activation_code: activationCode
 			},
-			success: function(result) {
+			success: function (result) {
 				glUser.activateSuccess(result);
 			}
 		});
@@ -569,7 +662,7 @@ class User {
 		if (oldLang != lang) {
 			this.language = lang;
 			let userDataLocal = JSON.stringify(this);
-			window.localStorage.setItem(glUserKey, userDataLocal);
+			this.writeLocalStorage(glUserKey, userDataLocal);
 
 			const response = await fetch('../php/db.php', {
 				method: 'POST',
@@ -591,24 +684,24 @@ class User {
 				window.location.href = url;
 			}
 
-//			jQuery.ajax({
-//				type: "POST",
-//				url: '../php/db.php',
-//				data: { db_name: glDbName, functionname: 'saveLanguageToDb', user_id: this.id, language: this.language },
-//				success: function(result) {
-//					glUser.setLanguageSuccess(result, oldLang, lang);
-//				}
-//			});
+			//			jQuery.ajax({
+			//				type: "POST",
+			//				url: '../php/db.php',
+			//				data: { db_name: glDbName, functionname: 'saveLanguageToDb', user_id: this.id, language: this.language },
+			//				success: function(result) {
+			//					glUser.setLanguageSuccess(result, oldLang, lang);
+			//				}
+			//			});
 
 		}
 	}
 
-//	setLanguageSuccess(result, oldLang, newLang) {
-//		let url = window.location.href;
-//
-//		url = url.replace("/" + oldLang + "/", "/" + newLang + "/");
-//		window.location.href = url;
-//	}
+	//	setLanguageSuccess(result, oldLang, newLang) {
+	//		let url = window.location.href;
+	//
+	//		url = url.replace("/" + oldLang + "/", "/" + newLang + "/");
+	//		window.location.href = url;
+	//	}
 
 	chooseLanguage() {
 		let drpLanguage = document.getElementById('drp-language');

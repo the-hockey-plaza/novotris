@@ -21,7 +21,7 @@ var glFormLogin;
 
 var classDialog = {
 
-	showDialog: function(modus, errorMessage) {
+	showDialog: function (modus, errorMessage) {
 		var innerText = document.querySelector("[name='bezahltext']");
 		var height = glResetPos.height;
 		var glCtxMessage;
@@ -153,18 +153,18 @@ var classDialog = {
 
 	},
 
-	showResetDialog: function() {
+	showResetDialog: function () {
 		classDialogModus = "reset";
 		classDialog.showDialog();
 	},
 
 
-	showPrefDialog: function(modus) {
+	showPrefDialog: function (modus) {
 		classDialogModus = "pref";
 		classDialog.showDialog(modus);
 	},
 
-	showRegistrationDialog: function(modus, errorMessage) {
+	showRegistrationDialog: function (modus, errorMessage) {
 		classDialogModus = "registration";
 
 		const glCnvMessageTop = 200;
@@ -180,7 +180,7 @@ var classDialog = {
 		classDialog.showDialog(modus, errorMessage);
 	},
 
-	showChangeUserNameDialog: function(modus, errorMessage) {
+	showChangeUserNameDialog: function (modus, errorMessage) {
 		classDialogModus = "changeusername";
 
 
@@ -198,7 +198,7 @@ var classDialog = {
 		classDialog.showDialog(modus, errorMessage);
 	},
 
-	showMessageDialog: function(msgHeader, msgText) {
+	showMessageDialog: function (msgHeader, msgText) {
 		//TODO globale Konstanten
 		const glCnvMessageTop = 0;
 		const glCnvMessageHeight = 300;
@@ -250,7 +250,7 @@ var classDialog = {
 		glCtxMessage.lineWidth = 2;
 		glCtxMessage.strokeRect(glCnvMessageLeft + 1, glCnvMessageTop + 1, glCtxMessage.canvas.width - 2 * glCnvMessageLeft - 2, glCnvMessageHeight - 2);
 
-		document.addEventListener("keypress", function(event) {
+		document.addEventListener("keypress", function (event) {
 			// If the user presses the "Enter" key on the keyboard
 			if (event.key === "Enter") {
 				// Cancel the default action, if needed
@@ -261,7 +261,7 @@ var classDialog = {
 		});
 	},
 
-	showLevelDialog: function() {
+	showLevelDialog: function () {
 		let maxLevelModeClassic = 1;
 		let maxLevelModeSpeed = 1;
 		let msg;
@@ -278,21 +278,21 @@ var classDialog = {
 			if (glUser.getModeHighscore(2, i) >= glLevelNeedsScoreModeSpeed)
 				++maxLevelModeSpeed;
 		}
-		msg += '<br><br><b>' + getText("level_info_mode") + ' "classic"</b><br>' + getText("level_info_text", glLevelNeedsScoreModeSpeed, maxLevelModeSpeed);
+		msg += '<br><br><b>' + getText("level_info_mode") + ' "speed"</b><br>' + getText("level_info_text", glLevelNeedsScoreModeSpeed, maxLevelModeSpeed);
 
 		classDialog.showMessageDialog(getText("level_info_title"), msg);
 	},
 
-	showNewcomerDialog: function() {
+	showNewcomerDialog: function () {
 		classDialogModus = "newcomer";
 		classDialog.showDialog();
 	},
 
-	setBezahlText: function(txt) {
+	setBezahlText: function (txt) {
 		glBezahlText = txt;
 	},
 
-	msgDialogOk: function() {
+	msgDialogOk: function () {
 		glCnvMessage.hidden = true;
 		glDivMessageDialog.style.display = "none";
 		glDivCnvMessage.hidden = true;
@@ -308,7 +308,7 @@ var classDialog = {
 		}
 	},
 
-	dialog_ok: function() {
+	dialog_ok: function () {
 		let errorMessage;
 
 		if (classDialogModus == "finished") {
@@ -364,11 +364,11 @@ var classDialog = {
 		}
 	},
 
-	loginOk: function() {
+	loginOk: function () {
 		glUser.login();
 	},
 
-	registrationOk: function() {
+	registrationOk: function () {
 		let errorMessage = classDialog.validateRegistration();
 
 		//						document.querySelector('chk-privacy').checked;
@@ -387,7 +387,7 @@ var classDialog = {
 		//	mainShowHome();
 	},
 
-	validateRegistration: function() {
+	validateRegistration: function () {
 		let errorMessage;
 
 		errorMessage = classDialog.validateEmail();
@@ -401,7 +401,7 @@ var classDialog = {
 		return null;
 	},
 
-	validateEmail: function() {
+	validateEmail: function () {
 		var inputText = glInputRegistrationEmail.value;
 		if (inputText.match(mailformat))
 			return null;
@@ -409,14 +409,14 @@ var classDialog = {
 		return "EMail ist ung&uuml;ltig.";
 	},
 
-	validatePassword: function() {
+	validatePassword: function () {
 		if (glInputRegistrationPassword.value == glInputRegistrationPasswordRepeat.value)
 			return null;
 
 		return "Das Passwort und die Wiederholung stimmen nicht &uuml;berein.";
 	},
 
-	dialog_cancel: function() {
+	dialog_cancel: function () {
 		glCnvMessage.hidden = true;
 
 		if (classDialogModus == "reset" || classDialogModus == "pref") {
@@ -441,7 +441,7 @@ var classDialog = {
 		}
 	},
 
-	checkRegistration: function() {
+	checkRegistration: function () {
 		console.log("checkRegistration");
 		if (glInputRegistrationUserName.value === "" ||
 			glInputRegistrationEmail.value === "" ||
@@ -454,7 +454,7 @@ var classDialog = {
 		}
 	},
 
-	checkResetPassword: function() {
+	checkResetPassword: function () {
 		if (glInputRegistrationPassword.value === "" ||
 			glInputRegistrationEmail.value === "") {
 			document.getElementById('btn_reset_password').disabled = true;
@@ -463,7 +463,7 @@ var classDialog = {
 		}
 	},
 
-	checkChangePassword: function() {
+	checkChangePassword: function () {
 		if (glInputRegistrationPassword.value === "" ||
 			glInputRegistrationPasswordRepeat.value === "") {
 			document.getElementById('btn_reset_password').disabled = true;
@@ -474,7 +474,7 @@ var classDialog = {
 
 
 
-	keyUp: function() {
+	keyUp: function () {
 		if (classDialogModus == "registration") {
 			classDialog.checkRegistration();
 		}
@@ -498,12 +498,12 @@ var classDialog = {
 		}
 	},
 
-	init: function() {
+	init: function () {
 		glFormLogin = document.getElementById('form_login');
 
 	},
 
-	initMessages: function() {
+	initMessages: function () {
 		let width;
 
 		//		let isIframe;

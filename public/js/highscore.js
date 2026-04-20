@@ -133,7 +133,11 @@ function setHighscore() {
 	glUser.calculateMaxLevel();
 
 	let userDataLocal = JSON.stringify(glUser);
-	window.localStorage.setItem(glUserKey, userDataLocal);
+	try {
+		window.localStorage.setItem(glUserKey, userDataLocal);
+	} catch (error) {
+		console.warn("localStorage write blocked for key:", glUserKey, error);
+	}
 
 	glTxtHighscore.innerHTML = glUser.getHighscore(glUser.getLevel());
 
@@ -164,7 +168,7 @@ function initHighscore() {
 
 function create_UUID() {
 	var dt = new Date().getTime();
-	var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+	var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
 		var r = (dt + Math.random() * 16) % 16 | 0;
 		dt = Math.floor(dt / 16);
 		return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
@@ -184,38 +188,81 @@ function reset_highscore() {
 	prvDrawData();
 }
 
-function setRankingPosition(old) {
-	var isMobile;
+
+async function setRankingPosition(old) {
+	let isMobile;
+	let newRankingPosition;
 
 	if (glIsMobile)
 		isMobile = "Y";
 	else
 		isMobile = "N";
 
-	jQuery.ajax({
-		type: "POST",
-		url: '../php/db.php',
-		data: { db_name: glDbName, functionname: 'readRankingPosition', level: glUser.getLevel(), mobile: isMobile, user_id: glUser.getId(), mode: glUser.getMode() },
-		success: function(position) {
-			setRankingPositionSuccess(old, position);
+	try {
+		const response = await fetch('../php/db.php', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ db_name: glDbName, functionname: 'readRankingPosition', level: glUser.getLevel(), mobile: isMobile, user_id: glUser.getId(), mode: glUser.getMode() })
+		});
+
+		if (!response.ok) {
+			throw new Error('HTTP-Fehler: ${response.status}');
 		}
-	});
+
+		const position = await response.text();
+		console.log("setRankingPosition, position = " + position);
+
+		if (old)
+			glOldRankingPosition = position;
+		else {
+			newRankingPosition = position;
+
+			if (newRankingPosition >= glOldRankingPosition || glOldRankingPosition == -1)
+				newRankingPosition = null;
+
+			showGameOverDialog(newRankingPosition);
+		}
+
+	}
+	catch (error) {
+		console.error("Netzwerk- oder Parsing-Fehler:", error);
+	}
+}
+
+/*
+function setRankingPosition(old) {
+var isMobile;
+
+if (glIsMobile)
+	isMobile = "Y";
+else
+	isMobile = "N";
+
+jQuery.ajax({
+	type: "POST",
+	url: '../php/db.php',
+	data: { db_name: glDbName, functionname: 'readRankingPosition', level: glUser.getLevel(), mobile: isMobile, user_id: glUser.getId(), mode: glUser.getMode() },
+	success: function(position) {
+		setRankingPositionSuccess(old, position);
+	}
+});
 }
 
 function setRankingPositionSuccess(old, position) {
-	let newRankingPosition;
+let newRankingPosition;
 
-	if (old)
-		glOldRankingPosition = position;
-	else {
-		newRankingPosition = position;
+if (old)
+	glOldRankingPosition = position;
+else {
+	newRankingPosition = position;
 
-		if (newRankingPosition >= glOldRankingPosition || glOldRankingPosition == -1)
-			newRankingPosition = null;
+	if (newRankingPosition >= glOldRankingPosition || glOldRankingPosition == -1)
+		newRankingPosition = null;
 
-		showGameOverDialog(newRankingPosition);
-	}
+	showGameOverDialog(newRankingPosition);
 }
+}
+*/
 
 function setTestCase() {
 	if (glTestCase == 1) {

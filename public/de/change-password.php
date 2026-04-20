@@ -93,15 +93,15 @@
 					<a class="footer-label" href="index.php">Tetriswelt</a>
 				</div>
 				<div class="row-footer-box">
-					<a class="footer-label" onmouseover="this.style.cursor='pointer'"
-						href="play.php" style="color: var(--play-color);">Spielen</a>
+					<a class="footer-label"
+						href="play.php" style="color: var(--play-color); cursor: pointer;">Spielen</a>
 				</div>
 				<div class="row-footer-box">
-					<a class="footer-label" onmouseover="this.style.cursor='pointer'"
+					<a class="footer-label" style="cursor: pointer;"
 						href="ranking.php">Ranglisten</a>
 				</div>
 				<div class="row-footer-box">
-					<a class="footer-label" onmouseover="this.style.cursor='pointer'"
+					<a class="footer-label" style="cursor: pointer;"
 						href="help.php">Anleitung</a>
 				</div>
 			</div>

@@ -22,23 +22,25 @@ var glRankingShowAll = true;
 //https://wiki.selfhtml.org/wiki/HTML/Tutorials/Formulare/Auswahllisten
 //
 var classRanking = {
-	init: function() {
+	init: function () {
 		glDrpRnkAuswahl.addEventListener('change', classRanking.show);
 		glDrpRnkLevel.addEventListener('change', classRanking.show);
 		glDrpRnkMode.addEventListener('change', classRanking.show);
+		glDrpRnkMode.addEventListener('change', classRanking.setModeToUser);
 		glDrpRnkPeriod.addEventListener('change', classRanking.show);
 
 		glDrpRnkAuswahl.selectedIndex = 0;
 		glDrpRnkLevel.selectedIndex = 1;
+		glDrpRnkMode.selectedIndex = glUser.getMode() - 1;
 		glDrpRnkPeriod.selectedIndex = 0;
 	},
 
-	show: function() {
+	show: function () {
 		classRanking.readHighscoreFromDb();
 		glDivRanking.scrollTop = 0;
 	},
 
-	readHighscoreFromDb: function() {
+	readHighscoreFromDb: function () {
 		var isMobile;
 		var userId;
 		let auswahl = glDrpRnkAuswahl.selectedIndex;
@@ -60,13 +62,13 @@ var classRanking = {
 			type: "POST",
 			url: '../php/db.php',
 			data: { db_name: glDbName, functionname: 'readHighscoreFromDb', level: level, mobile: isMobile, user_id: userId, mode: mode, period: period },
-			success: function(data) {
+			success: function (data) {
 				classRanking.showHighscore(data);
 			}
 		});
 	},
 
-	showHighscore: function(values) {
+	showHighscore: function (values) {
 		let rankingTable = document.getElementById("table-body-ranking");
 		//		let txtTopic = document.querySelector("[name='topic-text']");
 		let rankingHeader = getText("ranking_header");
@@ -89,7 +91,7 @@ var classRanking = {
 		}
 
 
-	//	let data = JSON.parse(values);
+		//	let data = JSON.parse(values);
 		let data = values;
 		let countValues = data.length;
 		if (countValues > 50)
@@ -142,20 +144,28 @@ var classRanking = {
 		}
 
 		glDivRankingLoading.style.display = "none";
-		glDivRanking.style.display = "block";	
+		glDivRanking.style.display = "block";
 	},
 
-	showAll: function() {
+	showAll: function () {
 		glRankingShowAll = true;
 		glBtnRnkShowAll.style.borderStyle = "inset";
 		glBtnRnkShowOne.style.borderStyle = "outset";
 		classRanking.readHighscoreFromDb();
 	},
 
-	showOne: function() {
+	showOne: function () {
 		glRankingShowAll = false;
 		glBtnRnkShowAll.style.borderStyle = "outset";
 		glBtnRnkShowOne.style.borderStyle = "inset";
 		classRanking.readHighscoreFromDb();
+	},
+
+	setModeToUser: function () {
+		let mode = glDrpRnkMode.selectedIndex + 1;
+		glUser.setMode(mode);
+		glUser.saveUserSettingsToDb(glUser.getId(), mode);
 	}
+
+
 }

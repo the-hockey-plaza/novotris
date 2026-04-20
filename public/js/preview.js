@@ -450,11 +450,11 @@ function drawPreview8() {
 
 function hidePlayIcons(isHidden) {
 	return;
-	
-//	document.getElementById('stone_left').hidden = isHidden;
-//	document.getElementById('stone_rotate_left').hidden = isHidden;
-//	document.getElementById('stone_drop').hidden = isHidden;
-//	document.getElementById('stone_right').hidden = isHidden;
+
+	//	document.getElementById('stone_left').hidden = isHidden;
+	//	document.getElementById('stone_rotate_left').hidden = isHidden;
+	//	document.getElementById('stone_drop').hidden = isHidden;
+	//	document.getElementById('stone_right').hidden = isHidden;
 }
 
 /* 
@@ -535,7 +535,7 @@ function showPreview() {
 
 function prvPlay() {
 	(false);
-	
+
 	//game_init();
 	do_start();
 }
@@ -608,7 +608,9 @@ function selectMode() {
 
 	let mode = glDropMode.selectedIndex + 1;
 	glUser.setMode(mode);
+	glUser.saveUserSettingsToDb(glUser.getId(), mode);
 	glUser.calculateMaxLevel();
+
 
 	initPreview();
 	showPreview();
