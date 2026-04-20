@@ -68,6 +68,14 @@ function setStatus(status) {
 	v_status = status;
 }
 
+function setGameScrollLock(isLocked) {
+	if (!document.body) {
+		return;
+	}
+
+	document.body.classList.toggle('game-scroll-lock', !!isLocked);
+}
+
 function novInitMatrixFilter() {
 	const width = cMatrixSize.width;
 	const height = cMatrixSize.height;
@@ -235,6 +243,7 @@ function do_start() {
 	scoreLevel = 500;
 	playSetTitle(getText("play_title_running"), titleSizeMedium);
 	glBtnStart.style.setProperty('--anim', 'paused');
+	setGameScrollLock(true);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -246,12 +255,14 @@ function do_pause() {
 		v_status = cStatusRunning;
 		playSetTitle(getText("play_title_running"), titleSizeMedium);
 		glBtnStart.style.setProperty('--anim', 'paused');
+		setGameScrollLock(true);
 	} else if (v_status === cStatusRunning) {
 		clearInterval(glIntervalId);
 		glBtnStart.innerHTML = getText("play_button_pause");
 		v_status = cStatusPause;
 		playSetTitle(getText("play_title_pause", reduceScore()), titleSizeMedium);
 		glBtnStart.style.setProperty('--anim', 'paused');
+		setGameScrollLock(false);
 	}
 	glBtnStart.blur();
 }
@@ -690,6 +701,7 @@ function do_stop() {
 	v_status = cStatusFinished;
 	clearInterval(glIntervalId);
 	glBtnStart.style.setProperty('--anim', 'running');
+	setGameScrollLock(false);
 }
 
 /*
@@ -764,6 +776,7 @@ function taste(e) {
 function choose_level() {
 	v_status = cStatusLevel;
 	clearInterval(glIntervalId);
+	setGameScrollLock(false);
 	initPreview();
 	showPreview();
 	playSetTitle(getText("play_title_init"), titleSizeMedium);
@@ -791,6 +804,7 @@ function game_init() {
 	resetScore();
 	initPlayRendering();
 	v_status = cStatusFinished;
+	setGameScrollLock(false);
 	glBtnStart.value = "Start";
 
 	v_rows = 0;

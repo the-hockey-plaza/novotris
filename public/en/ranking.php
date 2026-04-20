@@ -39,13 +39,6 @@
 
 	<?php include '../php/navi.php'; ?>
 
-	<style>
-		.box22 {
-			flex: 2;
-			text-align: center;
-			padding-top: 20px;
-		}
-	</style>
 </head>
 
 <!-- ---------------------------------------------------- -->
@@ -53,35 +46,27 @@
 <body>
 	<div class="pseudoBody">
 		<div class="container" id="div-container">
-			<div class="novHeader"
-				style="border-top-left-radius: 4px; border-top-right-radius: 4px;">
-				<div id="lblTitle" style="flex: 80">Rankings</div>
-				<div style="flex: 20">
+			<div class="novHeader nov-header-rounded">
+				<div id="lblTitle" class="nov-title-area">Rankings</div>
+				<div class="nov-logo-area">
 					<img src="../images/logo bing v8.jpg" width="135" height="auto"
 						align="right" alt="novotris logo">
 				</div>
 			</div>
 
-			<div class="novBody"
-				style="display: flex; flex-direction: column; overflow-y: hidden">
+			<div class="novBody ranking-layout">
 
-				<div id="div-ranking-loading"
-					style="flex: 90; padding-top: 20px; padding-right: 20px; padding-left: 10px; overflow-y: auto;">Loading
+				<div id="div-ranking-loading" class="ranking-panel">Loading
 					data...</div>
 
-				<div id="div-ranking"
-					style="flex: 90; padding-top: 20px; padding-right: 20px; padding-left: 10px; overflow-y: auto; display: none;">
+				<div id="div-ranking" class="ranking-panel is-hidden">
 
-					<table class="class-table-ranking" id="table-ranking"
-						style="border-collapse: collapse;">
+					<table class="class-table-ranking ranking-table" id="table-ranking">
 						<thead class="class-table-ranking">
 							<tr class="class-table-ranking">
-								<th class="class-table-ranking" scope="col" width=12%
-									style="text-align: right; padding-right: 0.5em;">#</th>
-								<th class="class-table-ranking" scope="col"
-									style="text-align: center">User</th>
-								<th class="class-table-ranking" scope="col" width=20%
-									style="text-align: center">Datum</th>
+								<th class="class-table-ranking rank-col-pos" scope="col" width=12%>#</th>
+								<th class="class-table-ranking rank-col-center" scope="col">User</th>
+								<th class="class-table-ranking rank-col-center" scope="col" width=20%>Datum</th>
 								<th class="class-table-ranking" scope="col" width=10%>L</th>
 								<th class="class-table-ranking" scope="col" width=15%>Score</th>
 							</tr>
@@ -116,15 +101,15 @@
 
 				</div>
 
-				<div style="flex: 10; display: flex; font-size: 14px;">
-					<div class="box22">
+				<div class="ranking-filter-bar">
+					<div class="ranking-filter-item">
 						User: <select id="drp-rnk-auswahl" class="drpMenu">
 							<option>all</option>
 							<option>only me</option>
 						</select>
 					</div>
 
-					<div class="box22">
+					<div class="ranking-filter-item">
 						Level: <select id="drp-rnk-level" class="drpMenu">
 							<option>all</option>
 							<option>1</option>
@@ -136,14 +121,14 @@
 						</select>
 					</div>
 
-					<div class="box22">
+					<div class="ranking-filter-item">
 						Mode: <select id="drp-rnk-mode" class="drpMenu">
 							<option>classic</option>
 							<option>speed</option>
 						</select>
 					</div>
 
-					<div class="box22">
+					<div class="ranking-filter-item">
 						Zeit: <select id="drp-rnk-period" class="drpMenu">
 							<option>12 months</option>
 							<option>overall</option>
@@ -159,38 +144,29 @@
 						World</a>
 				</div>
 				<div class="row-footer-box">
-					<a class="footer-label"
-						href="<?= $nov_url_play ?>" style="color: var(--play-color); cursor: pointer;">Play</a>
+					<a class="footer-label" href="<?= $nov_url_play ?>" style="color: var(--play-color);">Play</a>
 				</div>
 				<div class="row-footer-box">
 					<a class="footer-label-only">Rankings</a>
 				</div>
 				<div class="row-footer-box">
-					<a class="footer-label" style="cursor: pointer;"
-						href="<?= $nov_url_help ?>">Help</a>
+					<a class="footer-label" href="<?= $nov_url_help ?>">Help</a>
 				</div>
 			</div>
 
-			<div class="novFooter"
-				style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+			<div class="novFooter nov-footer-bottom">
 				<div class="row-footer-box">
-					<a id="footer-user" class="footer-label"
-						style="cursor: pointer;" onclick="showUserInfoDialog();"></a>
+					<a id="footer-user" class="footer-label" onclick="showUserInfoDialog();"></a>
 				</div>
 				<div class="row-footer-box">
-					<a id="footer-login" class="footer-label"
-						onclick="glUser.loginLogout('index.php')"
-						style="cursor: pointer;"></a>
+					<a id="footer-login" class="footer-label" onclick="glUser.loginLogout('index.php')"></a>
 				</div>
 				<div class="row-footer-box">
-					<a id="footer-version" class="footer-label"
-						style="cursor: pointer;"
-						onclick="showNovotrisInfoDialog();">Version</a>
+					<a id="footer-version" class="footer-label" onclick="showNovotrisInfoDialog();">Version</a>
 				</div>
-				<div class="row-footer-box" style="margin-left: 0px;">
+				<div class="row-footer-box footer-language-box">
 					<!-- 									<a id="footer-label">footer-label</a> -->
-					<select id="drp-language" class="footer-label"
-						style="padding-left: 1.0em;">
+					<select id="drp-language" class="footer-label">
 						<option>deutsch</option>
 						<option>english</option>
 					</select>

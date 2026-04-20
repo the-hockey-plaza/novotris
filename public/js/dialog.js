@@ -505,6 +505,9 @@ var classDialog = {
 
 	initMessages: function () {
 		let width;
+		let container = document.getElementById('div-container');
+		let containerRect;
+		let dialogTop;
 
 		//		let isIframe;
 		//		if (window.self !== window.top) {
@@ -522,15 +525,33 @@ var classDialog = {
 		let mid = width / 2;
 		let outerWidth;
 
+		if (container != null) {
+			containerRect = container.getBoundingClientRect();
+			mid = containerRect.left + (containerRect.width / 2);
+		}
+
 		if (glIsMobile)
 			outerWidth = glContainerPos.width - 100;
 		else
 			outerWidth = glContainerPos.width - 120;
 
+		if (containerRect != null) {
+			if (glIsMobile)
+				outerWidth = containerRect.width - 24;
+			else
+				outerWidth = containerRect.width - 120;
+		}
+
+		outerWidth = Math.max(320, Math.floor(outerWidth));
+		dialogTop = 200;
+		if (containerRect != null) {
+			dialogTop = Math.max(200, Math.floor(containerRect.top + 200));
+		}
+
 		glDivMessageDialog.style.width = outerWidth + "px";
 		glDivMessageDialog.style.height = "300px";
 		glDivMessageDialog.style.left = mid - (outerWidth / 2) + "px";
-		glDivMessageDialog.style.top = "200px";
+		glDivMessageDialog.style.top = dialogTop + "px";
 
 		//		glDivCnvMessage.style.width = outerWidth + "px";
 		//		glDivCnvMessage.style.height = glDivMessageDialog.style.height;
