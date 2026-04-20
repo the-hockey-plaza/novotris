@@ -188,7 +188,11 @@
 		var glUser = new User();
 		mainInit();
 		(async () => {
-			await glUser.init(true);
+			try {
+				await glUser.init(true);
+			} catch (error) {
+				console.error("glUser.init failed:", error);
+			}
 
 			classDialog.initMessages();
 			classDialog.init();

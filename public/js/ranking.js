@@ -26,6 +26,7 @@ var classRanking = {
 		glDrpRnkAuswahl.addEventListener('change', classRanking.show);
 		glDrpRnkLevel.addEventListener('change', classRanking.show);
 		glDrpRnkMode.addEventListener('change', classRanking.show);
+		glDrpRnkMode.addEventListener('change', classRanking.setModeToUser);
 		glDrpRnkPeriod.addEventListener('change', classRanking.show);
 
 		glDrpRnkAuswahl.selectedIndex = 0;
@@ -158,5 +159,13 @@ var classRanking = {
 		glBtnRnkShowAll.style.borderStyle = "outset";
 		glBtnRnkShowOne.style.borderStyle = "inset";
 		classRanking.readHighscoreFromDb();
+	},
+
+	setModeToUser: function () {
+		let mode = glDrpRnkMode.selectedIndex + 1;
+		glUser.setMode(mode);
+		glUser.saveUserSettingsToDb(glUser.getId(), mode);
 	}
+
+
 }

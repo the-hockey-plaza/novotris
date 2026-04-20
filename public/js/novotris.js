@@ -422,8 +422,10 @@ function stone_drop() {
 
 function calculateScore() {
 	let points;
+	let mode = glUser.getMode();
+	// if (glUser.getMode() === glModeSpeed) {
 
-	if (glUser.getMode() === glModeSpeed) {
+	if (mode === glModeSpeed) {
 		const speed = 1000 / glCurrentInterval;
 		const timeDiff = (Date.now() - glCurrentBrick.startTime) / 1000; // seconds
 		const factor = Math.sqrt((glCurrentBrick.y / timeDiff) / speed);

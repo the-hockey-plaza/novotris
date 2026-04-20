@@ -718,7 +718,7 @@ switch ($functionname) {
     break;
 
   case 'saveUserSettingsToDb':
-    saveUserSettingsToDb($_POST['id'], $_POST['mode']);
+    saveUserSettingsToDb($input['id'], $input['mode']);
     break;
 
   // getestet:

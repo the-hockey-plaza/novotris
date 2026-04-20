@@ -133,7 +133,11 @@ function setHighscore() {
 	glUser.calculateMaxLevel();
 
 	let userDataLocal = JSON.stringify(glUser);
-	window.localStorage.setItem(glUserKey, userDataLocal);
+	try {
+		window.localStorage.setItem(glUserKey, userDataLocal);
+	} catch (error) {
+		console.warn("localStorage write blocked for key:", glUserKey, error);
+	}
 
 	glTxtHighscore.innerHTML = glUser.getHighscore(glUser.getLevel());
 
