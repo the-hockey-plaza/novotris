@@ -26,6 +26,7 @@ var classDialog = {
 		var height = glResetPos.height;
 		var glCtxMessage;
 
+		setDialogOpen(true);
 		// glDivMessageDialog.style = 
 
 		glCtxMessage = glCnvMessage.getContext("2d");
@@ -204,6 +205,7 @@ var classDialog = {
 		const glCnvMessageHeight = 300;
 		const glCnvMessageLeft = 0;
 
+		setDialogOpen(true);
 		//	var glCtxMessage;
 
 		//		glCtxMessage = glCnvMessage.getContext("2d");
@@ -296,6 +298,7 @@ var classDialog = {
 		glCnvMessage.hidden = true;
 		glDivMessageDialog.style.display = "none";
 		glDivCnvMessage.hidden = true;
+		setDialogOpen(false);
 
 		if (classDialogModus == "finished") {
 			choose_level();
@@ -313,11 +316,13 @@ var classDialog = {
 
 		if (classDialogModus == "finished") {
 			glCnvMessage.hidden = true;
+			setDialogOpen(false);
 			choose_level();
 		}
 
 		else if (classDialogModus == "pref") {
 			glCnvMessage.hidden = true;
+			setDialogOpen(false);
 			glUser.changeName(glInputUserName.value);
 
 			glFormPref.hidden = true;
@@ -325,6 +330,7 @@ var classDialog = {
 		}
 		else if (classDialogModus == "newcomer") {
 			glCnvMessage.hidden = true;
+			setDialogOpen(false);
 			prvPlay();
 		}
 		else if (classDialogModus == "registration") {
@@ -332,6 +338,7 @@ var classDialog = {
 
 			if (errorMessage === null) {
 				glCnvMessage.hidden = true;
+				setDialogOpen(false);
 				glUser.register();
 				glFormRegistration.hidden = true;
 				mainShowHome();
@@ -351,12 +358,14 @@ var classDialog = {
 		//		}
 		else if (classDialogModus == "login") {
 			glCnvMessage.hidden = true;
+			setDialogOpen(false);
 			glUser.login();
 			glFormLogin.hidden = true;
 			mainShowHome();
 		}
 		else if (classDialogModus == "changeusername") {
 			glCnvMessage.hidden = true;
+			setDialogOpen(false);
 			glUser.changeName(glInputChangeUserName.value);
 
 			glFormChangeUserName.hidden = true;
@@ -418,6 +427,7 @@ var classDialog = {
 
 	dialog_cancel: function () {
 		glCnvMessage.hidden = true;
+		setDialogOpen(false);
 
 		if (classDialogModus == "reset" || classDialogModus == "pref") {
 			mainShowHome();
@@ -505,6 +515,9 @@ var classDialog = {
 
 	initMessages: function () {
 		let width;
+		let container = document.getElementById('div-container');
+		let containerRect;
+		let dialogTop;
 
 		//		let isIframe;
 		//		if (window.self !== window.top) {
@@ -522,15 +535,33 @@ var classDialog = {
 		let mid = width / 2;
 		let outerWidth;
 
+		if (container != null) {
+			containerRect = container.getBoundingClientRect();
+			mid = containerRect.left + (containerRect.width / 2);
+		}
+
 		if (glIsMobile)
 			outerWidth = glContainerPos.width - 100;
 		else
 			outerWidth = glContainerPos.width - 120;
 
+		if (containerRect != null) {
+			if (glIsMobile)
+				outerWidth = containerRect.width - 24;
+			else
+				outerWidth = containerRect.width - 120;
+		}
+
+		outerWidth = Math.max(320, Math.floor(outerWidth));
+		dialogTop = 200;
+		if (containerRect != null) {
+			dialogTop = Math.max(200, Math.floor(containerRect.top + 200));
+		}
+
 		glDivMessageDialog.style.width = outerWidth + "px";
 		glDivMessageDialog.style.height = "300px";
 		glDivMessageDialog.style.left = mid - (outerWidth / 2) + "px";
-		glDivMessageDialog.style.top = "200px";
+		glDivMessageDialog.style.top = dialogTop + "px";
 
 		//		glDivCnvMessage.style.width = outerWidth + "px";
 		//		glDivCnvMessage.style.height = glDivMessageDialog.style.height;

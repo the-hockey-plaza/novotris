@@ -54,16 +54,15 @@
 
 	<div class="pseudoBody">
 		<div class="container" id="div-container">
-			<div class="novHeader"
-				style="border-top-left-radius: 4px; border-top-right-radius: 4px;">
-				<div id="lblTitle" style="flex: 80">Spielanleitung</div>
-				<div style="flex: 20">
+			<div class="novHeader nov-header-rounded">
+				<div id="lblTitle" class="nov-title-area">Spielanleitung</div>
+				<div class="nov-logo-area">
 					<img src="../images/logo bing v8.jpg" width="135" height="auto"
 						align="right" alt="novotris logo">
 				</div>
 			</div>
 
-			<div class="novBody">
+			<div class="novBody help-layout">
 
 				<div class="help-header">Einstieg</div>
 				<div class="help-text">Du kannst - ohne Anmeldung - als Gast
@@ -136,10 +135,8 @@
 					die Punktezählung je nach Spielmodus unterschiedlich ist, gibt es
 					dafür getrennte Ranglisten; demnach ist hier auch der Modus
 					auswählbar.</div>
-				<br>
-
 				<div class="help-header">Viel Spa&szlig;!</div>
-				<br> <br>
+				<div class="help-tail-space"></div>
 			</div>
 
 			<div class="novFooter">
@@ -147,12 +144,10 @@
 					<a class="footer-label" href="<?= $nov_url_index ?>">Tetriswelt</a>
 				</div>
 				<div class="row-footer-box">
-					<a class="footer-label"
-						href="<?= $nov_url_play ?>" style="color: var(--play-color); cursor: pointer;">Spielen</a>
+					<a class="footer-label" href="<?= $nov_url_play ?>" style="color: var(--play-color);">Spielen</a>
 				</div>
 				<div class="row-footer-box">
-					<a class="footer-label" style="cursor: pointer;"
-						href="<?= $nov_url_ranking ?>">Ranglisten</a>
+					<a class="footer-label" href="<?= $nov_url_ranking ?>">Ranglisten</a>
 				</div>
 				<div class="row-footer-box">
 					<a class="footer-label-only">Anleitung</a>
@@ -160,25 +155,19 @@
 			</div>
 
 
-			<div class="novFooter"
-				style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+			<div class="novFooter nov-footer-bottom">
 				<div class="row-footer-box">
-					<a id="footer-user" class="footer-label"
-						style="cursor: pointer;" onclick="showUserInfoDialog();"></a>
+					<a id="footer-user" class="footer-label" onclick="showUserInfoDialog();"></a>
 				</div>
 				<div class="row-footer-box">
-					<a id="footer-login" class="footer-label"
-						onclick="glUser.loginLogout('index.php')"
-						style="cursor: pointer;"></a>
+					<a id="footer-login" class="footer-label" onclick="glUser.loginLogout('index.php')"></a>
 				</div>
 				<div class="row-footer-box">
-					<a id="footer-version" class="footer-label"
-						style="cursor: pointer;" onclick="showNovotrisInfoDialog();">Version</a>
+					<a id="footer-version" class="footer-label" onclick="showNovotrisInfoDialog();">Version</a>
 				</div>
-				<div class="row-footer-box" style="margin-left: 0px;">
+				<div class="row-footer-box footer-language-box">
 					<!-- 									<a id="footer-label">footer-label</a> -->
-					<select id="drp-language" class="footer-label"
-						style="padding-left: 1.0em;">
+					<select id="drp-language" class="footer-label">
 						<option>deutsch</option>
 						<option>english</option>
 					</select>

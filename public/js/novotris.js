@@ -68,6 +68,29 @@ function setStatus(status) {
 	v_status = status;
 }
 
+// Central UI state for scroll-lock decisions
+var glIsDialogOpen = false;
+
+function setGameScrollLock(isLocked) {
+	if (!document.body) {
+		return;
+	}
+
+	document.body.classList.toggle('game-scroll-lock', !!isLocked);
+}
+
+// Recompute and apply scroll lock based on current game + dialog state.
+// Lock is active only while the game is running and no dialog is open.
+function updateScrollLock() {
+	setGameScrollLock(v_status === cStatusRunning && !glIsDialogOpen);
+}
+
+// Called by dialog.js when any overlay dialog opens or closes.
+function setDialogOpen(isOpen) {
+	glIsDialogOpen = !!isOpen;
+	updateScrollLock();
+}
+
 function novInitMatrixFilter() {
 	const width = cMatrixSize.width;
 	const height = cMatrixSize.height;
@@ -235,6 +258,7 @@ function do_start() {
 	scoreLevel = 500;
 	playSetTitle(getText("play_title_running"), titleSizeMedium);
 	glBtnStart.style.setProperty('--anim', 'paused');
+	updateScrollLock();
 }
 
 /*----------------------------------------------------------------------------*/
@@ -246,12 +270,14 @@ function do_pause() {
 		v_status = cStatusRunning;
 		playSetTitle(getText("play_title_running"), titleSizeMedium);
 		glBtnStart.style.setProperty('--anim', 'paused');
+		updateScrollLock();
 	} else if (v_status === cStatusRunning) {
 		clearInterval(glIntervalId);
 		glBtnStart.innerHTML = getText("play_button_pause");
 		v_status = cStatusPause;
 		playSetTitle(getText("play_title_pause", reduceScore()), titleSizeMedium);
 		glBtnStart.style.setProperty('--anim', 'paused');
+		updateScrollLock();
 	}
 	glBtnStart.blur();
 }
@@ -690,6 +716,7 @@ function do_stop() {
 	v_status = cStatusFinished;
 	clearInterval(glIntervalId);
 	glBtnStart.style.setProperty('--anim', 'running');
+	updateScrollLock();
 }
 
 /*
@@ -764,6 +791,7 @@ function taste(e) {
 function choose_level() {
 	v_status = cStatusLevel;
 	clearInterval(glIntervalId);
+	updateScrollLock();
 	initPreview();
 	showPreview();
 	playSetTitle(getText("play_title_init"), titleSizeMedium);
@@ -791,6 +819,7 @@ function game_init() {
 	resetScore();
 	initPlayRendering();
 	v_status = cStatusFinished;
+	updateScrollLock();
 	glBtnStart.value = "Start";
 
 	v_rows = 0;

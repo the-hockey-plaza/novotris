@@ -44,37 +44,34 @@
 <body>
 	<div class="pseudoBody">
 		<div class="container" id="div-container">
-			<div class="novHeader"
-				style="border-top-left-radius: 4px; border-top-right-radius: 4px;">
-				<div id="divTitle" style="flex: 80">
+			<div class="novHeader nov-header-rounded">
+				<div id="divTitle" class="nov-title-area">
 					<a class="animatedTitle" id="animatedTitle">Spielen</a>
 				</div>
-				<div style="flex: 20; display: flex; justify-content: flex-end; align-items: center;">
+				<div class="nov-logo-area">
 					<img src="../images/logo bing v8.jpg" width="135" height="auto" alt="novotris logo">
 				</div>
 			</div>
 
-			<div class="novBody" style="display: flex;">
-				<div id="div-play-frame" style="flex: 70;">
+			<div class="novBody play-layout">
+				<div id="div-play-frame" class="play-touch-surface play-stage">
 					<div>
-						<canvas id="mainCanvas" style="z-index: 1; width: 100px; height: 100px;"></canvas>
+						<canvas id="mainCanvas" class="play-touch-surface play-canvas"></canvas>
 					</div>
 				</div>
-				<div style="flex: 30">
+				<div class="play-sidebar">
 
-					<div id="lbl_rows" class="game-data-label" style="margin-top: 1px">Rows</div>
+					<div id="lbl_rows" class="game-data-label play-top-gap-xs">Rows</div>
 					<div id="txt_rows" class="game-data-text">1234</div>
-					<div id="lbl_speed" class="game-data-label" style="margin-top: 3px">Speed</div>
+					<div id="lbl_speed" class="game-data-label play-top-gap-sm">Speed</div>
 					<div id="txt_speed" class="game-data-text">1234</div>
-					<div id="lbl_score" class="game-data-label" style="margin-top: 3px">Score</div>
+					<div id="lbl_score" class="game-data-label play-top-gap-sm">Score</div>
 					<div id="txt_score" class="game-data-text">1234</div>
-					<div id="lbl_highscore" class="game-data-label"
-						style="margin-top: 3px">Highscore</div>
+					<div id="lbl_highscore" class="game-data-label play-top-gap-sm">Highscore</div>
 					<div id="txt_highscore" class="game-data-text">1234</div>
 
-					<div class="game-data-label" style="margin-top: 3px;">
-						Level<br> <select id="drp-play-level" class="drpMenu"
-							style="width: 75px;">
+					<div class="game-data-label play-top-gap-sm">
+						Level<br> <select id="drp-play-level" class="drpMenu play-select">
 							<option>1</option>
 							<option>2</option>
 							<option>3</option>
@@ -85,14 +82,13 @@
 					</div>
 
 					<div class="game-data-label">
-						Modus<br> <select id="drp-play-mode" class="drpMenu"
-							style="width: 75px;">
+						Modus<br> <select id="drp-play-mode" class="drpMenu play-select">
 							<option>classic</option>
 							<option>speed</option>
 						</select>
 					</div>
 
-					<div style="text-align: center; margin-top: 32px;">
+					<div class="play-start-wrap">
 						<button class="animated-border-btn" id="do_start" onclick="do_start();">Start</button>
 					</div>
 
@@ -115,7 +111,7 @@
 				</div>
 			</div>
 
-			<div class="novFooter" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+			<div class="novFooter nov-footer-bottom">
 				<div class="row-footer-box">
 					<a id="footer-user" class="footer-label footer-clickable" onclick="showUserInfoDialog();"></a>
 				</div>
@@ -125,8 +121,8 @@
 				<div class="row-footer-box">
 					<a id="footer-version" class="footer-label footer-clickable" onclick="showNovotrisInfoDialog();">Version</a>
 				</div>
-				<div class="row-footer-box" style="margin-left: 0px;">
-					<select id="drp-language" class="footer-label" style="padding-left: 1.0em;">
+				<div class="row-footer-box footer-language-box">
+					<select id="drp-language" class="footer-label">
 						<option>deutsch</option>
 						<option>english</option>
 					</select>

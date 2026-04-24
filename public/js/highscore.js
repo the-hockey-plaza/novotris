@@ -26,6 +26,8 @@ function setBrickWidth(size) {
 	let y = frame.clientHeight;
 	let xMax;
 	let yMax;
+	let maxByCanvasWidth;
+	let maxByCanvasHeight;
 
 	//	if (glIsMobile) {
 	if (true) {
@@ -61,6 +63,12 @@ function setBrickWidth(size) {
 				cBrickWidth = xMax;
 			else
 				cBrickWidth = yMax;
+
+			// Keep full matrix (including borders/offset) inside the visible canvas area.
+			maxByCanvasWidth = Math.floor((x - 20) / cMatrixSize.width) - 1;
+			maxByCanvasHeight = Math.floor((y - 20) / cMatrixSize.height) - 1;
+			cBrickWidth = Math.min(cBrickWidth, maxByCanvasWidth, maxByCanvasHeight);
+			cBrickWidth = Math.max(cBrickWidth, 10);
 
 		}
 	}

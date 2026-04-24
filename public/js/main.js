@@ -73,6 +73,24 @@ var glDivMainWindow;
 var glNewsIdx = 1;
 var glNewsCount;
 var glContainerPos = { width: 0, height: 0, left: 0, top: 0 };
+var glDesktopLayout = null;
+
+
+function mainApplyDesktopLayoutPreset() {
+	if (!document.body) return;
+
+	document.body.classList.remove('desktop-compact');
+	document.body.classList.remove('desktop-wide');
+
+	if (glIsMobile) return;
+
+	if (glDesktopLayout === 'compact') {
+		document.body.classList.add('desktop-compact');
+	}
+	else if (glDesktopLayout === 'wide') {
+		document.body.classList.add('desktop-wide');
+	}
+}
 
 
 function mainMobileAndTabletCheck() {
@@ -188,11 +206,17 @@ function mainParseURL() {
 
 	let urlParams = new URLSearchParams(window.location.search);
 	let activationCode;
+	let desktopLayout;
 
 	glTestCase = urlParams.get('t');
 
 	if (urlParams.get('m') > 0)
 		glIsMobile = true;
+
+	desktopLayout = urlParams.get('layout');
+	if (desktopLayout === 'compact' || desktopLayout === 'wide') {
+		glDesktopLayout = desktopLayout;
+	}
 
 	let myUrl = window.location.href;
 	if (myUrl.includes("/test/")) {
@@ -215,14 +239,23 @@ function mainParseURL() {
 
 function mainInit() {
 	var container = document.getElementById('div-container');
+	let rect;
 
 	mainMobileAndTabletCheck();
 	mainParseURL();
+	mainApplyDesktopLayoutPreset();
 
-	glContainerPos.width = 600;
-	glContainerPos.height = 750;
-	container.style.width = glContainerPos.width + "px";
-	container.style.height = glContainerPos.height + "px";
+	if (container != null) {
+		rect = container.getBoundingClientRect();
+		glContainerPos.width = Math.round(rect.width);
+		glContainerPos.height = Math.round(rect.height);
+
+		window.addEventListener('resize', function () {
+			let resizedRect = container.getBoundingClientRect();
+			glContainerPos.width = Math.round(resizedRect.width);
+			glContainerPos.height = Math.round(resizedRect.height);
+		});
+	}
 
 	if (glIsMobile)
 		glLevelNeedsScore = glLevelNeedsScoreMobile;
