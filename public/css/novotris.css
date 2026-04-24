@@ -815,9 +815,37 @@ table.class-table-ranking td:nth-child(6) {
 }
 
 @media (max-width: 768px) {
+	html,
+	body {
+		height: 100%;
+		overflow: hidden;
+		overscroll-behavior: none;
+	}
+
+	.pseudoBody {
+		height: 100dvh;
+		overflow: hidden;
+	}
+
+	.novBody {
+		overscroll-behavior-y: contain;
+		-webkit-overflow-scrolling: touch;
+	}
+
 	:root {
 		--container-width: calc(100vw - 8px);
 		--container-height: calc(100dvh - 6px);
+	}
+
+	.standardform {
+		margin: 16px;
+	}
+
+	.inpText {
+		width: 100%;
+		box-sizing: border-box;
+		padding: 8px 6px;
+		font-size: 16px;
 	}
 
 	.container {
@@ -918,7 +946,7 @@ table.class-table-ranking td:nth-child(6) {
 	}
 
 	.novFooter {
-		font-size: 12px;
+		font-size: 13px;
 		display: flex;
 		flex-wrap: nowrap;
 		align-items: center;
@@ -940,14 +968,14 @@ table.class-table-ranking td:nth-child(6) {
 		text-overflow: ellipsis;
 		padding-left: 0.25em;
 		padding-right: 0.25em;
-		font-size: 12px;
+		font-size: 13px;
 		line-height: 1.2;
 	}
 
 	.novFooter select.footer-label {
 		width: 100%;
 		min-width: 0;
-		font-size: 12px;
+		font-size: 13px;
 		padding-left: 0.25em;
 		padding-right: 0.25em;
 	}
@@ -982,6 +1010,10 @@ table.class-table-ranking td:nth-child(6) {
 		--container-height: calc(100dvh - 6px);
 	}
 
+	.standardform {
+		margin: 8px;
+	}
+
 	.novFooter {
 		display: flex;
 		flex-wrap: nowrap;
@@ -996,12 +1028,12 @@ table.class-table-ranking td:nth-child(6) {
 	a.footer-label,
 	a.footer-label-only {
 		padding: 2px 3px;
-		font-size: 11px;
+		font-size: 12px;
 		line-height: 1.1;
 	}
 
 	.novFooter select.footer-label {
-		font-size: 11px;
+		font-size: 12px;
 		padding-left: 2px;
 		padding-right: 2px;
 	}

@@ -3,11 +3,12 @@
  */
 
 var swipeFactor = 1.5;
-var touchStatus;
+var touchStatus = "stopped";
 
 var rect;
 var swipeEventTarget;
 var touchStartTime = 0;
+var activePointerId = null;
 
 const cTapMoveTolerancePx = 8;
 const cTapDistanceMaxPx = 12;
@@ -83,17 +84,184 @@ var classSwipe = {
 		}
 	},
 
+	normalizePoint: function (event) {
+		if (event.touches && event.touches.length > 0) {
+			return event.touches[0];
+		}
 
-	touchHandler: function (event) {
-		var touch;
+		if (event.changedTouches && event.changedTouches.length > 0) {
+			return event.changedTouches[0];
+		}
+
+		if (typeof event.pageX === 'number' && typeof event.pageY === 'number') {
+			return event;
+		}
+
+		return null;
+	},
+
+	usesPointerEvents: function () {
+		return typeof window !== 'undefined' && typeof window.PointerEvent !== 'undefined';
+	},
+
+	isStartEventAllowed: function (event) {
+		if (event.type === 'pointerdown') {
+			if (event.isPrimary === false) {
+				return false;
+			}
+
+			if (event.pointerType === 'mouse' && event.button !== 0) {
+				return false;
+			}
+		}
+
+		if (event.type === 'mousedown' && event.button !== 0) {
+			return false;
+		}
+
+		return true;
+	},
+
+	isTrackedPointerEvent: function (event) {
+		if (!classSwipe.usesPointerEvents() || event.type.indexOf('pointer') !== 0) {
+			return true;
+		}
+
+		if (activePointerId === null) {
+			return event.type === 'pointerdown';
+		}
+
+		return event.pointerId === activePointerId;
+	},
+
+	beginGesture: function (event, point) {
+		if (point == null || !classSwipe.isStartEventAllowed(event)) {
+			return;
+		}
+
+		if (!isOnPlayground(point.pageX, point.pageY)) {
+			return;
+		}
+
+		touchStatus = "started";
+		dropCounter = 0;
+		touchStartTime = Date.now();
+		if (event.cancelable) {
+			event.preventDefault();
+		}
+
+		startPos.x = point.pageX;
+		startPos.y = point.pageY;
+		movePos.x = point.pageX;
+		movePos.y = point.pageY;
+		brickPos.x = 0;
+		brickPos.y = 0;
+
+		if (event.type === 'pointerdown') {
+			activePointerId = event.pointerId;
+			if (event.currentTarget && event.currentTarget.setPointerCapture) {
+				try {
+					event.currentTarget.setPointerCapture(event.pointerId);
+				} catch (error) {
+					testLog('setPointerCapture failed', error);
+				}
+			}
+		}
+	},
+
+	moveGesture: function (event, point) {
 		var movedX;
 		var movedY;
-		var endTouch;
+
+		if (point == null || touchStatus == "stopped") {
+			return;
+		}
+
+		movedX = Math.abs(point.pageX - startPos.x);
+		movedY = Math.abs(point.pageY - startPos.y);
+		if (touchStatus == "started" && (movedX > cTapMoveTolerancePx || movedY > cTapMoveTolerancePx)) {
+			touchStatus = "moving";
+		}
+		if (event.cancelable) {
+			event.preventDefault();
+		}
+
+		movePos.x = point.pageX;
+		movePos.y = point.pageY;
+		if (classSwipe.checkDirection()) {
+			logText += brickPos.x + "/" + brickPos.y + " ";
+			document.getElementById('mobile_info').innerHTML = logText;
+		}
+	},
+
+	resetGesture: function () {
+		startPos.x = -1;
+		startPos.y = -1;
+		movePos.x = -1;
+		movePos.y = -1;
+		brickPos.x = 0;
+		brickPos.y = 0;
+		dropCounter = 0;
+		touchStatus = "stopped";
+		touchStartTime = 0;
+		activePointerId = null;
+	},
+
+	endGesture: function (event, point, shouldRotate) {
 		var diffX;
 		var diffY;
 		var moveDistance;
 		var touchDuration;
 		var isTap;
+		var hasActiveGesture;
+
+		hasActiveGesture = touchStatus == "started" || touchStatus == "moving";
+		if (!hasActiveGesture) {
+			classSwipe.resetGesture();
+			return;
+		}
+
+		if (hasActiveGesture) {
+			if (event.cancelable) {
+				event.preventDefault();
+			}
+		}
+
+		if (point != null) {
+			diffX = point.pageX - startPos.x;
+			diffY = point.pageY - startPos.y;
+		}
+		else {
+			diffX = movePos.x - startPos.x;
+			diffY = movePos.y - startPos.y;
+		}
+
+		moveDistance = Math.sqrt(diffX * diffX + diffY * diffY);
+		touchDuration = Date.now() - touchStartTime;
+		isTap = shouldRotate !== false
+			&& touchStartTime > 0
+			&& moveDistance <= cTapDistanceMaxPx
+			&& touchDuration <= cTapDurationMaxMs;
+
+		if (isTap) {
+			stone_rotate_left();
+		}
+
+		if (event.type === 'pointerup' || event.type === 'pointercancel') {
+			if (event.currentTarget && event.currentTarget.releasePointerCapture) {
+				try {
+					event.currentTarget.releasePointerCapture(event.pointerId);
+				} catch (error) {
+					testLog('releasePointerCapture failed', error);
+				}
+			}
+		}
+
+		classSwipe.resetGesture();
+	},
+
+	inputHandler: function (event) {
+		var point;
 
 		if (typeof event === 'undefined') {
 			return;
@@ -102,83 +270,34 @@ var classSwipe = {
 		if (v_status == cStatusFinished)
 			return;
 
-		touch = event.touches[0];
+		if (!classSwipe.isTrackedPointerEvent(event)) {
+			return;
+		}
+
+		point = classSwipe.normalizePoint(event);
+
 		switch (event.type) {
+			case 'pointerdown':
 			case 'touchstart':
-				if (isOnPlayground(touch.pageX, touch.pageY)) {
-					touchStatus = "started";
-					dropCounter = 0;
-					touchStartTime = Date.now();
-					if (event.cancelable) {
-						event.preventDefault();
-					}
-
-
-					//				classSwipe.touches[event.type].x = touch.pageX;
-					//				classSwipe.touches[event.type].y = touch.pageY;
-					startPos.x = touch.pageX;
-					startPos.y = touch.pageY;
-					movePos.x = touch.pageX;
-					movePos.y = touch.pageY;
-
-					//	brickPos = { "x": 0, "y": 0 };
-					brickPos.x = 0;
-					brickPos.y = 0;
-				}
+			case 'mousedown':
+				classSwipe.beginGesture(event, point);
 				break;
 
+			case 'pointermove':
 			case 'touchmove':
-				if (touchStatus != "stopped") {
-					movedX = Math.abs(touch.pageX - startPos.x);
-					movedY = Math.abs(touch.pageY - startPos.y);
-					if (touchStatus == "started" && (movedX > cTapMoveTolerancePx || movedY > cTapMoveTolerancePx)) {
-						touchStatus = "moving";
-					}
-					if (event.cancelable) {
-						event.preventDefault();
-					}
-
-					movePos.x = touch.pageX;
-					movePos.y = touch.pageY;
-					if (classSwipe.checkDirection()) {
-						logText += brickPos.x + "/" + brickPos.y + " ";
-						document.getElementById('mobile_info').innerHTML = logText;
-					}
-				}
+			case 'mousemove':
+				classSwipe.moveGesture(event, point);
 				break;
 
+			case 'pointerup':
 			case 'touchend':
-				if (touchStatus == "started" || touchStatus == "moving") {
-					if (event.cancelable) {
-						event.preventDefault();
-					}
-				}
+			case 'mouseup':
+				classSwipe.endGesture(event, point, true);
+				break;
 
-				endTouch = null;
-				if (event.changedTouches && event.changedTouches.length > 0) {
-					endTouch = event.changedTouches[0];
-				}
-
-				if (endTouch != null) {
-					diffX = endTouch.pageX - startPos.x;
-					diffY = endTouch.pageY - startPos.y;
-				}
-				else {
-					diffX = movePos.x - startPos.x;
-					diffY = movePos.y - startPos.y;
-				}
-
-				moveDistance = Math.sqrt(diffX * diffX + diffY * diffY);
-				touchDuration = Date.now() - touchStartTime;
-				isTap = moveDistance <= cTapDistanceMaxPx && touchDuration <= cTapDurationMaxMs;
-
-				if (isTap) {
-					stone_rotate_left();
-				}
-
-				dropCounter = 0;
-				touchStatus = "stopped";
-				touchStartTime = 0;
+			case 'pointercancel':
+			case 'touchcancel':
+				classSwipe.endGesture(event, point, false);
 				break;
 
 			default:
@@ -188,7 +307,7 @@ var classSwipe = {
 	},
 
 	stop: function () {
-		touchStatus = "stopped";
+		classSwipe.resetGesture();
 	},
 
 	getEventTarget: function () {
@@ -210,11 +329,23 @@ var classSwipe = {
 
 	init: function () {
 		const target = classSwipe.getEventTarget();
-		const options = { passive: false };
+		const passiveFalseOptions = { passive: false };
 
-		target.addEventListener('touchstart', classSwipe.touchHandler, options);
-		target.addEventListener('touchmove', classSwipe.touchHandler, options);
-		target.addEventListener('touchend', classSwipe.touchHandler, options);
+		if (classSwipe.usesPointerEvents()) {
+			target.addEventListener('pointerdown', classSwipe.inputHandler, passiveFalseOptions);
+			target.addEventListener('pointermove', classSwipe.inputHandler, passiveFalseOptions);
+			target.addEventListener('pointerup', classSwipe.inputHandler, passiveFalseOptions);
+			target.addEventListener('pointercancel', classSwipe.inputHandler, passiveFalseOptions);
+			return;
+		}
+
+		target.addEventListener('touchstart', classSwipe.inputHandler, passiveFalseOptions);
+		target.addEventListener('touchmove', classSwipe.inputHandler, passiveFalseOptions);
+		target.addEventListener('touchend', classSwipe.inputHandler, passiveFalseOptions);
+		target.addEventListener('touchcancel', classSwipe.inputHandler, passiveFalseOptions);
+		target.addEventListener('mousedown', classSwipe.inputHandler, passiveFalseOptions);
+		target.addEventListener('mousemove', classSwipe.inputHandler, passiveFalseOptions);
+		target.addEventListener('mouseup', classSwipe.inputHandler, passiveFalseOptions);
 	}
 };
 

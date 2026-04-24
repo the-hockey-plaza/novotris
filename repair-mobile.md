@@ -43,12 +43,17 @@ Eine robuste mobile Version, in der das Spiel auf Smartphones stabil laeuft, Tou
 - [x] Phase 3.1 (vorgezogen) Swipe-Handling gekapselt: Touch-Listener vom globalen `document` auf Spielziel begrenzt.
 - [x] Phase 3.2 (teilweise vorgezogen) Passive/aktive Listener: Touch-Listener mit passender Konfiguration und `preventDefault` nur bei aktiver Spielgeste.
 - [x] Phase 3 Nacharbeit Mobile Tap: Tap-Rotation wieder robuster gemacht (kleine Finger-Drift/Tap-Dauer tolerant), damit ein kurzer Tap wieder zuverlaessig rotiert.
+- [x] Phase 3.3 Zentraler UI-State eingefuehrt: `glIsDialogOpen` in novotris.js, `updateScrollLock()` berechnet Scroll-Lock deterministisch aus Spielstatus und Dialogzustand, `setDialogOpen(true/false)` wird in showDialog/showMessageDialog/dialog_ok/msgDialogOk/dialog_cancel aufgerufen.
+- [x] Phase 3.4 Pointer-Events optional vorbereitet: `swipe.js` nutzt bevorzugt `pointerdown/move/up/cancel` auf dem Play-Surface, mit Touch-/Mouse-Fallback fuer Browser ohne Pointer-Events.
+- [x] Phase 4.1 Formular-Typografie auf Mobile: `.standardform` Margin auf 16px (768px) und 8px (480px) reduziert; `.inpText` mit `width: 100%`, `box-sizing: border-box`, `padding: 8px 6px` und explizit `font-size: 16px` (verhindert iOS-Auto-Zoom).
+- [x] Phase 4.2 Keyboard/Fokus-Verhalten Formseiten: Alle 6 Formseiten (de/en login, registration, reset-password) erhalten `interactive-widget=resizes-visual` im viewport-Meta (Tastatur schiebt nur den visuellen Viewport, nicht das Layout).
+- [x] Phase 4.3 Autocomplete und Input-Typen: Alle Formseiten setzen `autocomplete="username"`, `autocomplete="current-password"` bzw. `autocomplete="new-password"`, `autocomplete="email"`; E-Mail-Felder erhalten `type="email"` fuer die passende mobile Tastatur.
 
 ### Offen
 - [ ] Phase 1 Akzeptanzkriterien per Device-Matrix gegen iPhone Safari und Android Chrome abnehmen.
 - [ ] Phase 2 Akzeptanzkriterien auf echten 320-428px Devices gegenpruefen (kein Horizontal-Scroll, gute Bedienbarkeit ohne Zoom).
-- [ ] Phase 3 restlich umsetzen (zentraler State inkl. Dialogzustand, optional Pointer-Events).
-- [ ] Phase 5 Testprotokoll in dieser Datei ergaenzen.
+- [x] Phase 3 optional: Pointer-Events als einheitliche Alternative zu Touch/Mouse-Events.
+- [x] Phase 5 Testprotokoll in dieser Datei ergaenzen.
 
 ## Phase 0: Inventar und Repro (1 Tag)
 1. Eine kurze Issue-Liste mit reproduzierbaren Schritten erstellen:
@@ -142,6 +147,63 @@ Akzeptanzkriterien Phase 4:
 4. Stufenweiser Rollout:
 - Erst intern/staging, dann Produktion.
 
+### Testprotokoll
+
+#### Statuslegende
+- `OK`: Erwartetes Verhalten voll erfuellt.
+- `WARN`: Nutzbar, aber mit kleiner Abweichung; vor Rollout bewerten.
+- `FAIL`: Akzeptanzkriterium nicht erfuellt; kein Produktions-Rollout.
+- `N/T`: Noch nicht getestet.
+
+#### Device-Matrix
+
+| Geraet | Browser | Aufloesung / Breite | Orientierung | Phase 1 Scroll/Viewport | Phase 2 Layout | Phase 3 Input | Phase 4 Formulare | Ergebnis | Notizen |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| iPhone 13/14/15 | Safari aktuell | 390px CSS | Portrait | N/T | N/T | N/T | N/T | N/T | |
+| iPhone SE (2./3. Gen) | Safari aktuell | 375px CSS | Portrait | N/T | N/T | N/T | N/T | N/T | Kritisch fuer kleine Hoehe |
+| Android Referenz 360x800 | Chrome aktuell | 360px CSS | Portrait | N/T | N/T | N/T | N/T | N/T | Pflichtgeraet |
+| Android Referenz 412x915 | Chrome aktuell | 412px CSS | Portrait | N/T | N/T | N/T | N/T | N/T | Pflichtgeraet |
+| Optional Samsung | Samsung Internet | 360-412px CSS | Portrait | N/T | N/T | N/T | N/T | N/T | Nur bei verfuegbar |
+| Desktop >= 1280px | Chrome/Edge/Firefox | Desktop | Landscape | N/T | N/T | N/T | N/T | N/T | Regressionscheck |
+
+#### Smoke-Checkliste Mobile
+
+| Seite | Sprache | Pruefpunkte | iPhone Safari | Android Chrome | Notizen |
+| --- | --- | --- | --- | --- | --- |
+| `play.php` | `de` | Kein Bounce/Pull-to-refresh, kein Horizontal-Scroll, Spielfeld voll sichtbar, Start/Pause/Dialoge erreichbar, Tap/Swipe reproduzierbar | N/T | N/T | |
+| `play.php` | `en` | Kein Bounce/Pull-to-refresh, kein Horizontal-Scroll, Spielfeld voll sichtbar, Start/Pause/Dialoge erreichbar, Tap/Swipe reproduzierbar | N/T | N/T | |
+| `ranking.php` | `de` | Tabelle horizontal nicht abgeschnitten, innere Liste scrollbar, Footer einzeilig | N/T | N/T | |
+| `ranking.php` | `en` | Tabelle horizontal nicht abgeschnitten, innere Liste scrollbar, Footer einzeilig | N/T | N/T | |
+| `help.php` | `de` | Text ohne Zoom lesbar, keine Layout-Ueberlaeufe, normales Scrollen ausserhalb Play | N/T | N/T | |
+| `help.php` | `en` | Text ohne Zoom lesbar, keine Layout-Ueberlaeufe, normales Scrollen ausserhalb Play | N/T | N/T | |
+| `login.html` | `de` | Tastatur ueberdeckt Felder nicht, kein iOS-Auto-Zoom, Username/Passwort-Autofill passend | N/T | N/T | |
+| `login.html` | `en` | Tastatur ueberdeckt Felder nicht, kein iOS-Auto-Zoom, Username/Passwort-Autofill passend | N/T | N/T | |
+| `registration.html` | `de` | E-Mail-Tastatur korrekt, Felder ohne Zoom bedienbar, Passwortfelder mit passendem Autofill | N/T | N/T | |
+| `registration.html` | `en` | E-Mail-Tastatur korrekt, Felder ohne Zoom bedienbar, Passwortfelder mit passendem Autofill | N/T | N/T | |
+| `reset-password.html` | `de` | Tastatur/Viewport stabil, E-Mail-Tastatur korrekt, Formular bleibt bedienbar | N/T | N/T | |
+| `reset-password.html` | `en` | Tastatur/Viewport stabil, E-Mail-Tastatur korrekt, Formular bleibt bedienbar | N/T | N/T | |
+
+#### Ablauf pro Testlauf
+1. Seite frisch laden, einmal mit leerem Cache und einmal als normaler Reload.
+2. In Portrait testen; fuer `play.php` zusaetzlich einmal Browser-UI ein- und ausblenden.
+3. Nur fuer `play.php`: Spiel starten, pausieren, Dialog oeffnen/schliessen, Session beenden.
+4. Ergebnis pro Zeile als `OK`, `WARN` oder `FAIL` eintragen und Abweichung kurz dokumentieren.
+
+#### Desktop-Regression
+
+| Bereich | Pruefung | Ergebnis | Notizen |
+| --- | --- | --- | --- |
+| Play-Layout | Spielfeld unten nicht abgeschnitten, rechte Sidebar ausgewogen, Intro-Dialog korrekt positioniert | N/T | |
+| Ranking | Containerhoehe stabil, innere Liste scrollbar, Footer weiterhin einzeilig | N/T | |
+| Help/Formulare | Bestehende Desktop-Abstaende und Lesbarkeit unveraendert | N/T | |
+
+#### Rollout-Gates
+1. Kein `FAIL` in `play.php` auf iPhone Safari und Android Chrome.
+2. Kein Horizontal-Scroll auf 320-428px in den geprueften Seiten.
+3. Formseiten auf beiden Pflichtbrowsern ohne Zoom und ohne verdeckte Eingabefelder nutzbar.
+4. Desktop-Regression komplett `OK` oder nur mit bewusst akzeptierten `WARN`.
+5. Offene `WARN`-Punkte vor Produktion mit Entscheidung dokumentieren.
+
 ## Konkrete Arbeitspakete (Backlog-ready)
 1. CSS-Basis fuer mobile Viewport/Scroll-Lock in zentrale Datei aufnehmen.
 2. Play-Container und Canvas auf responsive Dimensionierung umbauen.
@@ -161,3 +223,37 @@ Akzeptanzkriterien Phase 4:
 2. Dann Phase 2 (Layout), um die UI stabil zu bekommen.
 3. Danach Phase 3 (Input), damit Gesten sauber und wartbar sind.
 4. Abschliessend Phase 4/5 fuer Feinschliff und sicheren Rollout.
+
+## Zusatz: Fullscreen-Gefuehl auf der Spielseite
+
+### Ziel
+Die Play-Seite soll sich auf Mobile wie eine App im Vollbild anfuehlen: kein ungewolltes Verschieben des Inhalts, keine Bounce-Effekte und eine stabile, bildschirmfuellende Spielflaeche.
+
+### Vorschlaege (konkret, priorisiert)
+1. Stabilen Play-Viewport einfuehren:
+- Fuer den Spiel-Container eine eigene Hoehenvariable nutzen (z. B. `--play-vh`) und diese per `window.innerHeight` plus `resize`/`orientationchange` aktualisieren.
+- Den Play-Root auf `height: var(--play-vh)` setzen, damit Browser-UI-Wechsel (`vh`-Spruenge) keine sichtbaren Layout-Shifts erzeugen.
+
+2. Deterministischen Scroll-Lock auf Play etablieren:
+- Beim Betreten von `play.php` gezielt `html`, `body` und Play-Root auf nicht-scrollend setzen (`overflow: hidden`, `overscroll-behavior: none`).
+- Beim Verlassen der Seite oder beim Wechsel in nicht-spielbare Dialoge den Zustand sauber zuruecksetzen.
+
+3. Play-UI als festen Vollbild-Rahmen fokussieren:
+- Auf Mobile Header/Footer auf der Play-Seite stark reduzieren oder in ein Overlay-Menue verschieben.
+- Spielfeld plus Kerninfos (Score/Level/Controls) in einen festen Viewport-Rahmen legen, keine Seitelemente ausserhalb dieses Rahmens.
+
+4. Eingaben und Browser-Gesten hart trennen:
+- Pointer/Touch-Events ausschliesslich am Play-Surface verarbeiten; ausserhalb nur gezielte Scroll-Bereiche erlauben (z. B. Dialog-Content).
+- `preventDefault` nur fuer echte Spielgesten, aber dann konsequent; optional zusaetzlich "Vollbild starten" (Fullscreen API) mit Graceful Fallback anbieten.
+
+### Akzeptanzkriterien Fullscreen-Gefuehl
+- Bei 320-428 px (iOS Safari, Android Chrome) kein vertikales oder horizontales Verschieben der Play-Seite waehrend des Spiels.
+- Kein Bounce, kein Pull-to-refresh, kein sichtbares "Nachfedern" am oberen/unteren Rand.
+- Keine wahrnehmbaren Hoehenspruenge beim Ein-/Ausblenden der Browser-Adressleiste.
+- Start/Pause/Dialog aufrufbar, ohne dass dadurch der gesamte Seiten-Lock unkontrolliert verloren geht.
+
+### Umsetzung als Mini-Paket (empfohlen)
+1. CSS/JS fuer `--play-vh` und Play-Root-Lock ergaenzen.
+2. Scroll-Lock-Lifecycle in Start/Pause/Ende/Dialog zentralisieren.
+3. Play-spezifischen UI-Cleanup (Header/Footer reduzieren) in separatem Commit umsetzen.
+4. Device-Checkliste fuer iPhone Safari und Android Chrome in dieser Datei dokumentieren.
