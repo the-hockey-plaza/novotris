@@ -1,13 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
-	<title>Novotris, the better Tetris kostenlos online spielen</title>
+	<title>Tetris-Anleitung &amp; Spielregeln – Novotris</title>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, user-scalable=no">
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+	<meta name="viewport" content="width=device-width">
 	<meta name="description"
-		content="Novotris: Tetris kostenlos online im Browser spielen, mit oder ohne Anmeldung, herausfordernde Varianten probieren, mit anderen Nutzern vergleichen und in Rangliste eintragen.">
+		content="Tetris-Spielregeln und Anleitung für Novotris: Einstieg, Level-System, Geschwindigkeit, Spielmodi und Tipps zum Highscore – alles auf einen Blick.">
 	<meta name="keywords"
 		content="tetris, anleitung">
 	<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
@@ -20,6 +19,7 @@
 	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/help.php" />
 	<link rel="canonical" href="https://novotris.bplaced.net/de/help.php" />
 
+	<link rel="preconnect" href="https://www.googletagmanager.com">
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async
 		src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
@@ -55,16 +55,19 @@
 	<div class="pseudoBody">
 		<div class="container" id="div-container">
 			<div class="novHeader nov-header-rounded">
-				<div id="lblTitle" class="nov-title-area">Spielanleitung</div>
+				<h1 id="lblTitle" class="nov-title-area lbl-title-compact">Tetris-Anleitung &amp; Spielregeln</h1>
 				<div class="nov-logo-area">
-					<img src="../images/logo bing v8.jpg" width="135" height="auto"
-						align="right" alt="novotris logo">
+					<picture>
+						<source srcset="../images/novotris-logo.webp" type="image/webp">
+						<img src="../images/novotris-logo.jpg" width="135" height="auto"
+							align="right" alt="Novotris - kostenloses Tetris-Spiel">
+					</picture>
 				</div>
 			</div>
 
 			<div class="novBody help-layout">
 
-				<div class="help-header">Einstieg</div>
+				<h2 class="help-header">Einstieg</h2>
 				<div class="help-text">Du kannst - ohne Anmeldung - als Gast
 					gleich mal ein Spielchen wagen. Es empfiehlt sich aber, über
 					"Anmelden" in der Fußleiste und dann "Registrieren" einen Account
@@ -73,12 +76,12 @@
 					Accounts und Ranglisten angelegt. Außerdem bleiben deine Ergebnisse
 					gespeichert, auch wenn du z.B. die Browser-Historie gelöscht hast.</div>
 
-				<div class="help-header">Sprachauswahl</div>
+				<h2 class="help-header">Sprachauswahl</h2>
 				<div class="help-text">Auf der Startseite gibt es unten rechts
 					ein Drop-Down-Menü, mit welchem du die gewünschte Sprache (deutsch
 					oder englisch) einstellen kannst.</div>
 
-				<div class="help-header">Spielen</div>
+				<h2 class="help-header">Spielen</h2>
 				<div class="help-text">
 					Von der Startseite kommst du über "Spielen" zur Vorschau der
 					verschiedenen Level (auswählbar über das Menü ganz oben rechts).
@@ -97,20 +100,20 @@
 					oberhalb der Fußzeile dazu verwenden. Probier's einfach aus!
 				</div>
 
-				<div class="help-header">Geschwindigkeit</div>
+				<h2 class="help-header">Geschwindigkeit</h2>
 				<div class="help-text">Nach jeweils 5 Reihen, die komplett
 					sind und daher aus dem Spiel verschwinden, erh&ouml;ht sich die
 					Geschwindigkeit um 10 Prozent. Es soll schlie&szlig;lich nicht
 					langweilig werden. Zu Beginn ist das Tempo gem&auml;chlich: Es
 					liegt bei einem Feld pro Sekunde.</div>
 
-				<div class="help-header">Level</div>
+				<h2 class="help-header">Level</h2>
 				<div class="help-text">Wenn du Novotris zum ersten Mal
 					spielst, steht dir nur der erste Level zur Verf&uuml;gung. Sobald
 					du f&uuml;r diesen Level einen Highscore von mindestens 1000 hast
 					(750 bei Mobilgeräten), wird der n&auml;chste Level freigeschaltet.</div>
 
-				<div class="help-header">Score-Punkte sammeln</div>
+				<h2 class="help-header">Score-Punkte sammeln</h2>
 				<div class="help-text">Dein Score erh&ouml;ht sich mit jedem
 					neuen Stein, der ins Spiel kommt. Die Anzahl der Punkte variiert je
 					nach Schwierigkeitsgrad; das ist vor allem bei den h&ouml;heren
@@ -118,7 +121,7 @@
 					ermittelt; er wird allerdings nur dann gespeichert, wenn du das
 					Spiel zu Ende spielst!</div>
 
-				<div class="help-header">Spielmodus</div>
+				<h2 class="help-header">Spielmodus</h2>
 				<div class="help-text">Es gibt momentan zwei Varianten beim
 					Spielmodus. Bei "classic" hat jeder Stein seine feste Punktzahl;
 					allerdings kann es ggf. zwischen den Leveln variieren. Bei "speed"
@@ -127,7 +130,7 @@
 					lassen! Wegen der unterschiedlichen Zählweise gibt es natürlich
 					auch für jeden Spielmodus eigene Ranglisten.</div>
 
-				<div class="help-header">Ranglisten</div>
+				<h2 class="help-header">Ranglisten</h2>
 				<div class="help-text">Bei den Ranglisten gibt es verschiedene
 					Varianten. Entweder du siehst von jedem Spieler das beste Ergebnis
 					oder alle deine eigenen Ergebnisse. Außerdem kannst du einen Level
@@ -135,7 +138,7 @@
 					die Punktezählung je nach Spielmodus unterschiedlich ist, gibt es
 					dafür getrennte Ranglisten; demnach ist hier auch der Modus
 					auswählbar.</div>
-				<div class="help-header">Viel Spa&szlig;!</div>
+				<h2 class="help-header">Viel Spa&szlig;!</h2>
 				<div class="help-tail-space"></div>
 			</div>
 

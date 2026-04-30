@@ -1,13 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
-	<title>Novotris, the better Tetris kostenlos online spielen</title>
+	<title>Tetris-Rangliste – Wer spielt am besten? – Novotris</title>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, user-scalable=no">
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+	<meta name="viewport" content="width=device-width">
 	<meta name="description"
-		content="Novotris: Tetris kostenlos online im Browser spielen, mit oder ohne Anmeldung, herausfordernde Varianten probieren, mit anderen Nutzern vergleichen und in Rangliste eintragen.">
+		content="Tetris-Rangliste bei Novotris: Vergleiche deinen Highscore online mit anderen Spielern – nach Level, Modus und Gerät getrennt.">
 	<meta name="keywords"
 		content="tetris, rangliste">
 	<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
@@ -20,6 +19,7 @@
 	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/ranking.php" />
 	<link rel="canonical" href="https://novotris.bplaced.net/de/ranking.php" />
 
+	<link rel="preconnect" href="https://www.googletagmanager.com">
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async
 		src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
@@ -44,10 +44,13 @@
 	<div class="pseudoBody">
 		<div class="container" id="div-container">
 			<div class="novHeader nov-header-rounded">
-				<div id="lblTitle" class="nov-title-area">Ranglisten</div>
+				<h1 id="lblTitle" class="nov-title-area lbl-title-compact">Tetris-Rangliste</h1>
 				<div class="nov-logo-area">
-					<img src="../images/logo bing v8.jpg" width="135" height="auto"
-						align="right" alt="novotris logo">
+					<picture>
+						<source srcset="../images/novotris-logo.webp" type="image/webp">
+						<img src="../images/novotris-logo.jpg" width="135" height="auto"
+							align="right" alt="Novotris - kostenloses Tetris-Spiel">
+					</picture>
 				</div>
 			</div>
 
@@ -171,6 +174,19 @@
 
 		</div>
 	</div>
+	<section class="nov-seo-text">
+		<h2>Tetris-Rangliste – Highscore online vergleichen</h2>
+		<p>
+			Die Novotris-Rangliste zeigt, wer beim Tetris-Spielen die höchsten Punktzahlen erreicht.
+			Vergleiche deinen <strong>Tetris-Highscore online</strong> mit anderen Spielern –
+			aufgeteilt nach Level (1–6) und Spielmodus (Classic, Speed).
+		</p>
+		<p>
+			Mit einem kostenlosen Account wird jeder Spielstand automatisch gespeichert.
+			Ob Desktop oder Mobilgerät: Novotris führt separate Ranglisten, damit der
+			Vergleich fair bleibt. Schaff es in die Top 10!
+		</p>
+	</section>
 
 	<!-- ---------------------------------------------------- -->
 

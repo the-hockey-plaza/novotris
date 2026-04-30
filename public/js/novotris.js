@@ -862,11 +862,25 @@ async function stopGameOnDb(score) {
 		console.log("stopGameOnDb, result = " + result);
 
 		let mailContent;
+		let mode;
+		if (glUser.getMode() == glModeSpeed)
+			mode = "speed";
+		else
+			mode = "classic";
+
+		let isMobile;
+		if (glIsMobile)
+			isMobile = "yes";
+		else
+			isMobile = "no";
+
+
 		mailContent = "alert type: <b>stopGame</b><br>";
 		mailContent += "ip: <b>" + result + "</b><br>";
 		mailContent += "user_name: <b>" + glUser.getName() + "</b><br>";
+		mailContent += "mobile: <b>" + isMobile + "</b><br>";
 		mailContent += "level: <b>" + glUser.getLevel() + "</b><br>";
-		mailContent += "mode: <b>" + glUser.getMode() + "</b><br>";
+		mailContent += "mode: <b>" + mode + "</b><br>";
 		mailContent += "score: <b>" + score + "</b><br>";
 
 		mainLog("stopGame", "user_name: " + glUser.getName() + ", level: " + glUser.getLevel() + ", score: " + score);

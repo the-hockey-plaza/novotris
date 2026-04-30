@@ -1,13 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
-	<title>Novotris, the better Tetris kostenlos online spielen</title>
+	<title>Neuigkeiten rund um Novotris &amp; Tetris – Novotris</title>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, user-scalable=no">
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+	<meta name="viewport" content="width=device-width">
 	<meta name="description"
-		content="Novotris: Tetris kostenlos online im Browser spielen, mit oder ohne Anmeldung, herausfordernde Varianten probieren, mit anderen Nutzern vergleichen und in Rangliste eintragen.">
+		content="Neuigkeiten rund um Novotris und Tetris: aktuelle Updates, neue Level und Wissenswertes rund um den kostenlosen Browser-Klassiker.">
 	<meta name="keywords"
 		content="tetris, news">
 	<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
@@ -20,6 +19,7 @@
 	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/news.php" />
 	<link rel="canonical" href="https://novotris.bplaced.net/de/news.php" />
 
+	<link rel="preconnect" href="https://www.googletagmanager.com">
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async
 		src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
@@ -48,10 +48,13 @@
 		<div class="container" id="div-container">
 			<div class="novHeader"
 				style="border-top-left-radius: 4px; border-top-right-radius: 4px;">
-				<div id="lblTitle" style="flex: 80">News & Facts</div>
+				<h1 id="lblTitle" style="flex: 80">Neuigkeiten rund um Novotris &amp; Tetris</h1>
 				<div style="flex: 20">
-					<img src="../images/logo bing v8.jpg" width="135" height="auto"
-						align="right" alt="novotris logo">
+					<picture>
+						<source srcset="../images/novotris-logo.webp" type="image/webp">
+						<img src="../images/novotris-logo.jpg" width="135" height="auto"
+							align="right" alt="Novotris - kostenloses Tetris-Spiel">
+					</picture>
 				</div>
 			</div>
 

@@ -1,11 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
-	<title>Novotris, the better Tetris play online free</title>
+	<title>Play Tetris Online Free – Novotris</title>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, user-scalable=no">
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+	<meta name="viewport" content="width=device-width">
 	<meta name="description"
 		content="Novotris: Play Tetris online for free in your browser, try out challenging variants, compete with other users and enter the rankings.">
 	<meta name="keywords"
@@ -20,6 +19,7 @@
 	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/index.php" />
 	<link rel="canonical" href="https://novotris.bplaced.net/en/index.php" />
 
+	<link rel="preconnect" href="https://www.googletagmanager.com">
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async
 		src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
@@ -52,6 +52,7 @@
 
 	<div class="pseudoBody">
 		<div class="container" id="div-container">
+			<h1 class="sr-only">Play Tetris Online Free</h1>
 			<div class="novHeader"
 				style="border-top-left-radius: 4px; border-top-right-radius: 4px;">
 
@@ -65,8 +66,11 @@
 				<!-- 				<div id="lblTitle" style="flex: 80">Titel</div> -->
 
 				<div style="flex: 20">
-					<img src="../images/logo bing v8.jpg" width="135" height="auto"
-						align="right" alt="novotris logo" alt="novotris logo">
+					<picture>
+						<source srcset="../images/novotris-logo.webp" type="image/webp">
+						<img src="../images/novotris-logo.jpg" width="135" height="auto"
+							align="right" alt="novotris logo" alt="novotris logo">
+					</picture>
 				</div>
 			</div>
 
@@ -87,11 +91,13 @@
 						</td>
 						<td width="40%">
 							<p style="margin-top: 10" align="center">
-								<a href="<?= $nov_url_news ?>"><img
-										src="../images/newspaper-1753579_640.jpg" width="140"
-										height="auto"></a>
-
-							</p>
+								<a href="<?= $nov_url_news ?>">
+									<picture>
+										<source srcset="../images/newspaper.webp" type="image/webp"><img
+											src="../images/newspaper.jpg" width="140"
+											height="auto" alt="Novotris &amp; Tetris News">
+									</picture>
+								</a>
 						</td>
 					</tr>
 				</table>
@@ -100,9 +106,13 @@
 					<tr>
 						<td width="40%">
 							<p style="margin-top: 25" align="center">
-								<a href="<?= $nov_url_alternatives ?>"><img
-										src="../images/running-78192_640.jpg" width="140"
-										height="auto"></a>
+								<a href="<?= $nov_url_alternatives ?>">
+									<picture>
+										<source srcset="../images/running.webp" type="image/webp"><img
+											src="../images/running.jpg" width="140"
+											height="auto" alt="Free Online Tetris Alternatives">
+									</picture>
+								</a>
 							</p>
 						</td>
 
@@ -129,9 +139,13 @@
 						</td>
 						<td width="40%">
 							<p style="margin-top: 10" align="center">
-								<a href="<?= $nov_url_bonanza ?>"><img
-										src="../images/globe-967305_640.jpg" width="140"
-										height="auto"></a>
+								<a href="<?= $nov_url_bonanza ?>">
+									<picture>
+										<source srcset="../images/globe.webp" type="image/webp"><img
+											src="../images/globe.jpg" width="140"
+											height="auto">
+									</picture>
+								</a>
 							</p>
 						</td>
 					</tr>

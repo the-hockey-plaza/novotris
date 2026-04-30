@@ -66,7 +66,11 @@ a:visited {
 /* } */
 
 .pseudoBody {
-	background: url('../images/background-1.png') no-repeat center center fixed;
+	background: url('../images/background.webp') no-repeat center center fixed;
+	background-image: image-set(
+		url('../images/background.webp') type('image/webp'),
+		url('../images/background.png') type('image/png')
+	);
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -151,6 +155,31 @@ a:visited {
 .nov-footer-bottom {
 	border-bottom-left-radius: 10px;
 	border-bottom-right-radius: 10px;
+}
+
+.nov-seo-text {
+	max-width: var(--container-width);
+	margin: 0.8rem auto 0;
+	padding: 1.2rem 1.5rem;
+	color: var(--dark-text-color);
+	font-size: 0.9rem;
+	line-height: 1.6;
+	text-align: center;
+}
+
+.nov-seo-text h1 {
+	font-size: 1.1rem;
+	margin-bottom: 0.75rem;
+}
+
+.nov-seo-text p {
+	margin-bottom: 0.6rem;
+	text-align: left;
+}
+
+.nov-seo-text a {
+	color: var(--dark-text-color);
+	text-decoration: underline;
 }
 
 .footer-language-box {
@@ -266,10 +295,16 @@ a.footer-label-only {
 
 #lblTitle {
 	font-size: 48px;
+	margin: 0;
 	color: var(--light-text-color);
 	padding-top: 32px;
 	padding-bottom: 12px;
 	text-align: center;
+}
+
+#lblTitle.lbl-title-compact {
+	font-size: clamp(30px, 5vw, 36px);
+	padding-top: 22px;
 }
 
 
@@ -551,6 +586,19 @@ a.footer-label-only {
 	font-weight: bold;
 	padding-left: 30px;
 	padding-top: 1.5em;
+	margin: 0;
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
 }
 
 .help-text {

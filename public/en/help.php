@@ -1,13 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
-	<title>Novotris, the better Tetris play online free</title>
+	<title>Tetris Instructions &amp; Rules – Novotris</title>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, user-scalable=no">
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+	<meta name="viewport" content="width=device-width">
 	<meta name="description"
-		content="Novotris: Play Tetris online for free in your browser, try out challenging variants, compete with other users and enter the rankings.">
+		content="Tetris rules and instructions for Novotris: getting started, level system, speed, game modes and highscore tips – all at a glance.">
 	<meta name="keywords"
 		content="tetris, instructions">
 	<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
@@ -20,6 +19,7 @@
 	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/help.php" />
 	<link rel="canonical" href="https://novotris.bplaced.net/en/help.php" />
 
+	<link rel="preconnect" href="https://www.googletagmanager.com">
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async
 		src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
@@ -53,16 +53,19 @@
 	<div class="pseudoBody">
 		<div class="container" id="div-container">
 			<div class="novHeader nov-header-rounded">
-				<div id="lblTitle" class="nov-title-area">Game Instructions</div>
+				<h1 id="lblTitle" class="nov-title-area lbl-title-compact">Tetris Instructions &amp; Rules</h1>
 				<div class="nov-logo-area">
-					<img src="../images/logo bing v8.jpg" width="135" height="auto"
-						align="right" alt="novotris logo">
+					<picture>
+						<source srcset="../images/novotris-logo.webp" type="image/webp">
+						<img src="../images/novotris-logo.jpg" width="135" height="auto"
+							align="right" alt="Novotris - Play Tetris for Free">
+					</picture>
 				</div>
 			</div>
 
 			<div class="novBody help-layout">
 
-				<div class="help-header">Getting Started</div>
+				<h2 class="help-header">Getting Started</h2>
 				<div class="help-text">You can - without registration - as a
 					guest play a little game right away. But it is recommended to create
 					an account via "Login" in the footer and then "Register" to create
@@ -71,12 +74,12 @@
 					rankings are created. Furthermore your results are saved, even if
 					you have deleted the browser history, for example.</div>
 
-				<div class="help-header">Language selection</div>
+				<h2 class="help-header">Language selection</h2>
 				<div class="help-text">At the bottom right of the start page
 					there is a drop-down menu, with which you can set the desired
 					language (german or English).</div>
 
-				<div class="help-header">Playing</div>
+				<h2 class="help-header">Playing</h2>
 				<div class="help-text">
 					From the start page you can get to the preview of the different
 					levels by clicking on the different levels (selectable via the menu
@@ -93,26 +96,26 @@
 					also use the icons above the footer. Just try it!
 				</div>
 
-				<div class="help-header">Speed</div>
+				<h2 class="help-header">Speed</h2>
 				<div class="help-text">After every 5 rows that are complete and
 					therefore disappear from the game, the speed increases by 10
 					percent. After all, it should not become boring. At the beginning,
 					the speed is leisurely: it is one field per second. .</div>
 
-				<div class="help-header">Level</div>
+				<h2 class="help-header">Level</h2>
 				<div class="help-text">When you play Novotris for the first
 					time, only the first level is available. As soon as you have a
 					highscore of at least 1000 (750 for mobile devices), the next level
 					will be unlocked.</div>
 
-				<div class="help-header">Collecting Score Points</div>
+				<h2 class="help-header">Collecting Score Points</h2>
 				<div class="help-text">Your score increases with each new stone
 					that enters the game. The number of points varies depending on the
 					difficulty level; this is especially interesting in the higher
 					levels. The highscore is calculated for each level separately; but
 					will only be saved when you finish the game.</div>
 
-				<div class="help-header">Game mode</div>
+				<h2 class="help-header">Game mode</h2>
 				<div class="help-text">There are currently two variants of the
 					game mode. In "classic", each stone has its fixed number of points;
 					however, it may vary between levels. In "speed", the faster the
@@ -121,14 +124,14 @@
 					different counting methods, there are of course separate rankings
 					for each game mode.</div>
 
-				<div class="help-header">Rankings</div>
+				<h2 class="help-header">Rankings</h2>
 				<div class="help-text">For the rankings there are different
 					variants. Either you can see the best result of each player or all
 					your own results. You can also select a level or view all levels
 					together in one table. Since the points are counted differently
 					depending on the game mode, there are separate rankings for them;
 					accordingly, the mode can also be selected here.</div>
-				<div class="help-header">Have fun!</div>
+				<h2 class="help-header">Have fun!</h2>
 				<div class="help-tail-space"></div>
 			</div>
 

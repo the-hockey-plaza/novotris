@@ -1,13 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
-	<title>Novotris, the better Tetris play online free</title>
+	<title>Tetris Leaderboard – Who Plays Best? – Novotris</title>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, user-scalable=no">
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+	<meta name="viewport" content="width=device-width">
 	<meta name="description"
-		content="Novotris: Play Tetris online for free in your browser, try out challenging variants, compete with other users and enter the rankings.">
+		content="Tetris leaderboard at Novotris: compare your highscore online with other players – sorted by level, mode and device.">
 	<meta name="keywords"
 		content="tetris, ranking">
 	<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
@@ -20,6 +19,7 @@
 	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/ranking.php" />
 	<link rel="canonical" href="https://novotris.bplaced.net/en/ranking.php" />
 
+	<link rel="preconnect" href="https://www.googletagmanager.com">
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async
 		src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
@@ -47,10 +47,13 @@
 	<div class="pseudoBody">
 		<div class="container" id="div-container">
 			<div class="novHeader nov-header-rounded">
-				<div id="lblTitle" class="nov-title-area">Rankings</div>
+				<h1 id="lblTitle" class="nov-title-area lbl-title-compact">Tetris Leaderboard</h1>
 				<div class="nov-logo-area">
-					<img src="../images/logo bing v8.jpg" width="135" height="auto"
-						align="right" alt="novotris logo">
+					<picture>
+						<source srcset="../images/novotris-logo.webp" type="image/webp">
+						<img src="../images/novotris-logo.jpg" width="135" height="auto"
+							align="right" alt="Novotris - Play Tetris for Free">
+					</picture>
 				</div>
 			</div>
 
@@ -175,6 +178,19 @@
 
 		</div>
 	</div>
+	<section class="nov-seo-text">
+		<h2>Tetris Leaderboard – Compare Your Highscore Online</h2>
+		<p>
+			The Novotris leaderboard shows who achieves the highest scores in Tetris.
+			Compare your <strong>Tetris highscore online</strong> with other players –
+			sorted by level (1–6) and game mode (Classic, Speed).
+		</p>
+		<p>
+			With a free account, every game result is saved automatically.
+			Whether desktop or mobile: Novotris keeps separate leaderboards to keep
+			the comparison fair. Make it into the Top 10!
+		</p>
+	</section>
 
 	<!-- ---------------------------------------------------- -->
 

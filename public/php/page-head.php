@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $pageLang = $pageLang ?? 'de';
 $pageTitle = $pageTitle ?? 'Novotris, the better Tetris';
 $pageDescription = $pageDescription ?? '';
@@ -14,7 +14,7 @@ $alternateXDefaultUrl = $alternateXDefaultUrl ?? '';
 <head>
 	<title><?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?></title>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<meta name="viewport" content="width=device-width">
 	<meta name="description" content="<?= htmlspecialchars($pageDescription, ENT_QUOTES, 'UTF-8') ?>">
 	<meta name="keywords" content="<?= htmlspecialchars($pageKeywords, ENT_QUOTES, 'UTF-8') ?>">
 	<meta name="copyright" content="Armin Steidlinger Softwareentwicklung">
@@ -27,6 +27,7 @@ $alternateXDefaultUrl = $alternateXDefaultUrl ?? '';
 	<link rel="alternate" hreflang="x-default" href="<?= htmlspecialchars($alternateXDefaultUrl, ENT_QUOTES, 'UTF-8') ?>" />
 	<link rel="canonical" href="<?= htmlspecialchars($canonicalUrl, ENT_QUOTES, 'UTF-8') ?>" />
 
+	<link rel="preconnect" href="https://www.googletagmanager.com">
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async
 		src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>

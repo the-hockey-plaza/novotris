@@ -1,7 +1,7 @@
-<?php
+﻿<?php
 $pageLang = 'de';
-$pageTitle = 'Novotris, the better Tetris kostenlos online spielen';
-$pageDescription = 'Novotris: Tetris kostenlos online im Browser spielen, mit oder ohne Anmeldung, herausfordernde Varianten probieren, mit anderen Nutzern vergleichen und in Rangliste eintragen.';
+$pageTitle = 'Tetris-Fundgrube – Links & Tipps – Novotris';
+$pageDescription = 'Tetris und Wissen: Geschichte des Spielklassikers, Tetris-Effekt, Mathematik, KI-Einsatz und mehr – kuratiert von Novotris.';
 $pageKeywords = 'tetris, fundgrube';
 $canonicalUrl = 'https://novotris.bplaced.net/de/bonanza.php';
 $alternateDeUrl = 'https://novotris.bplaced.net/de/bonanza.php';
@@ -13,10 +13,13 @@ include '../php/page-head.php';
 	<div class="container" id="div-container">
 		<div class="novHeader"
 			style="border-top-left-radius: 4px; border-top-right-radius: 4px;">
-			<div id="lblTitle" style="flex: 80">Überall Tetris</div>
+			<h1 id="lblTitle" style="flex: 80">Überall Tetris</h1>
 			<div style="flex: 20">
-				<img src="../images/logo bing v8.jpg" width="135" height="auto"
-					align="right" alt="novotris logo">
+				<picture>
+					<source srcset="../images/novotris-logo.webp" type="image/webp">
+					<img src="../images/novotris-logo.jpg" width="135" height="auto"
+						align="right" alt="Novotris - kostenloses Tetris-Spiel">
+				</picture>
 			</div>
 		</div>
 

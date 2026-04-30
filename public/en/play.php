@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
-	<title>Novotris, the better Tetris play online free</title>
+	<title>Play Tetris Now – Free in Your Browser – Novotris</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, user-scalable=no">
 	<meta name="description"
-		content="Novotris: Play Tetris online for free in your browser, try out challenging variants, compete with other users and enter the rankings.">
+		content="Play Tetris free in your browser without registration. Save your highscore and compare in the leaderboard. Classic and Speed mode, up to 6 levels.">
 	<meta name="keywords"
 		content="tetris, novotris, game, spiel, free, kostenlos, online, spielen,steidlinger">
 	<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
@@ -20,6 +20,7 @@
 	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/play.php" />
 	<link rel="canonical" href="https://novotris.bplaced.net/en/play.php" />
 
+	<link rel="preconnect" href="https://www.googletagmanager.com">
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async
 		src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
@@ -56,6 +57,26 @@
 
 	<?php include '../php/navi.php'; ?>
 
+	<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "VideoGame",
+			"name": "Novotris",
+			"description": "Play Tetris for free in your browser – Classic and Speed mode, up to 6 levels.",
+			"genre": "Puzzle",
+			"playMode": "SinglePlayer",
+			"applicationCategory": "Game",
+			"operatingSystem": "Web Browser",
+			"inLanguage": "en",
+			"url": "https://novotris.bplaced.net/en/play.php",
+			"offers": {
+				"@type": "Offer",
+				"price": "0",
+				"priceCurrency": "EUR"
+			}
+		}
+	</script>
+
 </head>
 
 <body>
@@ -66,7 +87,10 @@
 					<a class="animatedTitle" id="animatedTitle">Spielen</a>
 				</div>
 				<div class="nov-logo-area">
-					<img src="../images/logo bing v8.jpg" width="135" height="auto" alt="Novotris logo">
+					<picture>
+						<source srcset="../images/novotris-logo.webp" type="image/webp">
+						<img src="../images/novotris-logo.jpg" width="135" height="auto" alt="Novotris - Play Tetris for Free">
+					</picture>
 				</div>
 			</div>
 
@@ -148,6 +172,26 @@
 			</div>
 
 		</div>
+		<section class="nov-seo-text">
+			<h1>Play Tetris Online Free – Novotris</h1>
+			<p>
+				Novotris is a free Tetris game playable directly in your browser – no download,
+				no installation required. Stack falling blocks, complete rows and aim for
+				the highest score possible.
+			</p>
+			<p>
+				Choose from <strong>6 difficulty levels</strong> and two game modes:
+				<strong>Classic mode</strong> increases speed with every cleared row.
+				<strong>Speed mode</strong> starts at maximum speed right away – for
+				experienced players only.
+			</p>
+			<p>
+				With a free <strong>account</strong> your highscore is saved and added to
+				the <a href="ranking.php">leaderboard</a> – compete with other players.
+				Without signing in the game works just the same; your score is only stored
+				locally.
+			</p>
+		</section>
 	</div>
 
 	<!-- ---------------------------------------------------- -->

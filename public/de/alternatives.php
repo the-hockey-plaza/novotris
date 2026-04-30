@@ -1,7 +1,7 @@
-<?php
+﻿<?php
 $pageLang = 'de';
-$pageTitle = 'Novotris, the better Tetris kostenlos online spielen';
-$pageDescription = 'Novotris: Tetris kostenlos online im Browser spielen, mit oder ohne Anmeldung, herausfordernde Varianten probieren, mit anderen Nutzern vergleichen und in Rangliste eintragen.';
+$pageTitle = 'Tetris-Alternativen kostenlos online – Novotris';
+$pageDescription = 'Tetris-Alternativen kostenlos online: die besten Browser-Varianten des Spieleklassikers – kuratiert von Novotris.';
 $pageKeywords = 'tetris, alternativen';
 $canonicalUrl = 'https://novotris.bplaced.net/de/alternatives.php';
 $alternateDeUrl = 'https://novotris.bplaced.net/de/alternatives.php';
@@ -13,12 +13,14 @@ include '../php/page-head.php';
 	<div class="container" id="div-container">
 		<div class="novHeader"
 			style="border-top-left-radius: 4px; border-top-right-radius: 4px;">
-			<div id="lblTitle"
-				style="flex: 80; font-size: 36px; padding-top: 40px;">Novotris
-				ist nicht alleine...</div>
+			<h1 id="lblTitle"
+				style="flex: 80; font-size: 36px; padding-top: 40px;">Tetris-Alternativen kostenlos online</h1>
 			<div style="flex: 20">
-				<img src="../images/logo bing v8.jpg" width="135" height="auto"
-					align="right" alt="novotris logo">
+				<picture>
+					<source srcset="../images/novotris-logo.webp" type="image/webp">
+					<img src="../images/novotris-logo.jpg" width="135" height="auto"
+						align="right" alt="Novotris - kostenloses Tetris-Spiel">
+				</picture>
 			</div>
 		</div>
 

@@ -12,10 +12,7 @@
 	<url>
 		<loc>https://novotris.bplaced.net/de/help.php</loc>
 	</url>
-	<url>
-		<loc>https://novotris.bplaced.net/de/index.php</loc>
-	</url>
-	<url>
+		<url>
 		<loc>https://novotris.bplaced.net/de/news.php</loc>
 	</url>
 	<url>
@@ -37,10 +34,7 @@
 	<url>
 		<loc>https://novotris.bplaced.net/en/help.php</loc>
 	</url>
-	<url>
-		<loc>https://novotris.bplaced.net/en/index.php</loc>
-	</url>
-	<url>
+		<url>
 		<loc>https://novotris.bplaced.net/en/news.php</loc>
 	</url>
 	<url>

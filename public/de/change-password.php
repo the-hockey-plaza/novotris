@@ -1,13 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
-	<title>Novotris, the better Tetris kostenlos online spielen</title>
+	<title>Passwort ändern – Novotris</title>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, user-scalable=no">
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+	<meta name="viewport" content="width=device-width">
 	<meta name="description"
-		content="Novotris: Tetris kostenlos online im Browser spielen, herausfordernde Varianten probieren, mit anderen Nutzern messen und in Rangliste eintragen.">
+		content="Passwort für dein Novotris-Konto sicher ändern – nach dem Login einfach neues Passwort setzen.">
 	<meta name="keywords"
 		content="tetris, changepassword">
 	<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
@@ -27,6 +26,7 @@
 	<link rel="alternate" hreflang="x-default" href="https://novotris.bplaced.net/de/change-password.php/" />
 	<link rel="canonical" href="https://novotris.bplaced.net/de/change-password.php" />
 
+	<link rel="preconnect" href="https://www.googletagmanager.com">
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async
 		src="https://www.googletagmanager.com/gtag/js?id=G-9GL47VN2C7"></script>
@@ -56,8 +56,11 @@
 					style="flex: 80; font-size: 36px; padding-top: 40px;">Passwort
 					zurücksetzen</div>
 				<div style="flex: 20">
-					<img src="../images/logo bing v8.jpg" width="135" height="auto"
-						align="right" alt="novotris logo">
+					<picture>
+						<source srcset="../images/novotris-logo.webp" type="image/webp">
+						<img src="../images/novotris-logo.jpg" width="135" height="auto"
+							align="right" alt="Novotris - kostenloses Tetris-Spiel">
+					</picture>
 				</div>
 			</div>
 
