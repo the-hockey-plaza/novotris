@@ -147,6 +147,8 @@ function readRankingPosition($level, $mobile, $user_id, $mode)
   $sql = null;
   $i = 0;
   $position = -1;
+  $myObj = new stdClass();
+  $cnt  = 0;
 
   $sql = "select u.id";
   $sql = $sql . " from nov_user as u inner join game as g on g.user_id = u.id";
@@ -173,7 +175,18 @@ function readRankingPosition($level, $mobile, $user_id, $mode)
       break;
   }
 
-  echo $position;
+  //  echo $position;
+  $myObj->position12 = $position;
+
+  // are there any games of the next level?
+  $sql = "select count(*) as cnt from game where score > 0 and user_id = " . $user_id . " and level = " . ($level + 1) . " and nov_mode = " . $mode;
+  foreach ($pdo->query($sql) as $row) {
+    $cnt = $row['cnt'];
+    break;
+  }
+
+  $myObj->next_level_games = $cnt;
+  echo json_encode($myObj);
 }
 
 // -----------------------------------------------------------------------------

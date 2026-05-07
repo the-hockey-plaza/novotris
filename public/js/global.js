@@ -389,6 +389,13 @@ function getText(key, p1, p2, p3, p4) {
 					return p1 + " points unlock the next level.<br>Your highest level: <b>" + p2 + "</b>";
 			}
 
+		case 'next_level_games':
+			switch (lang) {
+				case "de":
+					return "Dir fehlen noch <b>" + p1 + "</b> Punkte für das nächste Level!";
+				case "en":
+					return "You still need <b>" + p1 + "</b> points for the next level!";
+			}
 
 	}
 }
