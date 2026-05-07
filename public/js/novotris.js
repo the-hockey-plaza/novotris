@@ -630,17 +630,21 @@ function stop_game() {
 	glScore = 0;
 }
 
-function showGameOverDialog(newRankingPosition) {
+function showGameOverDialog(newRankingPosition, nextLevelGames) {
 	var msgText;
 
+	msgText = "<p>";
 	if (glScoreFinished > glHighscoreFinished)
-		// msgText = "Du hast in diesem Spiel einen Score von <b>" + glScoreFinished + "</b> und damit einen neuen Highscore erreicht!";
-		msgText = getText("score_highscore", glScoreFinished);
+		msgText += getText("score_highscore", glScoreFinished);
 	else
-		msgText = getText("score", glScoreFinished);
+		msgText += getText("score", glScoreFinished);
+	msgText += "</p>";
 
-	if (newRankingPosition != null)
-		msgText += "<br>" + getText("improved_ranking", newRankingPosition);
+	if (newRankingPosition != null) {
+		msgText += "<p>" + getText("improved_ranking", newRankingPosition) + "</p>";
+		if (nextLevelGames == 0 && glLevelNeedsScore > glScoreFinished)
+			msgText += "<p>" + getText("next_level_games", glLevelNeedsScore - glScoreFinished) + "</p>";
+	}
 
 	classDialogModus = "finished";
 	classDialog.showMessageDialog("Game Over", msgText);
@@ -878,6 +882,7 @@ async function stopGameOnDb(score) {
 		mailContent = "alert type: <b>stopGame</b><br>";
 		mailContent += "ip: <b>" + result + "</b><br>";
 		mailContent += "user_name: <b>" + glUser.getName() + "</b><br>";
+		mailContent += "user_language: <b>" + glUser.getLanguage() + "</b><br>";
 		mailContent += "mobile: <b>" + isMobile + "</b><br>";
 		mailContent += "level: <b>" + glUser.getLevel() + "</b><br>";
 		mailContent += "mode: <b>" + mode + "</b><br>";

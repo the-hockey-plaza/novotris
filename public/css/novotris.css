@@ -562,6 +562,11 @@ a.footer-label-only {
 	font-size: 16px;
 }
 
+#span-msg-text p {
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+}
+
 .inpText {
 	color: var(--playground-back-color);
 	background-color: var(--light-text-color);

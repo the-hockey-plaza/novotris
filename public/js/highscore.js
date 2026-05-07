@@ -217,7 +217,11 @@ async function setRankingPosition(old) {
 			throw new Error('HTTP-Fehler: ${response.status}');
 		}
 
-		const position = await response.text();
+		let result = await response.text();
+		let data = JSON.parse(result);
+
+		const position = data.position12;
+		const nextLevelGames = data.next_level_games;
 		console.log("setRankingPosition, position = " + position);
 
 		if (old)
@@ -228,7 +232,7 @@ async function setRankingPosition(old) {
 			if (newRankingPosition >= glOldRankingPosition || glOldRankingPosition == -1)
 				newRankingPosition = null;
 
-			showGameOverDialog(newRankingPosition);
+			showGameOverDialog(newRankingPosition, nextLevelGames);
 		}
 
 	}
@@ -267,7 +271,7 @@ else {
 	if (newRankingPosition >= glOldRankingPosition || glOldRankingPosition == -1)
 		newRankingPosition = null;
 
-	showGameOverDialog(newRankingPosition);
+		showGameOverDialog(newRankingPosition, nextLevelGames);
 }
 }
 */
