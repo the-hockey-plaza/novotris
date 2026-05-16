@@ -36,7 +36,7 @@
 
 
 
-	<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
+	<link rel="stylesheet" type="text/css" href="../css/novotris.css?v=<?php echo filemtime('../css/novotris.css'); ?>" />
 
 	<?php include '../php/navi.php'; ?>
 
@@ -62,12 +62,14 @@
 
 </head>
 
-<body>
+<body class="play-page">
 	<div class="pseudoBody">
 		<div class="container" id="div-container">
 			<div class="novHeader nov-header-rounded">
-				<div id="divTitle" class="nov-title-area">
-					<a class="animatedTitle" id="animatedTitle">Spielen</a>
+				<div class="marquee-flex-wrap">
+					<div class="marquee-container" id="marquee-container" style="display:none;">
+						<div class="marquee" id="marquee-text"></div>
+					</div>
 				</div>
 				<div class="nov-logo-area">
 					<picture>
@@ -77,6 +79,8 @@
 				</div>
 			</div>
 
+			<div id="play-status-message" class="play-status-message" aria-live="polite"></div>
+
 			<div class="novBody play-layout">
 				<div id="div-play-frame" class="play-touch-surface play-stage">
 					<div>
@@ -84,74 +88,58 @@
 					</div>
 				</div>
 				<div class="play-sidebar">
-
-					<div id="lbl_rows" class="game-data-label play-top-gap-xs">Rows</div>
-					<div id="txt_rows" class="game-data-text">1234</div>
-					<div id="lbl_speed" class="game-data-label play-top-gap-sm">Speed</div>
-					<div id="txt_speed" class="game-data-text">1234</div>
-					<div id="lbl_score" class="game-data-label play-top-gap-sm">Score</div>
-					<div id="txt_score" class="game-data-text">1234</div>
-					<div id="lbl_highscore" class="game-data-label play-top-gap-sm">Highscore</div>
-					<div id="txt_highscore" class="game-data-text">1234</div>
-
-					<div class="game-data-label play-top-gap-sm">
-						Level<br> <select id="drp-play-level" class="drpMenu play-select">
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
-							<option>4</option>
-							<option>5</option>
-							<option>6</option>
-						</select>
+					<div class="play-sidebar-stats">
+						<div class="play-stat">
+							<div id="lbl_rows" class="game-data-label play-top-gap-xs">Rows</div>
+							<div id="txt_rows" class="game-data-text">1234</div>
+						</div>
+						<div class="play-stat">
+							<div id="lbl_speed" class="game-data-label play-top-gap-sm">Speed</div>
+							<div id="txt_speed" class="game-data-text">1234</div>
+						</div>
+						<div class="play-stat">
+							<div id="lbl_score" class="game-data-label play-top-gap-sm">Score</div>
+							<div id="txt_score" class="game-data-text">1234</div>
+						</div>
+						<div class="play-stat">
+							<div id="lbl_highscore" class="game-data-label play-top-gap-sm">Highscore</div>
+							<div id="txt_highscore" class="game-data-text">1234</div>
+						</div>
 					</div>
 
-					<div class="game-data-label">
-						Modus<br> <select id="drp-play-mode" class="drpMenu play-select">
-							<option>classic</option>
-							<option>speed</option>
-						</select>
-					</div>
+					<div class="play-sidebar-controls">
+						<div class="play-control">
+							<div class="game-data-label play-top-gap-sm">
+								Level<br> <select id="drp-play-level" class="drpMenu play-select">
+									<option>1</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+								</select>
+							</div>
+						</div>
 
-					<div class="play-start-wrap">
-						<button class="animated-border-btn" id="do_start" onclick="do_start();">Start</button>
+						<div class="play-control">
+							<div class="game-data-label">
+								Modus<br> <select id="drp-play-mode" class="drpMenu play-select">
+									<option>classic</option>
+									<option>speed</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="play-control play-start-wrap">
+							<button class="animated-border-btn" id="do_start" onclick="do_start();">Start</button>
+						</div>
 					</div>
 
 
 				</div>
 			</div>
 
-			<div class="novFooter">
-				<div class="row-footer-box">
-					<a class="footer-label" href="<?= $nov_url_index ?>">Tetriswelt</a>
-				</div>
-				<div class="row-footer-box">
-					<a class="footer-label-only" style="color: var(--play-color);">Spielen</a>
-				</div>
-				<div class="row-footer-box">
-					<a class="footer-label footer-clickable" href="<?= $nov_url_ranking ?>">Ranglisten</a>
-				</div>
-				<div class="row-footer-box">
-					<a class="footer-label footer-clickable" href="<?= $nov_url_help ?>">Anleitung</a>
-				</div>
-			</div>
-
-			<div class="novFooter nov-footer-bottom">
-				<div class="row-footer-box">
-					<a id="footer-user" class="footer-label footer-clickable" onclick="showUserInfoDialog();"></a>
-				</div>
-				<div class="row-footer-box">
-					<a id="footer-login" class="footer-label footer-clickable" onclick="glUser.loginLogout('index.php')"></a>
-				</div>
-				<div class="row-footer-box">
-					<a id="footer-version" class="footer-label footer-clickable" onclick="showNovotrisInfoDialog();">Version</a>
-				</div>
-				<div class="row-footer-box footer-language-box">
-					<select id="drp-language" class="footer-label">
-						<option>deutsch</option>
-						<option>english</option>
-					</select>
-				</div>
-			</div>
+			<?php include '../php/page-footer.php'; ?>
 
 		</div>
 		<section class="nov-seo-text">
@@ -214,6 +202,60 @@
 		src="../js/rendering.js?v=<?php echo filemtime('../js/rendering.js'); ?>"></script>
 	<script
 		src="../js/preview.js?v=<?php echo filemtime('../js/preview.js'); ?>"></script>
+
+	<script>
+		// Laufband vor Spielstart anzeigen
+
+		function detectLanguage() {
+			// 1. Versuche Sprache aus glUser
+			if (typeof glUser !== 'undefined' && glUser.getLanguage) {
+				var lang = glUser.getLanguage();
+				if (lang === 'en' || lang === 'de') return lang;
+			}
+			// 2. Versuche Sprache aus HTML lang-Attribut
+			var htmlLang = document.documentElement.lang;
+			if (htmlLang === 'en' || htmlLang === 'de') return htmlLang;
+			// 3. Fallback: Browser-Sprache
+			var navLang = (navigator.language || navigator.userLanguage || '').substring(0, 2);
+			if (navLang === 'en' || navLang === 'de') return navLang;
+			return 'de';
+		}
+
+		function showPreGameMarquee() {
+			var userMaxLevel = (typeof glUser !== 'undefined' && glUser.getLevel) ? glUser.getLevel() : 1;
+			var userGamesPlayed = (typeof glUser !== 'undefined' && glUser.getGamesPlayed) ? glUser.getGamesPlayed() : 0;
+			var lang = detectLanguage();
+			var marqueeText = '';
+			if (typeof getMarqueeText === 'function') {
+				marqueeText = getMarqueeText(userMaxLevel, userGamesPlayed, 4, lang);
+			} else {
+				marqueeText = (lang === 'en') ?
+					'Use the arrow keys to move the pieces! ... Rotate pieces with the spacebar! ... Fill rows to score points!' :
+					'Mit den Pfeiltasten steuerst du die Steine! ... Drehe die Steine mit der Leertaste! ... Fülle Reihen, um Punkte zu sammeln!';
+			}
+			var marqueeContainer = document.getElementById('marquee-container');
+			var marqueeTextDiv = document.getElementById('marquee-text');
+			if (marqueeContainer && marqueeTextDiv) {
+				marqueeTextDiv.textContent = marqueeText;
+				marqueeContainer.style.display = '';
+			}
+		}
+
+		// Zeige das Laufband initial, wenn Seite geladen und Spiel noch nicht läuft
+		document.addEventListener('DOMContentLoaded', function() {
+			if (typeof getStatus === 'function' && getStatus() !== 1) { // 1 = cStatusRunning
+				showPreGameMarquee();
+			}
+		});
+
+		// Blende das Laufband aus, sobald das Spiel startet
+		function hidePreGameMarquee() {
+			var marqueeContainer = document.getElementById('marquee-container');
+			if (marqueeContainer) marqueeContainer.style.display = 'none';
+		}
+		// do_start wird beim Start aufgerufen, daher dort hidePreGameMarquee() ergänzen
+		// (Ergänzung in novotris.js empfohlen)
+	</script>
 	<script
 		src="../js/novotris.js?v=<?php echo filemtime('../js/novotris.js'); ?>"></script>
 	<script

@@ -48,6 +48,64 @@ var glTxtReset;
 var glBtnDialogOk;
 var glBtnDialogCancel;
 
+// Laufband-Texte: Jeder Eintrag hat einen Text, ein Sprachkürzel, einen maximalen Level und eine Mindestanzahl Spiele
+const glMarqueeMessages = [
+	// Deutsch
+	{ lang: "de", text: "Mit den Pfeiltasten steuerst du die Steine!", maxLevel: 1, gamesPlayed: 0 },
+	{ lang: "de", text: "Level und Modus wählen und los geht's!", maxLevel: 1, gamesPlayed: 0 },
+	{ lang: "de", text: "Drehe die Steine mit der 'Pfeil nach oben'-Taste!", maxLevel: 2, gamesPlayed: 0 },
+	{ lang: "de", text: "Fülle Reihen, um Punkte zu sammeln!", maxLevel: 1, gamesPlayed: 0 },
+	{ lang: "de", text: "Je mehr Reihen, desto mehr Punkte!", maxLevel: 2, gamesPlayed: 5 },
+	{ lang: "de", text: "Schaffst du es in die Highscore-Liste?", maxLevel: 1, gamesPlayed: 10 },
+	{ lang: "de", text: "Im Speed-Modus wird's rasant!", maxLevel: 6, gamesPlayed: 5 },
+	{ lang: "de", text: "Tipp: Keine Lücken lassen!", maxLevel: 1, gamesPlayed: 3 },
+	{ lang: "de", text: "Level 6 ist nur für Profis!", maxLevel: 6, gamesPlayed: 10 },
+	{ lang: "de", text: "Viel Spaß und viel Erfolg!", maxLevel: 4, gamesPlayed: 0 },
+	{ lang: "de", text: "Teile deinen Highscore mit Freunden!", maxLevel: 6, gamesPlayed: 15 },
+	// Englisch
+	{ lang: "en", text: "Level and mode selection, then let's go!", maxLevel: 1, gamesPlayed: 0 },
+	{ lang: "en", text: "Use the arrow keys to move the pieces!", maxLevel: 1, gamesPlayed: 0 },
+	{ lang: "en", text: "Rotate pieces with the 'Up Arrow' key!", maxLevel: 2, gamesPlayed: 0 },
+	{ lang: "en", text: "Fill rows to score points!", maxLevel: 1, gamesPlayed: 0 },
+	{ lang: "en", text: "The more rows, the more points!", maxLevel: 2, gamesPlayed: 5 },
+	{ lang: "en", text: "Can you make it to the highscore list?", maxLevel: 1, gamesPlayed: 10 },
+	{ lang: "en", text: "Speed mode is fast and furious!", maxLevel: 6, gamesPlayed: 5 },
+	{ lang: "en", text: "Tip: Don't leave any gaps!", maxLevel: 1, gamesPlayed: 3 },
+	{ lang: "en", text: "Level 6 is for pros only!", maxLevel: 6, gamesPlayed: 10 },
+	{ lang: "en", text: "Have fun and good luck!", maxLevel: 4, gamesPlayed: 0 },
+	{ lang: "en", text: "Share your highscore with friends!", maxLevel: 6, gamesPlayed: 15 }
+];
+
+/**
+ * Gibt einen String aus "anzahl" zufällig ausgewählten, passenden Laufband-Texten zurück.
+ * @param {number} userMaxLevel - Maximal erreichter Level des Users
+ * @param {number} userGamesPlayed - Anzahl gespielter Spiele des Users
+ * @param {number} anzahl - Wie viele Texte sollen kombiniert werden?
+ * @param {string} lang - Sprachkürzel ("de" oder "en")
+ * @returns {string} - Zusammengesetzter Laufband-Text
+ */
+function getMarqueeText(userMaxLevel, userGamesPlayed, anzahl, lang) {
+	// Default: Deutsch
+	lang = lang || "de";
+	// Filtere passende Texte für die Sprache
+	const filtered = glMarqueeMessages.filter(msg =>
+		msg.lang === lang && userMaxLevel <= msg.maxLevel && userGamesPlayed >= msg.gamesPlayed
+	);
+	if (filtered.length === 0) return "";
+
+	// Shuffle-Algorithmus (Fisher-Yates)
+	const shuffled = filtered.slice();
+	for (let i = shuffled.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+	}
+
+	// Wähle die gewünschte Anzahl aus (ggf. weniger, falls nicht genug vorhanden)
+	const selected = shuffled.slice(0, Math.min(anzahl, shuffled.length));
+	// Setze die Texte mit ... zusammen
+	return selected.map(msg => msg.text).join(" ... ");
+}
+
 var glFormPref;
 
 var glFormRegistration;

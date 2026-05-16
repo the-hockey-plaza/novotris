@@ -59,6 +59,7 @@ const cStatusRanking = 7;
 var c_new_stone;
 
 var glDevice;
+var glPlayStatusVisible = false;
 
 function getStatus() {
 	return v_status;
@@ -207,15 +208,54 @@ function setPlayBtnImg(imgSrc) {
 	slides.src = imgSrc;
 }
 
-const textElement = document.getElementById('animatedTitle');
+function ensurePlayStatusMessageElement() {
+	let statusElement = document.getElementById('play-status-message');
+	const marqueeWrap = document.querySelector('.marquee-flex-wrap');
+	if (!marqueeWrap) {
+		return null;
+	}
+
+	if (statusElement) {
+		if (statusElement.parentElement !== marqueeWrap) {
+			marqueeWrap.appendChild(statusElement);
+		}
+		return statusElement;
+	}
+
+	statusElement = document.createElement('div');
+	statusElement.id = 'play-status-message';
+	statusElement.className = 'play-status-message';
+	statusElement.setAttribute('aria-live', 'polite');
+	marqueeWrap.appendChild(statusElement);
+	return statusElement;
+}
 
 function playSetTitle(msg, size) {
-	document.getElementById('divTitle').style.fontSize = size;
-	textElement.style.color = "yellow";
-	textElement.textContent = msg;
+	const statusElement = ensurePlayStatusMessageElement();
+	if (statusElement) {
+		statusElement.style.display = glPlayStatusVisible ? 'block' : 'none';
+		statusElement.classList.remove('is-visible');
+		statusElement.textContent = msg;
+		// Keep font-size controlled by CSS so marquee and in-game status stay consistent.
+		statusElement.style.removeProperty('font-size');
+		// Force a reflow so the fade/slide animation restarts for each message.
+		void statusElement.offsetWidth;
+		statusElement.classList.add('is-visible');
+		return;
+	}
+
+	const titleContainer = document.getElementById('divTitle');
+	const titleElement = document.getElementById('animatedTitle');
+	if (!titleContainer || !titleElement) {
+		return;
+	}
+
+	titleContainer.style.fontSize = size;
+	titleElement.style.color = "yellow";
+	titleElement.textContent = msg;
 
 	setTimeout(() => {
-		textElement.style.color = "var(--light-text-color)";
+		titleElement.style.color = "var(--light-text-color)";
 	}, 5000);
 }
 function do_start() {
@@ -224,6 +264,12 @@ function do_start() {
 		do_pause();
 		return;
 	}
+
+
+	// Laufband ausblenden, falls vorhanden
+	if (typeof hidePreGameMarquee === 'function') hidePreGameMarquee();
+	glPlayStatusVisible = true;
+	playSetTitle(getText("play_title_running"), titleSizeMedium);
 
 	game_init();
 
@@ -256,7 +302,6 @@ function do_start() {
 
 	glBtnStart.blur();
 	scoreLevel = 500;
-	playSetTitle(getText("play_title_running"), titleSizeMedium);
 	glBtnStart.style.setProperty('--anim', 'paused');
 	updateScrollLock();
 }
@@ -628,6 +673,9 @@ function stop_game() {
 	glDropMode.disabled = false;
 	// 11.03.2026
 	glScore = 0;
+
+	// Hide in-game status for upcoming dialog
+	glPlayStatusVisible = false;
 }
 
 function showGameOverDialog(newRankingPosition) {
@@ -767,6 +815,10 @@ function taste(e) {
 		return;
 	}
 
+	if (e.keyCode === c_key_blank) {
+		e.preventDefault();
+	}
+
 	if (v_status === cStatusRunning) {
 		switch (e.keyCode) {
 			case c_key_blank:
@@ -792,6 +844,11 @@ function choose_level() {
 	v_status = cStatusLevel;
 	clearInterval(glIntervalId);
 	updateScrollLock();
+	glPlayStatusVisible = false;
+
+	// Laufband nach OK-Klick anzeigen
+	if (typeof showPreGameMarquee === 'function') showPreGameMarquee();
+
 	initPreview();
 	showPreview();
 	playSetTitle(getText("play_title_init"), titleSizeMedium);
@@ -960,6 +1017,7 @@ function novInit() {
 	//glUser.setMode(1);
 
 	glScore = 0;
+	glPlayStatusVisible = false;
 	playSetTitle(getText("play_title_init"), titleSizeMedium);
 }
 

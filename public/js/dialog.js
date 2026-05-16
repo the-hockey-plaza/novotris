@@ -3,7 +3,7 @@
  */
 
 const glCnvMessageTop = 200;
-const glCnvMessageHeight = 400;
+const glCnvMessageHeight = 500;
 const glCnvMessageLeft = 25;
 const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
@@ -169,7 +169,7 @@ var classDialog = {
 		classDialogModus = "registration";
 
 		const glCnvMessageTop = 200;
-		const glCnvMessageHeight = 350;
+		const glCnvMessageHeight = 475;
 		const glCnvMessageLeft = 25;
 
 
@@ -187,7 +187,7 @@ var classDialog = {
 
 		//TODO globale Konstanten
 		const glCnvMessageTop = 200;
-		const glCnvMessageHeight = 350;
+		const glCnvMessageHeight = 475;
 		const glCnvMessageLeft = 25;
 
 
@@ -202,7 +202,7 @@ var classDialog = {
 	showMessageDialog: function (msgHeader, msgText) {
 		//TODO globale Konstanten
 		const glCnvMessageTop = 0;
-		const glCnvMessageHeight = 300;
+		const glCnvMessageHeight = 475;
 		const glCnvMessageLeft = 0;
 
 		setDialogOpen(true);
@@ -558,8 +558,14 @@ var classDialog = {
 			dialogTop = Math.max(200, Math.floor(containerRect.top + 200));
 		}
 
+		let dialogHeight = 300;
+		if (glIsMobile) {
+			// Auf Mobile: etwas höher, damit der OK-Button nicht am unteren Rand sitzt
+			dialogHeight = 300;
+		}
+
 		glDivMessageDialog.style.width = outerWidth + "px";
-		glDivMessageDialog.style.height = "300px";
+		glDivMessageDialog.style.height = dialogHeight + "px";
 		glDivMessageDialog.style.left = mid - (outerWidth / 2) + "px";
 		glDivMessageDialog.style.top = dialogTop + "px";
 
@@ -575,7 +581,7 @@ var classDialog = {
 		//
 
 		glCtxMessage.canvas.width = outerWidth;
-		glCtxMessage.canvas.height = 300;
+		glCtxMessage.canvas.height = 330;
 
 		//	glDialogBackColor = "#60606a"; 
 		//glDialogBackColor = "#eaddcd";

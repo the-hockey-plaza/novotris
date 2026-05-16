@@ -610,7 +610,7 @@ class User {
 		let levelNeedsScore;
 
 		if (mode == 1)
-			levelNeedsScore = glLevelNeedsScoreModeClassic;
+			levelNeedsScore = glIsMobile ? glLevelNeedsScoreMobile : glLevelNeedsScoreModeClassic;
 		else
 			levelNeedsScore = glLevelNeedsScoreModeSpeed;
 

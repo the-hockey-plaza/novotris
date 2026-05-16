@@ -141,40 +141,7 @@
 
 			</div>
 
-			<div class="novFooter">
-				<div class="row-footer-box">
-					<a class="footer-label" href="<?= $nov_url_index ?>">Tetris
-						World</a>
-				</div>
-				<div class="row-footer-box">
-					<a class="footer-label" href="<?= $nov_url_play ?>" style="color: var(--play-color);">Play</a>
-				</div>
-				<div class="row-footer-box">
-					<a class="footer-label-only">Rankings</a>
-				</div>
-				<div class="row-footer-box">
-					<a class="footer-label" href="<?= $nov_url_help ?>">Help</a>
-				</div>
-			</div>
-
-			<div class="novFooter nov-footer-bottom">
-				<div class="row-footer-box">
-					<a id="footer-user" class="footer-label" onclick="showUserInfoDialog();"></a>
-				</div>
-				<div class="row-footer-box">
-					<a id="footer-login" class="footer-label" onclick="glUser.loginLogout('index.php')"></a>
-				</div>
-				<div class="row-footer-box">
-					<a id="footer-version" class="footer-label" onclick="showNovotrisInfoDialog();">Version</a>
-				</div>
-				<div class="row-footer-box footer-language-box">
-					<!-- 									<a id="footer-label">footer-label</a> -->
-					<select id="drp-language" class="footer-label">
-						<option>deutsch</option>
-						<option>english</option>
-					</select>
-				</div>
-			</div>
+			<?php include '../php/page-footer.php'; ?>
 
 		</div>
 	</div>

@@ -2,7 +2,7 @@
  * global.js
  */
 
-const glRelease = "4.1.2";
+const glRelease = "4.2.0";
 const glSubKey = "2.1"
 const glHighscoreKey = "novotris." + glSubKey + ".highscore";
 const glMaxLevelKey = "novotris." + glSubKey + ".maxlevel";
@@ -284,7 +284,7 @@ function getText(key, p1, p2, p3, p4) {
 				case "de":
 					return "Spiel läuft...";
 				case "en":
-					return "Game is running...";
+					return "Game running...";
 			}
 
 		case 'play_title_pause':

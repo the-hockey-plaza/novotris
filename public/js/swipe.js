@@ -13,6 +13,8 @@ var activePointerId = null;
 const cTapMoveTolerancePx = 8;
 const cTapDistanceMaxPx = 12;
 const cTapDurationMaxMs = 320;
+const cBottomTapDropZoneRows = 1.5;
+const cBottomTapOutsideToleranceRows = 0.75;
 
 var startPos = { "x": -1, "y": -1 };
 var movePos = { "x": -1, "y": -1 };
@@ -134,12 +136,92 @@ var classSwipe = {
 		return event.pointerId === activePointerId;
 	},
 
+	isBottomDropTap: function (point) {
+		var surfacePoint;
+		var left;
+		var right;
+		var bottom;
+		var zoneHeight;
+		var outsideBottomTolerance;
+
+		if (point == null) {
+			return false;
+		}
+
+		surfacePoint = classSwipe.toPlaySurfacePoint(point);
+		if (surfacePoint == null) {
+			return false;
+		}
+
+		left = glPlayGroundSize.left;
+		right = left + glPlayGroundSize.width;
+		bottom = glPlayGroundSize.top + glPlayGroundSize.height;
+		zoneHeight = Math.max(cBrickWidth, Math.floor(cBrickWidth * cBottomTapDropZoneRows));
+		outsideBottomTolerance = Math.max(6, Math.floor(cBrickWidth * cBottomTapOutsideToleranceRows));
+
+		if (surfacePoint.x < left || surfacePoint.x > right) {
+			return false;
+		}
+
+		if (surfacePoint.y < (bottom - zoneHeight) || surfacePoint.y > (bottom + outsideBottomTolerance)) {
+			return false;
+		}
+
+		return true;
+	},
+
+	toPlaySurfacePoint: function (point) {
+		var target;
+		var targetRect;
+		var clientX;
+		var clientY;
+
+		if (point == null) {
+			return null;
+		}
+
+		target = classSwipe.getEventTarget();
+		if (!target || !target.getBoundingClientRect) {
+			return null;
+		}
+
+		targetRect = target.getBoundingClientRect();
+
+		if (typeof point.clientX === 'number') {
+			clientX = point.clientX;
+		}
+		else if (typeof point.pageX === 'number') {
+			clientX = point.pageX - window.pageXOffset;
+		}
+
+		if (typeof point.clientY === 'number') {
+			clientY = point.clientY;
+		}
+		else if (typeof point.pageY === 'number') {
+			clientY = point.pageY - window.pageYOffset;
+		}
+
+		if (typeof clientX !== 'number' || typeof clientY !== 'number') {
+			return null;
+		}
+
+		return {
+			x: clientX - targetRect.left,
+			y: clientY - targetRect.top
+		};
+	},
+
 	beginGesture: function (event, point) {
+		var startOnPlayground;
+		var startInBottomDropZone;
+
 		if (point == null || !classSwipe.isStartEventAllowed(event)) {
 			return;
 		}
 
-		if (!isOnPlayground(point.pageX, point.pageY)) {
+		startOnPlayground = isOnPlayground(point.pageX, point.pageY);
+		startInBottomDropZone = classSwipe.isBottomDropTap(point);
+		if (!startOnPlayground && !startInBottomDropZone) {
 			return;
 		}
 
@@ -213,6 +295,8 @@ var classSwipe = {
 		var moveDistance;
 		var touchDuration;
 		var isTap;
+		var tapPoint;
+		var isBottomDropTap;
 		var hasActiveGesture;
 
 		hasActiveGesture = touchStatus == "started" || touchStatus == "moving";
@@ -242,8 +326,13 @@ var classSwipe = {
 			&& touchStartTime > 0
 			&& moveDistance <= cTapDistanceMaxPx
 			&& touchDuration <= cTapDurationMaxMs;
+		tapPoint = point || movePos;
+		isBottomDropTap = isTap && classSwipe.isBottomDropTap(tapPoint);
 
-		if (isTap) {
+		if (isBottomDropTap) {
+			stone_drop();
+		}
+		else if (isTap) {
 			stone_rotate_left();
 		}
 
