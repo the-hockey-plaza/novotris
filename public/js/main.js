@@ -295,24 +295,30 @@ function mainParseURL() {
 	}
 }
 
-function mainInit() {
+function mainUpdateContainerSize() {
 	var container = document.getElementById('div-container');
-	let rect;
+	if (container != null) {
+		const rect = container.getBoundingClientRect();
+		glContainerPos.width = Math.round(rect.width);
+		glContainerPos.height = Math.round(rect.height);
+	}
+}
 
+function mainInit() {
 	mainMobileAndTabletCheck();
 	mainParseURL();
 	mainApplyDesktopLayoutPreset();
 
-	if (container != null) {
-		rect = container.getBoundingClientRect();
-		glContainerPos.width = Math.round(rect.width);
-		glContainerPos.height = Math.round(rect.height);
+	// Update container size initially
+	mainUpdateContainerSize();
 
-		window.addEventListener('resize', function () {
-			let resizedRect = container.getBoundingClientRect();
-			glContainerPos.width = Math.round(resizedRect.width);
-			glContainerPos.height = Math.round(resizedRect.height);
-		});
+	// Listen to window resize events
+	window.addEventListener('resize', mainUpdateContainerSize);
+
+	// On mobile, also listen to visualViewport changes (handles iOS address bar)
+	if (window.visualViewport) {
+		window.visualViewport.addEventListener('resize', mainUpdateContainerSize);
+		window.visualViewport.addEventListener('scroll', mainUpdateContainerSize);
 	}
 
 	if (glIsMobile)

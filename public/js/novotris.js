@@ -230,11 +230,50 @@ function ensurePlayStatusMessageElement() {
 	return statusElement;
 }
 
-function playSetTitle(msg, size) {
+var glScoreTitleTimeout = null;
+var glScoreTitleLockUntil = 0;
+
+function playSetScoreTitle(msg) {
+	if (glScoreTitleTimeout) {
+		clearTimeout(glScoreTitleTimeout);
+		glScoreTitleTimeout = null;
+	}
+	glScoreTitleLockUntil = Date.now() + 10000;
+
+	const statusElement = ensurePlayStatusMessageElement();
+	if (!statusElement) return;
+
+	statusElement.style.display = glPlayStatusVisible ? 'block' : 'none';
+	statusElement.classList.remove('is-visible', 'is-visible-score');
+	statusElement.textContent = msg;
+	statusElement.style.removeProperty('font-size');
+	void statusElement.offsetWidth;
+	statusElement.classList.add('is-visible-score');
+
+	glScoreTitleTimeout = setTimeout(() => {
+		glScoreTitleTimeout = null;
+		glScoreTitleLockUntil = 0;
+		if (v_status === cStatusRunning) {
+			playSetTitle(getText('play_title_running'), titleSizeMedium, true);
+		}
+	}, 10000);
+}
+
+function playSetTitle(msg, size, forceShow) {
+	if (!forceShow && glScoreTitleLockUntil > Date.now() && msg === getText('play_title_running')) {
+		return;
+	}
+
+	if (glScoreTitleTimeout) {
+		clearTimeout(glScoreTitleTimeout);
+		glScoreTitleTimeout = null;
+		glScoreTitleLockUntil = 0;
+	}
+
 	const statusElement = ensurePlayStatusMessageElement();
 	if (statusElement) {
 		statusElement.style.display = glPlayStatusVisible ? 'block' : 'none';
-		statusElement.classList.remove('is-visible');
+		statusElement.classList.remove('is-visible', 'is-visible-score');
 		statusElement.textContent = msg;
 		// Keep font-size controlled by CSS so marquee and in-game status stay consistent.
 		statusElement.style.removeProperty('font-size');

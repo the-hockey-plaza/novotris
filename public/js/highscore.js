@@ -91,7 +91,7 @@ function increaseScore(points) {
 	showScore();
 
 	if (glScore >= scoreLevel) {
-		playSetTitle(getText("play_title_score", scoreLevel), titleSizeMedium);
+		playSetScoreTitle(getText("play_title_score", scoreLevel));
 		scoreLevel += 500;
 	}
 }

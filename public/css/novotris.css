@@ -215,6 +215,13 @@ a:visited {
 	animation: play-status-fade 620ms ease-out, play-status-color-shift 5.8s ease-in-out infinite 620ms;
 }
 
+.play-status-message.is-visible-score {
+	opacity: 1;
+	transform: translateY(0);
+	color: yellow;
+	animation: play-status-fade 620ms ease-out;
+}
+
 @keyframes play-status-fade {
 	0% {
 		opacity: 0;
