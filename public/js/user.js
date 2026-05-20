@@ -334,11 +334,6 @@ class User {
 			this.tmpName = "none";
 
 			classDialog.showMessageDialog(getText("logout_successful_header"), getText("logout_successful_text", this.name));
-		} else if (glUser.getId() > 0 && forceCreate) {
-			novInit();
-			// 14.02.2026
-			// initStaticRendering();
-			choose_level();
 		}
 
 	}

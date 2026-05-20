@@ -45,6 +45,47 @@ function getIp()
 
 // -----------------------------------------------------------------------------
 
+function detectMobileFlagFromUserAgent()
+{
+  $agent = strtolower($_SERVER['HTTP_USER_AGENT'] ?? '');
+
+  if ($agent === '') {
+    return 'N';
+  }
+
+  // Keep detection intentionally broad to avoid missing common mobile devices.
+  if (
+    strpos($agent, 'android') !== false ||
+    strpos($agent, 'iphone') !== false ||
+    strpos($agent, 'ipod') !== false ||
+    strpos($agent, 'ipad') !== false ||
+    strpos($agent, 'mobile') !== false ||
+    strpos($agent, 'opera mini') !== false ||
+    strpos($agent, 'windows phone') !== false
+  ) {
+    return 'Y';
+  }
+
+  return 'N';
+}
+
+// -----------------------------------------------------------------------------
+
+function resolveMobileFlag($mobile)
+{
+  $serverMobile = detectMobileFlagFromUserAgent();
+  $clientMobile = strtoupper(trim((string) $mobile));
+
+  if ($clientMobile !== 'Y' && $clientMobile !== 'N') {
+    return $serverMobile;
+  }
+
+  // Prefer server detection for new-user assignment to avoid stale/wrong client flags.
+  return $serverMobile;
+}
+
+// -----------------------------------------------------------------------------
+
 function logToDb($nov_release, $aktion, $params, $log_order)
 {
   global $pdo;
@@ -182,6 +223,7 @@ function createGuestUser($mobile)
 {
   global $pdo;
   $user_id = null;
+  $mobile = resolveMobileFlag($mobile);
 
   $sql = "INSERT INTO nov_user (mobile) VALUES ('" . $mobile . "')";
   $pdo->query($sql);
@@ -216,6 +258,12 @@ function getUserFromDb($id, $mobile)
     $user_mode = $row['mode'];
 
     break;
+  }
+
+  // Keep the persisted device flag in sync with the current client.
+  if ($user_id != null && ($mobile === 'Y' || $mobile === 'N')) {
+    $statement = $pdo->prepare("UPDATE nov_user SET mobile = ? WHERE id = ?");
+    $statement->execute([$mobile, $user_id]);
   }
 
   if ($user_id == null) {
@@ -284,6 +332,7 @@ function createUserOnDb($user_name, $user_email, $user_password, $mobile, $activ
   $sql = null;
   $user_id = null;
   $retValue = new stdClass();
+  $mobile = resolveMobileFlag($mobile);
 
   $user_id = -1;
   $sql = "SELECT id FROM nov_user WHERE name = '" . $user_name . "'";
@@ -370,7 +419,7 @@ function login($user_name, $password, $mobile)
 
   $user_id = -1;
   $sql = "SELECT id, password, credits, level, language FROM nov_user ";
-  $sql =  $sql . "WHERE name = '" . $user_name . "' AND active = 'Y' AND mobile = '" . $mobile . "'";
+  $sql =  $sql . "WHERE name = '" . $user_name . "' AND active = 'Y'";
 
   foreach ($pdo->query($sql) as $row) {
     $user_id = $row['id'];
@@ -386,6 +435,11 @@ function login($user_name, $password, $mobile)
     $retValue->user_id = 0;
     echo json_encode($retValue);
     return;
+  }
+
+  if ($mobile === 'Y' || $mobile === 'N') {
+    $statement = $pdo->prepare("UPDATE nov_user SET mobile = ? WHERE id = ?");
+    $statement->execute([$mobile, $user_id]);
   }
 
   $retValue->error_message = null;

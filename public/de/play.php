@@ -267,6 +267,49 @@
 
 	<script>
 		document.addEventListener('contextmenu', event => event.preventDefault());
+
+		function stabilizeInitialPlayLayout() {
+			if (!glIsMobile) return;
+
+			const stopAt = Date.now() + 2200;
+
+			const recalc = () => {
+				if (typeof getStatus === 'function' && getStatus() === 1) {
+					return;
+				}
+
+				mainUpdateContainerSize();
+				initStaticRendering();
+
+				if (glUser.getId() > 0) {
+					choose_level();
+				}
+			};
+
+			const onViewportChange = () => {
+				if (Date.now() > stopAt) {
+					if (window.visualViewport) {
+						window.visualViewport.removeEventListener('resize', onViewportChange);
+						window.visualViewport.removeEventListener('scroll', onViewportChange);
+					}
+					window.removeEventListener('orientationchange', onViewportChange);
+					return;
+				}
+
+				recalc();
+			};
+
+			requestAnimationFrame(() => requestAnimationFrame(recalc));
+			setTimeout(recalc, 220);
+			setTimeout(recalc, 650);
+
+			if (window.visualViewport) {
+				window.visualViewport.addEventListener('resize', onViewportChange);
+				window.visualViewport.addEventListener('scroll', onViewportChange);
+			}
+			window.addEventListener('orientationchange', onViewportChange);
+		}
+
 		var glUser = new User();
 		mainInit();
 		(async () => {
@@ -289,6 +332,8 @@
 					classDialog.showLevelDialog();
 				}
 			}
+
+			stabilizeInitialPlayLayout();
 
 			$("body").fadeIn("slow");
 		})();
