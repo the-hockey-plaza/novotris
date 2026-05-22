@@ -2,7 +2,7 @@
  * global.js
  */
 
-const glRelease = "4.2.0";
+const glRelease = "4.2.1";
 const glSubKey = "2.1"
 const glHighscoreKey = "novotris." + glSubKey + ".highscore";
 const glMaxLevelKey = "novotris." + glSubKey + ".maxlevel";

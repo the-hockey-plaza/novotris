@@ -330,6 +330,26 @@ a.footer-label-only {
 	color: white;
 }
 
+.novFooter-legal {
+	flex: 2;
+	justify-content: center;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	font-size: 13px;
+	border-top-width: 1px;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+.row-footer-box-legal {
+	text-align: center;
+}
+
+a.footer-label-legal {
+	padding-left: 0;
+	text-decoration: underline;
+}
+
 #divTitle {
 	font-size: 40px;
 	color: var(--light-text-color);
@@ -1027,33 +1047,46 @@ table.class-table-ranking td:nth-child(6) {
 	}
 
 	.play-layout {
-		flex-direction: column;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) clamp(78px, 22vw, 92px);
+		grid-template-rows: minmax(0, 1fr) auto;
+		grid-template-areas:
+			"stage stats"
+			"controls controls";
+		height: 100%;
+		min-height: 0;
+		overflow: hidden;
 		align-items: stretch;
-		gap: 10px;
+		gap: 8px;
 	}
 
 	.play-stage {
+		grid-area: stage;
 		flex: 1;
 		min-width: 0;
-		min-height: 280px;
+		min-height: 0;
 	}
 
 	.play-sidebar {
-		flex: 0 0 auto;
-		max-width: none;
-		width: 100%;
-		display: grid;
-		grid-template-rows: auto auto;
-		gap: 10px;
+		display: contents;
 	}
 
 	.play-sidebar-stats {
-		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: 6px 6px;
+		grid-area: stats;
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		justify-content: center;
+		width: 100%;
+		gap: 18px;
+	}
+
+	.play-sidebar-stats .play-stat {
+		width: 100%;
 	}
 
 	.play-sidebar-controls {
+		grid-area: controls;
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: 8px 8px;
@@ -1101,18 +1134,19 @@ table.class-table-ranking td:nth-child(6) {
 		text-align: center;
 	}
 
-	.play-sidebar .play-stat .game-data-text,
 	.play-sidebar .play-control .drpMenu {
+		margin-top: 2pt;
 		width: 100%;
 		max-width: none;
 	}
 
 	.play-sidebar .play-stat .game-data-label {
-		font-size: 11px;
+		font-size: calc(11px + 2pt);
 		padding-top: 0;
 	}
 
 	.play-sidebar .play-stat .game-data-text {
+		margin-top: 2pt;
 		font-size: 13px;
 		min-height: 28px;
 		line-height: 28px;
@@ -1120,7 +1154,7 @@ table.class-table-ranking td:nth-child(6) {
 	}
 
 	.play-sidebar .play-control .game-data-label {
-		font-size: 11px;
+		font-size: calc(11px + 2pt);
 		padding-top: 0;
 	}
 
@@ -1162,6 +1196,12 @@ table.class-table-ranking td:nth-child(6) {
 		flex-wrap: nowrap;
 		align-items: center;
 		padding-top: 2px;
+	}
+
+	.novFooter-legal {
+		font-size: 12px;
+		padding-top: 1px;
+		padding-bottom: 1px;
 	}
 
 	.row-footer-box {
@@ -1241,6 +1281,11 @@ table.class-table-ranking td:nth-child(6) {
 		padding: 2px 3px;
 		font-size: 12px;
 		line-height: 1.1;
+	}
+
+	a.footer-label-legal {
+		padding: 1px 3px;
+		font-size: 11px;
 	}
 
 	.novFooter select.footer-label {

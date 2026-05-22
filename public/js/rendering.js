@@ -33,14 +33,9 @@
 var glPlayFramePos = { width: 0, height: 0, left: 0, top: 0 };
 
 function initStaticRendering() {
-
-
-	//TODO
-	//	glPlayFramePos.width = Math.floor(glContainerPos.width * 0.7);
-	//	glPlayFramePos.height = Math.floor(glContainerPos.height * 0.85);
 	let frame = document.getElementById('div-play-frame');
-	glPlayFramePos.width = frame.clientWidth - 5;
-	glPlayFramePos.height = frame.clientHeight - 5;
+	glPlayFramePos.width = frame.clientWidth;
+	glPlayFramePos.height = frame.clientHeight;
 
 
 	glCanvasSize.left = 0;
