@@ -1,0 +1,4 @@
+/* last users with more than 5 games */
+select u.id
+from nov_user update
+where (select count(*) from game g where g.user_id = u.id) > 5

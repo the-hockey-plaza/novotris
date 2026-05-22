@@ -1,0 +1,86 @@
+create table ip_adressen (adresse varchar (255));
+
+create table nov_log (id int NOT NULL AUTO_INCREMENT PRIMARY KEY
+ , ip varchar(200), nov_release  varchar (80), timestamp datetime, aktion varchar (80), 
+ params varchar (1000), log_order int, uuid varchar(200));
+
+
+
+insert into ip_adressen (adresse) 
+select distinct n.ip from nov_log as n
+where not exists (
+    select i1.adresse
+    from ip_adressen i1
+    where n.ip = i1.adresse)
+
+SELECT * FROM `ip_adressen` 
+order by adresse
+
+create table ip_region (name varchar(200), ip_header varchar(200))
+
+create table highscore (id int NOT NULL AUTO_INCREMENT PRIMARY KEY, timestamp datetime, ip varchar(200), 
+nov_release  varchar (80), level tinyint, score mediumint, user_id varchar(200))
+
+alter table nov_log add (uuid varchar(200))
+alter table nov_log add (log_order int)
+
+alter table highscore add (user_id varchar(200))
+
+create table nov_user (id int NOT NULL AUTO_INCREMENT PRIMARY KEY, uuid varchar(200), active varchar(1),
+  name varchar(80), mobile varchar(1), created datetime, credits int default 0, level int default 1, notes varchar (1000),
+  email varchar (50), password varchar (200), 
+  activation_code varchar(255), activation_expiry datetime, activated_at datetime, old_user_id int,
+  language varchar (5));
+
+alter table nov_user add (mobile varchar(1))
+alter table nov_user add (created datetime);
+alter table nov_user add (credits int default 0);
+alter table nov_user add (level int default 1);
+alter table nov_user add (notes varchar (1000));
+alter table nov_user add (email varchar (50));
+alter table nov_user add (password varchar (200));
+alter table nov_user add (activation_code varchar(255), activation_expiry datetime, activated_at datetime);
+alter table nov_user add (active varchar(1))
+alter table nov_user add (old_user_id int);
+alter table nov_user add (language varchar (5));
+alter table nov_user add (mode int);
+
+update nov_user set language = 'de';
+
+create table score as select * from highscore
+
+create table game (id int NOT NULL AUTO_INCREMENT PRIMARY KEY, user_id int, nov_release  varchar (80), level int, beginn datetime, ende datetime, score int, nov_mode int);
+alter table game add (nov_release  varchar (80))
+alter table game add (nov_mode int)
+update game set nov_mode = 1 where nov_mode is null
+
+
+
+insert into nov_user (name) value ('user1');
+SELECT replace (u.name, 'u', 'UUU') from nov_user as u
+
+create table nov_level (id int NOT NULL AUTO_INCREMENT PRIMARY KEY, level int not null)
+insert into nov_level (level) values (1)
+
+create or replace view v_games_per_level as 
+select nov_level.level, (select count(*) from game
+where game.level = nov_level.level) as anzahl
+from nov_level
+order by nov_level.level
+
+create or replace view v_user as 
+SELECT u.name, u.id, u.created, u.mobile, u.credits, u.level,
+(select max(g.beginn) from game as g where g.user_id = u.id) as letztes, 
+(select count(g.beginn) from game as g where g.user_id = u.id) as anzahl
+from nov_user as u
+order by u.id
+
+create or replace view v_last_games as
+select u.name, g.beginn, g.level, g.score
+from game as g, nov_user as u
+where g.user_id = u.id
+order by g.id desc
+
+create table news (id int NOT NULL AUTO_INCREMENT PRIMARY KEY, datum date, message varchar(4000), language varchar (5));
+
+alter table news add (language varchar (5));

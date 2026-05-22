@@ -1,0 +1,144 @@
+
+select distinct ip
+from nov_log 
+order by ip
+
+select * from nov_log order by id desc
+
+select * from nov_log 
+where aktion = 'load'
+order by id desc
+
+select n.nov_release, n.timestamp, n.params
+from nov_log  n
+where naktion = 'highscore'
+ and n.nov_release <> '2.1a'
+
+select count(id), aktion
+from nov_log
+where nov_release <> '2.1a'
+
+select count(id), nov_release
+from nov_log
+where nov_release <> '2.1a'
+ group by nov_release
+
+select * from nov_log 
+where aktion = 'start'
+ and nov_release <> '2.1a'
+order by id
+
+select *
+from nov_log 
+where aktion = 'start'
+and nov_release <> '2.1a'
+ order by id desc
+
+select *
+from nov_log 
+where aktion = 'start'
+and nov_release <> '2.1a'
+ and nov_release = '1.8'
+ order by params desc
+
+
+
+select count(id), level
+from nov_log
+where aktion = 'start'
+ and nov_release <> '2.1a'
+ group by level
+
+select count (id), level
+from nov_log 
+where aktion = 'start'
+ and nov_release <> '2.1a'
+ group by level
+
+select count(*)
+from nov_log
+where aktion in ('drawMatrix','drawFieldBackground','initPlayRendering')
+
+delete from nov_log
+where aktion in ('drawMatrix','drawFieldBackground','initPlayRendering')
+
+insert into nov_user (uuid, name) values ('8a4bceb4-b8db-4cfe-b0bb-08d18b3eef62', 'armin')
+
+// users without name are invalid:
+delete from nov_user where name is null
+
+// delete one specific highscore
+delete from highscore where id = 15
+
+// assign highscores to users via ip:
+update highscore 
+set user_id = 64
+where ip like '2001:9e8:36%'
+
+update highscore 
+set user_id = 65
+where ip like '2a02:8071:3189:f2%'
+
+select u.id, u.name,
+(select max(ifnull(g.score, 0)) 
+ from game as g
+ where g.user_id = u.id
+  and g.level = 1) as score
+from nov_user as u
+order by score desc
+
+
+select u.id, u.name, nov_level.level, g.score, g.ende 
+from nov_user as u
+inner join game as g
+on g.user_id = u.id
+inner join nov_level
+on g.level = nov_level.level
+where g.score > 0
+  and g.score = (select max(g1.score) 
+ from game as g1
+ where g1.user_id = u.id
+  and g1.level = nov_level.level)
+  and nov_level.level = 1
+  order by g.score desc
+  
+// delete games without user:
+delete from game where not exists (select id from nov_user where nov_user.id = game.user_id)
+
+select * from game order by id desc
+
+update game set user_id = x where user_id = y
+
+// user without games:
+select * from nov_user 
+where not exists (select id from game where nov_user.id = game.user_id)
+and password is null
+
+delete from nov_user 
+where not exists (select id from game where nov_user.id = game.user_id)
+and password is null
+
+
+// ip adresses:
+select distinct (ip) ip from nov_log where substr(ip,3,1) = '.' or substr(ip,4,1) = '.' 
+union
+select distinct substr(ip,1,10) ip from nov_log where substr(ip,5,1) = ':'
+order by 1
+
+select ip from nov_log where substr(ip,1,10) in (select distinct substr(ip,1,10) ip from nov_log where substr(ip,3,1) = '.')
+union
+select ip from nov_log where substr(ip,1,11) in (select distinct substr(ip,1,11) ip from nov_log where substr(ip,4,1) = '.')
+union
+select ip from nov_log where substr(ip,1,10) in (select distinct substr(ip,1,10) ip from nov_log where substr(ip,5,1) = ':')
+order by 1
+
+create or replace view v_games_per_user as SELECT u.name, (select count(*) from game g where g.user_id = u.id) cnt
+FROM nov_user u
+where (select count(*) from game g where g.user_id = u.id) > 1
+order by 2 desc
+
+SELECT * FROM `nov_user` u WHERE u.uuid is null and id > 150
+
+SELECT ip FROM `nov_log` WHERE params like '%result={"user_id":"820"%'
+
+
