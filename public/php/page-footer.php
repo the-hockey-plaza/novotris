@@ -1,5 +1,5 @@
 <?php
-$pageLang = $pageLang ?? 'de';
+$pageLang = $pageLang ?? ((isset($_SERVER['PHP_SELF']) && strpos($_SERVER['PHP_SELF'], '/en/') !== false) ? 'en' : 'de');
 $footerActive = $footerActive ?? 'play';
 
 $footerLabelWorld = $footerLabelWorld ?? ($pageLang === 'en' ? 'Tetris World' : 'Tetriswelt');
@@ -7,11 +7,13 @@ $footerLabelPlay = $footerLabelPlay ?? ($pageLang === 'en' ? 'Play' : 'Spielen')
 $footerLabelRanking = $footerLabelRanking ?? ($pageLang === 'en' ? 'Rankings' : 'Ranglisten');
 $footerLabelHelp = $footerLabelHelp ?? ($pageLang === 'en' ? 'Help' : 'Anleitung');
 $footerLabelVersion = $footerLabelVersion ?? 'Version';
+$footerLabelLegal = $footerLabelLegal ?? ($pageLang === 'en' ? 'Imprint' : 'Impressum');
 
 $nov_url_index = $nov_url_index ?? '#';
 $nov_url_play = $nov_url_play ?? '#';
 $nov_url_ranking = $nov_url_ranking ?? '#';
 $nov_url_help = $nov_url_help ?? '#';
+$nov_url_impressum = $nov_url_impressum ?? 'impressum.php';
 
 $footerPlayStyle = $footerActive === 'play' ? 'color: var(--play-color); cursor: pointer;' : 'cursor: pointer;';
 $footerRankingStyle = $footerActive === 'ranking' ? 'color: var(--play-color); cursor: pointer;' : 'cursor: pointer;';
@@ -36,8 +38,7 @@ $footerHelpStyle = $footerActive === 'help' ? 'color: var(--play-color); cursor:
   </div>
 </div>
 
-<div class="novFooter"
-  style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+<div class="novFooter">
   <div class="row-footer-box">
     <a id="footer-user" class="footer-label"
       style="cursor: pointer;" onclick="showUserInfoDialog();"></a>
@@ -57,5 +58,12 @@ $footerHelpStyle = $footerActive === 'help' ? 'color: var(--play-color); cursor:
       <option>deutsch</option>
       <option>english</option>
     </select>
+  </div>
+</div>
+
+<div class="novFooter novFooter-legal">
+  <div class="row-footer-box row-footer-box-legal">
+    <a class="footer-label footer-label-legal"
+      href="<?= $nov_url_impressum ?>"><?= htmlspecialchars($footerLabelLegal, ENT_QUOTES, 'UTF-8') ?></a>
   </div>
 </div>

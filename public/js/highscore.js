@@ -19,9 +19,6 @@ let scoreLevel;
 
 function setBrickWidth(size) {
 	let frame = document.getElementById('div-play-frame');
-	//	let x = frame.offsetWidth;
-	//	let y = frame.offsetHeight;
-	//TODO
 	let x = frame.clientWidth;
 	let y = frame.clientHeight;
 	let xMax;
@@ -29,13 +26,9 @@ function setBrickWidth(size) {
 	let maxByCanvasWidth;
 	let maxByCanvasHeight;
 
-	//	if (glIsMobile) {
 	if (true) {
 		if (glIsTablet) {
-			// 75% der Breite oder 75% der Höhe des Spielfelds:
-			//TODO
-			//			xMax = Math.floor((glCanvasSize.width * 0.75) / cMatrixSize.width);
-			//			yMax = Math.floor((glCanvasSize.height * 0.75) / cMatrixSize.height);
+			// 60% der Canvas-Breite/-Hoehe als Obergrenze auf Tablet
 			xMax = Math.floor((glCanvasSize.width * 0.6) / cMatrixSize.width);
 			yMax = Math.floor((glCanvasSize.height * 0.6) / cMatrixSize.height);
 
@@ -45,19 +38,8 @@ function setBrickWidth(size) {
 				cBrickWidth = yMax;
 		}
 		else {
-			//			if (size == "small") {
-			//				cBrickWidth = 18;
-			//			}
-			//			else if (size == "large")
-			//				cBrickWidth = 36;
-			//			else {
-			//				cBrickWidth = 22; // 22;
-			//			}
-
-			//			xMax = Math.floor((glPlayFramePos.width - glPadding - 30) / cMatrixSize.width);
-			//			yMax = Math.floor((glPlayFramePos.height - glPadding - 30) / cMatrixSize.height);
-			xMax = Math.floor((x - glPadding - 30) / cMatrixSize.width);
-			yMax = Math.floor((y - glPadding - 30) / cMatrixSize.height);
+			xMax = Math.floor((x - glPadding - 14) / cMatrixSize.width);
+			yMax = Math.floor((y - glPadding - 14) / cMatrixSize.height);
 
 			if (xMax < yMax)
 				cBrickWidth = xMax;
@@ -65,8 +47,8 @@ function setBrickWidth(size) {
 				cBrickWidth = yMax;
 
 			// Keep full matrix (including borders/offset) inside the visible canvas area.
-			maxByCanvasWidth = Math.floor((x - 20) / cMatrixSize.width) - 1;
-			maxByCanvasHeight = Math.floor((y - 20) / cMatrixSize.height) - 1;
+			maxByCanvasWidth = Math.floor((x - 12) / cMatrixSize.width) - 1;
+			maxByCanvasHeight = Math.floor((y - 12) / cMatrixSize.height) - 1;
 			cBrickWidth = Math.min(cBrickWidth, maxByCanvasWidth, maxByCanvasHeight);
 			cBrickWidth = Math.max(cBrickWidth, 10);
 
