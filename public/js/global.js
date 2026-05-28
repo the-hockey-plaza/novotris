@@ -135,6 +135,14 @@ function getText(key, p1, p2, p3, p4) {
 					return "You also moved up in the 12 months rankings to <b>" + p1 + "</b>!";
 			}
 
+		case 'score_next_level_unlock':
+			switch (lang) {
+				case "de":
+					return "Nur noch <b>" + p1 + "</b> Punkte bis zur Freischaltung von Level <b>" + p2 + "</b>!";
+				case "en":
+					return "Only <b>" + p1 + "</b> points left to unlock level <b>" + p2 + "</b>!";
+			}
+
 		case 'changed_password':
 			switch (lang) {
 				case "de":

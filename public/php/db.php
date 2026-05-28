@@ -248,6 +248,7 @@ function getUserFromDb($id, $mobile)
   $user_level = null;
   $user_language = null;
   $user_mode = null;
+  $user_games = 0;
 
   foreach ($pdo->query($sql) as $row) {
     $user_id = $row['id'];
@@ -319,7 +320,14 @@ function getUserFromDb($id, $mobile)
     }
   }
 
+  $sql = "SELECT count(*) as cnt FROM game WHERE ende is not null AND user_id = " . $user_id;
+  foreach ($pdo->query($sql) as $row) {
+    $user_games = (int)$row['cnt'];
+    break;
+  }
+
   $retValue->user_scores = $user_scores;
+  $retValue->user_games = $user_games;
   echo json_encode($retValue);
 }
 

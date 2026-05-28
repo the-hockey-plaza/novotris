@@ -1,4 +1,7 @@
 /* last users with more than 5 games */
-select u.id
-from nov_user update
+select u.id, 
+  u.name, 
+  (select count(*) from game g where g.user_id = u.id) as nr_games
+from nov_user u
 where (select count(*) from game g where g.user_id = u.id) > 5
+order by u.id desc

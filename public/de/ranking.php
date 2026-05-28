@@ -6,7 +6,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width">
 	<meta name="description"
-		content="Tetris-Rangliste bei Novotris: Vergleiche deinen Highscore online mit anderen Spielern – nach Level, Modus und Gerät getrennt.">
+		content="Rangliste bei Novotris: Vergleiche deinen Highscore online mit anderen Spielern – nach Level, Modus und Gerät getrennt.">
 	<meta name="keywords"
 		content="tetris, rangliste">
 	<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
@@ -44,7 +44,7 @@
 	<div class="pseudoBody">
 		<div class="container" id="div-container">
 			<div class="novHeader nov-header-rounded">
-				<h1 id="lblTitle" class="nov-title-area lbl-title-compact">Tetris-Rangliste</h1>
+				<h1 id="lblTitle" class="nov-title-area lbl-title-compact">Rangliste</h1>
 				<div class="nov-logo-area">
 					<picture>
 						<source srcset="../images/novotris-logo.webp" type="image/webp">
@@ -145,8 +145,8 @@
 	<section class="nov-seo-text">
 		<h2>Tetris-Rangliste – Highscore online vergleichen</h2>
 		<p>
-			Die Novotris-Rangliste zeigt, wer beim Tetris-Spielen die höchsten Punktzahlen erreicht.
-			Vergleiche deinen <strong>Tetris-Highscore online</strong> mit anderen Spielern –
+			Die Novotris-Rangliste zeigt, wer beim Spielen die höchsten Punktzahlen erreicht.
+			Vergleiche deinen <strong>Highscore online</strong> mit anderen Spielern –
 			aufgeteilt nach Level (1–6) und Spielmodus (Classic, Speed).
 		</p>
 		<p>
@@ -200,6 +200,7 @@
 		src="../js/dialog.js?v=<?php echo filemtime('../js/dialog.js'); ?>"></script>
 
 	<script>
+		document.addEventListener('DOMContentLoaded', onContentLoaded, false);
 		var glUser = new User();
 		mainInit();
 		(async () => {

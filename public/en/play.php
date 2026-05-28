@@ -275,7 +275,7 @@
 		src="../js/dialog.js?v=<?php echo filemtime('../js/dialog.js'); ?>"></script>
 
 	<script>
-		//	document.addEventListener('DOMContentLoaded', onContentLoaded, false);
+		document.addEventListener('DOMContentLoaded', onContentLoaded, false);
 		document.addEventListener('contextmenu', event => event.preventDefault());
 
 		function stabilizeInitialPlayLayout() {

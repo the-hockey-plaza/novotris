@@ -335,18 +335,23 @@ a.footer-label-only {
 	justify-content: center;
 	padding-top: 3px;
 	padding-bottom: 3px;
-	font-size: 13px;
+	font-size: 12px;
 	border-top-width: 1px;
 	border-bottom-left-radius: 10px;
 	border-bottom-right-radius: 10px;
 }
 
 .row-footer-box-legal {
+	flex: 1;
 	text-align: center;
 }
 
-a.footer-label-legal {
+.novFooter-legal a.footer-label-legal {
+	display: inline-block;
 	padding-left: 0;
+	padding-right: 0;
+	font-size: inherit;
+	line-height: 1.2;
 	text-decoration: underline;
 }
 
@@ -392,6 +397,7 @@ a.footer-label-legal {
 #lblTitle.lbl-title-compact {
 	font-size: clamp(30px, 5vw, 36px);
 	padding-top: 22px;
+	font-weight: 400;
 }
 
 
@@ -1231,6 +1237,14 @@ table.class-table-ranking td:nth-child(6) {
 		padding-right: 0.25em;
 	}
 
+	.novFooter-legal a.footer-label-legal {
+		display: inline-block;
+		padding-left: 0;
+		padding-right: 0;
+		font-size: inherit;
+		line-height: 1.2;
+	}
+
 	.ranking-filter-bar {
 		grid-template-columns: repeat(2, minmax(130px, 1fr));
 	}
@@ -1283,7 +1297,7 @@ table.class-table-ranking td:nth-child(6) {
 		line-height: 1.1;
 	}
 
-	a.footer-label-legal {
+	.novFooter-legal a.footer-label-legal {
 		padding: 1px 3px;
 		font-size: 11px;
 	}

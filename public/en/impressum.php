@@ -43,7 +43,7 @@
     <div class="container" id="div-container">
       <div class="novHeader"
         style="border-top-left-radius: 4px; border-top-right-radius: 4px;">
-        <h1 id="lblTitle" style="flex: 80">Imprint</h1>
+        <h1 id="lblTitle" class="nov-title-area lbl-title-compact" style="flex: 80">Imprint</h1>
         <div style="flex: 20">
           <picture>
             <source srcset="../images/novotris-logo.webp" type="image/webp">
@@ -105,6 +105,7 @@
     src="../js/dialog.js?v=<?php echo filemtime('../js/dialog.js'); ?>"></script>
 
   <script>
+    document.addEventListener('DOMContentLoaded', onContentLoaded, false);
     var glUser = new User();
     mainInit();
     glUser.init(false);

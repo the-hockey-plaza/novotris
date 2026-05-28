@@ -118,7 +118,7 @@ include '../php/page-head.php';
 <?php include '../php/page-scripts.php'; ?>
 
 <script>
-	document.addEventListener('DOMContentLoaded', onContentLoaded, false); // currently empty!
+	document.addEventListener('DOMContentLoaded', onContentLoaded, false);
 	var glUser = new User();
 
 	mainInit();

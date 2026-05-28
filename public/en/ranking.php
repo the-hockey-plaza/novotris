@@ -6,7 +6,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width">
 	<meta name="description"
-		content="Tetris leaderboard at Novotris: compare your highscore online with other players – sorted by level, mode and device.">
+		content="Leaderboard at Novotris: compare your highscore online with other players – sorted by level, mode and device.">
 	<meta name="keywords"
 		content="tetris, ranking">
 	<meta name="Copyright" content="Armin Steidlinger Softwareentwicklung">
@@ -47,7 +47,7 @@
 	<div class="pseudoBody">
 		<div class="container" id="div-container">
 			<div class="novHeader nov-header-rounded">
-				<h1 id="lblTitle" class="nov-title-area lbl-title-compact">Tetris Leaderboard</h1>
+				<h1 id="lblTitle" class="nov-title-area lbl-title-compact">Leaderboard</h1>
 				<div class="nov-logo-area">
 					<picture>
 						<source srcset="../images/novotris-logo.webp" type="image/webp">
@@ -146,10 +146,10 @@
 		</div>
 	</div>
 	<section class="nov-seo-text">
-		<h2>Tetris Leaderboard – Compare Your Highscore Online</h2>
+		<h2>Leaderboard – Compare Your Highscore Online</h2>
 		<p>
-			The Novotris leaderboard shows who achieves the highest scores in Tetris.
-			Compare your <strong>Tetris highscore online</strong> with other players –
+			The Novotris leaderboard shows who achieves the highest scores.
+			Compare your <strong>highscore online</strong> with other players –
 			sorted by level (1–6) and game mode (Classic, Speed).
 		</p>
 		<p>
@@ -203,6 +203,7 @@
 		src="../js/dialog.js?v=<?php echo filemtime('../js/dialog.js'); ?>"></script>
 
 	<script>
+		document.addEventListener('DOMContentLoaded', onContentLoaded, false);
 		var glUser = new User();
 		mainInit();
 		(async () => {

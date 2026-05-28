@@ -173,6 +173,7 @@
 		src="../js/highscore.js?v=<?php echo filemtime('../js/highscore.js'); ?>"></script>
 
 	<script>
+		document.addEventListener('DOMContentLoaded', onContentLoaded, false);
 		var glUser = new User();
 
 		mainInit();

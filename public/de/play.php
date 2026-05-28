@@ -266,6 +266,7 @@
 
 
 	<script>
+		document.addEventListener('DOMContentLoaded', onContentLoaded, false);
 		document.addEventListener('contextmenu', event => event.preventDefault());
 
 		function stabilizeInitialPlayLayout() {

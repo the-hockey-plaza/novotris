@@ -701,6 +701,9 @@ function removeFullRow(j, isFull) {
 function stop_game() {
 	glScoreFinished = glScore;
 	glHighscoreFinished = getHighscore();
+	if (glUser && typeof glUser.incrementGamesPlayed === 'function') {
+		glUser.incrementGamesPlayed();
+	}
 	setHighscore();
 	do_stop();
 	hidePlayIcons(false);
@@ -718,16 +721,32 @@ function stop_game() {
 }
 
 function showGameOverDialog(newRankingPosition) {
-	var msgText;
+	const msgParts = [];
+	const isNewHighscore = glScoreFinished > glHighscoreFinished;
 
-	if (glScoreFinished > glHighscoreFinished)
+	if (isNewHighscore)
 		// msgText = "Du hast in diesem Spiel einen Score von <b>" + glScoreFinished + "</b> und damit einen neuen Highscore erreicht!";
-		msgText = getText("score_highscore", glScoreFinished);
+		msgParts.push(getText("score_highscore", glScoreFinished));
 	else
-		msgText = getText("score", glScoreFinished);
+		msgParts.push(getText("score", glScoreFinished));
+
+	if (isNewHighscore) {
+		const mode = glUser.getMode();
+		const levelNeedsScore = mode == glModeSpeed ? glLevelNeedsScoreModeSpeed : (glIsMobile ? glLevelNeedsScoreMobile : glLevelNeedsScoreModeClassic);
+		const scoreHintThreshold = levelNeedsScore * 0.7;
+		const currentLevel = glUser.getLevel();
+		const nextLevel = currentLevel + 1;
+
+		if (nextLevel <= glMaxLevelGlobal && glScoreFinished >= scoreHintThreshold && glScoreFinished < levelNeedsScore) {
+			const pointsToNextLevel = levelNeedsScore - glScoreFinished;
+			msgParts.push(getText("score_next_level_unlock", pointsToNextLevel, nextLevel));
+		}
+	}
 
 	if (newRankingPosition != null)
-		msgText += "<br>" + getText("improved_ranking", newRankingPosition);
+		msgParts.push(getText("improved_ranking", newRankingPosition));
+
+	const msgText = msgParts.join('<div style="height:0.5em;"></div>');
 
 	classDialogModus = "finished";
 	classDialog.showMessageDialog("Game Over", msgText);

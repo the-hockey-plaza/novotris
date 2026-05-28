@@ -13,12 +13,18 @@ class User {
 		this.name = "";
 		this.level = 1;
 		this.maxlevel = 1;
+		this.gamesPlayed = 0;
 		this.mode = glModeClassic;
 		this.language = "de";
 		this.highscores = [
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0]
 		];
+	}
+
+	saveToLocalStorage() {
+		let userDataLocal = JSON.stringify(this);
+		this.writeLocalStorage(glUserKey, userDataLocal);
 	}
 
 	readLocalStorage(key) {
@@ -67,6 +73,7 @@ class User {
 			this.name = storedUser.name;
 			this.level = storedUser.level;
 			this.maxlevel = storedUser.maxlevel;
+			this.gamesPlayed = Number(storedUser.gamesPlayed) || 0;
 			this.highscores = storedUser.highscores;
 			this.language = storedUser.language;
 			await this.loadFromDb(false);
@@ -211,8 +218,7 @@ class User {
 
 	setLevel(level) {
 		this.level = level;
-		let userDataLocal = JSON.stringify(this);
-		this.writeLocalStorage(glUserKey, userDataLocal);
+		this.saveToLocalStorage();
 
 		jQuery.ajax({
 			type: "POST",
@@ -233,6 +239,15 @@ class User {
 
 	getLevel() {
 		return this.level;
+	}
+
+	getGamesPlayed() {
+		return Number(this.gamesPlayed) || 0;
+	}
+
+	incrementGamesPlayed() {
+		this.gamesPlayed = this.getGamesPlayed() + 1;
+		this.saveToLocalStorage();
 	}
 
 	setMaxLevel(level) {
@@ -322,9 +337,11 @@ class User {
 		this.level = 1;
 		this.language = userDataDb.user_language;
 		this.setMode(userDataDb.user_mode);
+		const dbGamesPlayed = Number(userDataDb.user_games);
+		if (Number.isFinite(dbGamesPlayed) && dbGamesPlayed >= 0)
+			this.gamesPlayed = dbGamesPlayed;
 
-		let userDataLocal = JSON.stringify(this);
-		this.writeLocalStorage(glUserKey, userDataLocal);
+		this.saveToLocalStorage();
 
 		this.calculateMaxLevel();
 

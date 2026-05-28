@@ -177,7 +177,7 @@
 		src="../js/dialog.js?v=<?php echo filemtime('../js/dialog.js'); ?>"></script>
 
 	<script>
-		document.addEventListener('DOMContentLoaded', onContentLoaded, false); // currently empty!
+		document.addEventListener('DOMContentLoaded', onContentLoaded, false);
 
 		var glUser = new User();
 		mainParseURL();

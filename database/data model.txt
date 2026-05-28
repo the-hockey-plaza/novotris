@@ -84,3 +84,7 @@ order by g.id desc
 create table news (id int NOT NULL AUTO_INCREMENT PRIMARY KEY, datum date, message varchar(4000), language varchar (5));
 
 alter table news add (language varchar (5));
+
+alter table game add (score_live int default 0);
+
+
