@@ -76,6 +76,10 @@ function increaseScore(points) {
 		playSetScoreTitle(getText("play_title_score", scoreLevel));
 		scoreLevel += 500;
 	}
+
+	if (glUser.getGamesPlayed() < 10) {
+		updateGameOnDb(glScore);
+	}
 }
 
 function reduceScore() {

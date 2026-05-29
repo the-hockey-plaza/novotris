@@ -1007,6 +1007,28 @@ async function stopGameOnDb(score) {
 	}
 }
 
+async function updateGameOnDb(score) {
+	try {
+		const myPath = phpDir + 'db.php';
+
+		const response = await fetch(myPath, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ db_name: glDbName, functionname: 'updateGameOnDb', game_id: glGameId, score: glScore })
+		});
+
+		if (!response.ok) {
+			throw new Error('HTTP-Fehler: ${response.status}');
+		}
+
+		const result = await response.text();
+		console.log("updateGameOnDb, result = " + result);
+	}
+	catch (error) {
+		console.error("Netzwerk- oder Parsing-Fehler:", error);
+	}
+}
+
 /*
  * onLoad
  */

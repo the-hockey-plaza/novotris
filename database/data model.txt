@@ -86,5 +86,6 @@ create table news (id int NOT NULL AUTO_INCREMENT PRIMARY KEY, datum date, messa
 alter table news add (language varchar (5));
 
 alter table game add (score_live int default 0);
+alter table game add (timestamp_live datetime);
 
 

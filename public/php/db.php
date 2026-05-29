@@ -576,6 +576,16 @@ function stopGameOnDb($game_id, $score)
 
 // -----------------------------------------------------------------------------
 
+function updateGameOnDb($game_id, $score)
+{
+  global $pdo;
+  $statement = $pdo->prepare("UPDATE game SET score_live = ?, timestamp_live = now() WHERE id = ? AND ende IS NULL");
+  $statement->execute([$score, $game_id]);
+  echo getIp();
+}
+
+// -----------------------------------------------------------------------------
+
 function activate($activation_code)
 {
   global $pdo;
@@ -793,6 +803,12 @@ switch ($functionname) {
     $game_id = $input['game_id'] ?? $_POST["game_id"];
     $score = $input['score'] ?? $_POST["score"];
     stopGameOnDb($game_id, $score);
+    break;
+
+  case 'updateGameOnDb':
+    $game_id = $input['game_id'] ?? $_POST["game_id"];
+    $score = $input['score'] ?? $_POST["score"];
+    updateGameOnDb($game_id, $score);
     break;
 
   // getestet:
