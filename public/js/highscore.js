@@ -77,9 +77,9 @@ function increaseScore(points) {
 		scoreLevel += 500;
 	}
 
-	if (glUser.getGamesPlayed() < 10) {
-		updateGameOnDb(glScore);
-	}
+	//if (glUser.getGamesPlayed() < 10) {
+	updateGameOnDb(glScore);
+	//}
 }
 
 function reduceScore() {

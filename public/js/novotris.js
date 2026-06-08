@@ -944,13 +944,38 @@ function game_init() {
 	showSpeed();
 }
 
-function startGameOnDb() {
+function startGameOnDb(retryCount = 0) {
+	const maxRetries = 1;
+	const userId = Number(glUser.getId());
+
+	if (!Number.isFinite(userId) || userId <= 0) {
+		if (retryCount >= maxRetries) {
+			console.error("startGameOnDb aborted: missing valid user id");
+			return;
+		}
+
+		glUser.loadFromDb(false)
+			.then(() => startGameOnDb(retryCount + 1))
+			.catch((error) => console.error("startGameOnDb re-auth failed:", error));
+		return;
+	}
+
 	jQuery.ajax({
 		type: "POST",
 		url: '../php/db.php',
-		data: { db_name: glDbName, functionname: 'startGameOnDb', user_id: glUser.getId(), nov_release: glRelease, level: glUser.getLevel(), mode: glUser.getMode() },
+		data: { db_name: glDbName, functionname: 'startGameOnDb', user_id: userId, nov_release: glRelease, level: glUser.getLevel(), mode: glUser.getMode() },
 		success: function (result) {
 			startGameOnDbSuccess(result);
+		},
+		error: function (jqXHR) {
+			if ((jqXHR.status === 401 || jqXHR.status === 403) && retryCount < maxRetries) {
+				glUser.loadFromDb(false)
+					.then(() => startGameOnDb(retryCount + 1))
+					.catch((error) => console.error("startGameOnDb retry failed:", error));
+				return;
+			}
+
+			console.error("startGameOnDb request failed", jqXHR.status, jqXHR.responseText);
 		}
 	});
 }
@@ -993,6 +1018,8 @@ async function stopGameOnDb(score) {
 		mailContent = "alert type: <b>stopGame</b><br>";
 		mailContent += "ip: <b>" + result + "</b><br>";
 		mailContent += "user_name: <b>" + glUser.getName() + "</b><br>";
+		mailContent += "first_game: <b>" + await glUser.getFirstGameDate() + "</b><br>";
+		mailContent += "games_played: <b>" + glUser.getGamesPlayed() + "</b><br>";
 		mailContent += "mobile: <b>" + isMobile + "</b><br>";
 		mailContent += "level: <b>" + glUser.getLevel() + "</b><br>";
 		mailContent += "mode: <b>" + mode + "</b><br>";

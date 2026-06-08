@@ -397,6 +397,14 @@ function getText(key, p1, p2, p3, p4) {
 					return p1 + " points unlock the next level.<br>Your highest level: <b>" + p2 + "</b>";
 			}
 
+		case 'short_help_text':
+			switch (lang) {
+				case "de":
+					return "Probier's einfach aus und benutze die Pfeiltasten!";
+				case "en":
+					return "Just give it a try and use the arrow keys!";
+			}
+
 
 	}
 }

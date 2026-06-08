@@ -29,7 +29,7 @@ alter table highscore add (user_id varchar(200))
 create table nov_user (id int NOT NULL AUTO_INCREMENT PRIMARY KEY, uuid varchar(200), active varchar(1),
   name varchar(80), mobile varchar(1), created datetime, credits int default 0, level int default 1, notes varchar (1000),
   email varchar (50), password varchar (200), 
-  activation_code varchar(255), activation_expiry datetime, activated_at datetime, old_user_id int,
+  activation_code varchar(255), activation_expiry datetime, activation_used_at datetime, activated_at datetime, old_user_id int,
   language varchar (5));
 
 alter table nov_user add (mobile varchar(1))
@@ -39,7 +39,6 @@ alter table nov_user add (level int default 1);
 alter table nov_user add (notes varchar (1000));
 alter table nov_user add (email varchar (50));
 alter table nov_user add (password varchar (200));
-alter table nov_user add (activation_code varchar(255), activation_expiry datetime, activated_at datetime);
 alter table nov_user add (active varchar(1))
 alter table nov_user add (old_user_id int);
 alter table nov_user add (language varchar (5));
@@ -87,5 +86,8 @@ alter table news add (language varchar (5));
 
 alter table game add (score_live int default 0);
 alter table game add (timestamp_live datetime);
+alter table game add (ip varchar(200));
+
+alter table nov_user add (activation_used_at datetime);
 
 

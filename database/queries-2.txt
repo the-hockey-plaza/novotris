@@ -3,3 +3,5 @@ SELECT * FROM nov_user where name like 'a%'
 update nov_user set email = 'a5@steidlinger.de' where name = 'a5'
 
 update nov_user set email = 'a1@steidlinger.de' where name like 'a1%'
+
+alter table nov_user add (activation_used_at datetime);

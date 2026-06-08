@@ -4,6 +4,15 @@
  * db.php
  */
 
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+
+require_once __DIR__ . '/db/DbController.php';
+require_once __DIR__ . '/db/DbService.php';
+require_once __DIR__ . '/db/DbRepository.php';
+require_once __DIR__ . '/db/NovotrisHttpException.php';
+
 // -----------------------------------------------------------------------------
 
 function dbLog($msg)
@@ -14,11 +23,114 @@ function dbLog($msg)
 
 // -----------------------------------------------------------------------------
 
-function createPdo($db_name)
+function loadEnvFile($filePath)
+{
+  if (!is_readable($filePath)) {
+    return;
+  }
+
+  $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+  if ($lines === false) {
+    return;
+  }
+
+  foreach ($lines as $line) {
+    $trimmed = trim($line);
+    if ($trimmed === '' || strpos($trimmed, '#') === 0) {
+      continue;
+    }
+
+    $pos = strpos($trimmed, '=');
+    if ($pos === false) {
+      continue;
+    }
+
+    $key = trim(substr($trimmed, 0, $pos));
+    $value = trim(substr($trimmed, $pos + 1));
+
+    if ($key === '') {
+      continue;
+    }
+
+    if (strlen($value) >= 2) {
+      $first = $value[0];
+      $last = $value[strlen($value) - 1];
+      if (($first === '"' && $last === '"') || ($first === "'" && $last === "'")) {
+        $value = substr($value, 1, -1);
+      }
+    }
+
+    if (getenv($key) === false) {
+      putenv($key . '=' . $value);
+      $_ENV[$key] = $value;
+      $_SERVER[$key] = $value;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+function bootstrapEnv()
+{
+  static $loaded = false;
+  if ($loaded) {
+    return;
+  }
+
+  $loaded = true;
+
+  // Shared hosting fallback: load local .env if process env is not available.
+  loadEnvFile(__DIR__ . '/../../.env');
+  loadEnvFile(__DIR__ . '/../.env');
+}
+
+// -----------------------------------------------------------------------------
+
+function getRequiredEnv($name)
+{
+  bootstrapEnv();
+
+  $value = getenv($name);
+  if ($value === false || trim($value) === '') {
+    throw new RuntimeException('Missing required environment variable: ' . $name);
+  }
+
+  return $value;
+}
+
+// -----------------------------------------------------------------------------
+
+function getEnvOrDefault($name, $default)
+{
+  bootstrapEnv();
+
+  $value = getenv($name);
+  if ($value === false || trim($value) === '') {
+    return $default;
+  }
+
+  return $value;
+}
+
+// -----------------------------------------------------------------------------
+
+function createPdo()
 {
   global $pdo;
-  $v_db_name = $db_name ?? 'novotris_work';
-  $pdo = new PDO('mysql:host=localhost;dbname=' . $v_db_name, 'novotris_admin', 'NovForEver');
+  $v_db_name = getEnvOrDefault('NOVOTRIS_DB_NAME', 'novotris_work');
+  $db_user = getRequiredEnv('NOVOTRIS_DB_USER');
+  $db_password = getRequiredEnv('NOVOTRIS_DB_PASSWORD');
+  $pdo = new PDO(
+    'mysql:host=localhost;dbname=' . $v_db_name . ';charset=utf8mb4',
+    $db_user,
+    $db_password,
+    [
+      PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+      PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+      PDO::ATTR_EMULATE_PREPARES => false
+    ]
+  );
+  return $pdo;
 }
 
 // -----------------------------------------------------------------------------
@@ -71,17 +183,319 @@ function detectMobileFlagFromUserAgent()
 
 // -----------------------------------------------------------------------------
 
-function resolveMobileFlag($mobile)
+function resolveMobileFlag()
 {
-  $serverMobile = detectMobileFlagFromUserAgent();
-  $clientMobile = strtoupper(trim((string) $mobile));
+  // Server-side user-agent detection is the single source of truth for the mobile flag.
+  // Client-provided mobile values are ignored intentionally to keep assignment deterministic.
+  return detectMobileFlagFromUserAgent();
+}
 
-  if ($clientMobile !== 'Y' && $clientMobile !== 'N') {
-    return $serverMobile;
+// -----------------------------------------------------------------------------
+
+function hashPasswordValue($plainPassword)
+{
+  return password_hash((string)$plainPassword, PASSWORD_DEFAULT);
+}
+
+// -----------------------------------------------------------------------------
+
+function verifyPasswordValue($plainPassword, $storedHash, $legacySalt)
+{
+  if (!is_string($storedHash) || $storedHash === '') {
+    return false;
   }
 
-  // Prefer server detection for new-user assignment to avoid stale/wrong client flags.
-  return $serverMobile;
+  if (password_verify((string)$plainPassword, $storedHash)) {
+    return true;
+  }
+
+  if ($legacySalt !== '') {
+    return hash_equals($storedHash, crypt((string)$plainPassword, $legacySalt));
+  }
+
+  return false;
+}
+
+// -----------------------------------------------------------------------------
+
+function needsPasswordRehash($storedHash)
+{
+  if (!is_string($storedHash) || $storedHash === '') {
+    return true;
+  }
+
+  return password_get_info($storedHash)['algo'] === null || password_needs_rehash($storedHash, PASSWORD_DEFAULT);
+}
+
+// -----------------------------------------------------------------------------
+
+function hashTokenValue($token)
+{
+  return password_hash((string)$token, PASSWORD_DEFAULT);
+}
+
+// -----------------------------------------------------------------------------
+
+function createPlainToken()
+{
+  return bin2hex(random_bytes(32));
+}
+
+// -----------------------------------------------------------------------------
+
+function verifyTokenValue($plainToken, $storedHash, $legacySalt)
+{
+  if (!is_string($storedHash) || $storedHash === '') {
+    return false;
+  }
+
+  if (password_verify((string)$plainToken, $storedHash)) {
+    return true;
+  }
+
+  if ($legacySalt !== '') {
+    return hash_equals($storedHash, crypt((string)$plainToken, $legacySalt));
+  }
+
+  return false;
+}
+
+// -----------------------------------------------------------------------------
+
+function findUserByActivationToken(PDO $pdo, $token, $legacySalt, $onlyInactive)
+{
+  if ($onlyInactive) {
+    $statement = $pdo->prepare("SELECT id, old_user_id, activation_code FROM nov_user WHERE active = 'N' AND activated_at IS NULL AND activation_code IS NOT NULL AND activation_expiry IS NOT NULL AND activation_expiry >= now() AND activation_used_at IS NULL");
+  } else {
+    $statement = $pdo->prepare("SELECT id, old_user_id, activation_code FROM nov_user WHERE active = 'Y' AND activation_code IS NOT NULL AND activation_expiry IS NOT NULL AND activation_expiry >= now() AND activation_used_at IS NULL");
+  }
+
+  $statement->execute();
+
+  while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+    if (verifyTokenValue($token, $row['activation_code'], $legacySalt)) {
+      return $row;
+    }
+  }
+
+  return null;
+}
+
+// -----------------------------------------------------------------------------
+
+function jsonError($statusCode, $errorCode, $message)
+{
+  http_response_code($statusCode);
+  echo json_encode([
+    'error' => $errorCode,
+    'message' => $message
+  ]);
+  exit;
+}
+
+// -----------------------------------------------------------------------------
+
+function handleThrowableAsJson(Throwable $e)
+{
+  if ($e instanceof NovotrisHttpException) {
+    jsonError($e->getStatusCode(), $e->getErrorCode(), $e->getMessage());
+  }
+
+  if ($e instanceof InvalidArgumentException) {
+    jsonError(400, 'bad_request', $e->getMessage());
+  }
+
+  if ($e instanceof RuntimeException) {
+    jsonError(400, 'bad_request', $e->getMessage());
+  }
+
+  dbLog('Unhandled exception: ' . get_class($e) . ' - ' . $e->getMessage());
+  jsonError(500, 'internal_error', 'Unexpected server error');
+}
+
+// -----------------------------------------------------------------------------
+
+function emitSuccessResponse($payload)
+{
+  if ($payload === null) {
+    http_response_code(204);
+    return;
+  }
+
+  if (is_array($payload) || is_object($payload)) {
+    echo json_encode($payload);
+    return;
+  }
+
+  echo (string)$payload;
+}
+
+// -----------------------------------------------------------------------------
+
+function normalizeRequestPayload()
+{
+  $rawBody = file_get_contents('php://input');
+  $jsonPayload = [];
+
+  if (is_string($rawBody) && trim($rawBody) !== '') {
+    $decoded = json_decode($rawBody, true);
+    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+      $jsonPayload = $decoded;
+    }
+  }
+
+  // Backward compatible: POST values are accepted but normalized to one payload.
+  return array_merge($_POST, $jsonPayload);
+}
+
+// -----------------------------------------------------------------------------
+
+function validateRequiredRequestFields($functionname, array $request)
+{
+  $requiredByAction = [
+    'logToDb' => ['nov_release', 'aktion', 'params', 'log_order'],
+    'readHighscoreFromDb' => ['level', 'mobile', 'user_id', 'mode', 'period'],
+    'readRankingPosition' => ['level', 'mobile', 'user_id', 'mode'],
+    'getUserFromDb' => ['mobile'],
+    'saveUserNameToDb' => ['id', 'name'],
+    'saveUserSettingsToDb' => ['id', 'mode'],
+    'startGameOnDb' => ['user_id', 'nov_release', 'level', 'mode'],
+    'stopGameOnDb' => ['game_id', 'score'],
+    'updateGameOnDb' => ['game_id', 'score'],
+    'saveLevelToDb' => ['user_id', 'level'],
+    'createUserOnDb' => ['user_name', 'user_email', 'user_password', 'mobile', 'activation_code', 'old_user_id'],
+    'login' => ['user_name', 'password', 'mobile'],
+    'activate' => ['activation_code'],
+    'resetPassword' => ['user_name', 'user_email', 'mobile', 'activation_code'],
+    'getChangePasswordUser' => ['activation_code'],
+    'updatePassword' => ['activation_code', 'user_password'],
+    'saveLanguageToDb' => ['user_id', 'language'],
+    'getUserInfo' => ['user_id'],
+    'getNovotrisInfo' => []
+  ];
+
+  if (!array_key_exists($functionname, $requiredByAction)) {
+    return;
+  }
+
+  foreach ($requiredByAction[$functionname] as $fieldName) {
+    if (!array_key_exists($fieldName, $request)) {
+      throw new NovotrisHttpException(400, 'bad_request', 'Missing required field: ' . $fieldName);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+function getAuthenticatedUserIdOrNull()
+{
+  if (!isset($_SESSION['nov_user_id'])) {
+    return null;
+  }
+
+  return (int)$_SESSION['nov_user_id'];
+}
+
+// -----------------------------------------------------------------------------
+
+function requireAuthenticatedUserId()
+{
+  $userId = getAuthenticatedUserIdOrNull();
+  if ($userId === null || $userId <= 0) {
+    jsonError(401, 'unauthorized', 'Authentication required');
+  }
+
+  return $userId;
+}
+
+// -----------------------------------------------------------------------------
+
+function setAuthenticatedUserId($userId)
+{
+  session_regenerate_id(true);
+  $_SESSION['nov_user_id'] = (int)$userId;
+  $_SESSION['nov_last_auth_at'] = time();
+}
+
+// -----------------------------------------------------------------------------
+
+function requestValue($input, $key)
+{
+  if (is_array($input) && array_key_exists($key, $input)) {
+    return $input[$key];
+  }
+
+  if (isset($_POST[$key])) {
+    return $_POST[$key];
+  }
+
+  return null;
+}
+
+// -----------------------------------------------------------------------------
+
+function requireOwnerByField($input, $fieldName)
+{
+  $authenticatedUserId = requireAuthenticatedUserId();
+  $targetUserId = (int)requestValue($input, $fieldName);
+
+  if ($targetUserId <= 0 || $targetUserId !== $authenticatedUserId) {
+    jsonError(403, 'forbidden', 'Access denied for requested user');
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+function requireGameOwner($gameId)
+{
+  global $pdo;
+
+  $authenticatedUserId = requireAuthenticatedUserId();
+  $statement = $pdo->prepare("SELECT user_id FROM game WHERE id = ?");
+  $statement->execute([(int)$gameId]);
+  $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+  if ($row === false) {
+    jsonError(404, 'not_found', 'Game not found');
+  }
+
+  if ((int)$row['user_id'] !== $authenticatedUserId) {
+    jsonError(403, 'forbidden', 'Access denied for requested game');
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+function enforceAuthorization($functionname, $input)
+{
+  switch ($functionname) {
+    case 'saveLevelToDb':
+      requireOwnerByField($input, 'user_id');
+      break;
+    case 'saveUserSettingsToDb':
+      requireOwnerByField($input, 'id');
+      break;
+    case 'saveLanguageToDb':
+      requireOwnerByField($input, 'user_id');
+      break;
+    case 'saveUserNameToDb':
+      requireOwnerByField($input, 'id');
+      break;
+    case 'getUserInfo':
+      requireOwnerByField($input, 'user_id');
+      break;
+    case 'startGameOnDb':
+      requireOwnerByField($input, 'user_id');
+      break;
+    case 'stopGameOnDb':
+      requireGameOwner(requestValue($input, 'game_id'));
+      break;
+    case 'updateGameOnDb':
+      requireGameOwner(requestValue($input, 'game_id'));
+      break;
+    default:
+      break;
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -96,11 +510,29 @@ function logToDb($nov_release, $aktion, $params, $log_order)
 
 // -----------------------------------------------------------------------------
 
+function resolveAllowedScoreTable($table)
+{
+  $allowedTables = [
+    'highscore',
+    'score'
+  ];
+
+  $normalized = trim((string)$table);
+  if (!in_array($normalized, $allowedTables, true)) {
+    throw new InvalidArgumentException('Invalid table name for score persistence');
+  }
+
+  return $normalized;
+}
+
+// -----------------------------------------------------------------------------
+
 function saveScoreToDb($table, $nov_release, $level, $score, $user_id)
 {
   global $pdo;
   $datetime = date('Y-m-d H:i:s');
-  $sql = "INSERT INTO {$table} (timestamp, ip, nov_release, level, score, user_id) VALUES (?,?,?,?,?,?)";
+  $safeTable = resolveAllowedScoreTable($table);
+  $sql = "INSERT INTO {$safeTable} (timestamp, ip, nov_release, level, score, user_id) VALUES (?,?,?,?,?,?)";
   $statement = $pdo->prepare($sql);
   $statement->execute([$datetime, getIp(), $nov_release, $level, $score, $user_id]);
 }
@@ -112,6 +544,7 @@ function readHighscoreFromDb($level, $mobile, $user_id, $mode, $period)
 {
   global $pdo;
   $sql = null;
+  $params = [];
   $i = 0;
   $myArray = array();
 
@@ -122,17 +555,21 @@ function readHighscoreFromDb($level, $mobile, $user_id, $mode, $period)
     $sql = $sql . " WHERE score > 0";
 
     if ($level > 0) {
-      $sql = $sql . " AND game.level = " . $level;
+      $sql = $sql . " AND game.level = ?";
+      $params[] = (int)$level;
     }
 
     if ($period == 0) {
       $sql = $sql . " and game.beginn > NOW() - INTERVAL 12 MONTH";
     }
 
-    $sql = $sql . " AND game.user_id = " . $user_id;
-    $sql = $sql . " AND mobile = '" . $mobile . "'";
-    $sql = $sql . " AND nov_mode = '" . $mode . "'";
-    $sql = $sql . " ORDER BY score DESC, name";
+    $sql = $sql . " AND game.user_id = ?";
+    $params[] = (int)$user_id;
+    $sql = $sql . " AND mobile = ?";
+    $params[] = $mobile;
+    $sql = $sql . " AND nov_mode = ?";
+    $params[] = (int)$mode;
+    $sql = $sql . " ORDER BY score DESC, name LIMIT 50";
   } else {
     $sql = "select u.id, u.name, nov_level.level, g.score, g.ende";
     $sql = $sql . " from nov_user as u inner join game as g on g.user_id = u.id";
@@ -142,8 +579,10 @@ function readHighscoreFromDb($level, $mobile, $user_id, $mode, $period)
     if ($period == 0) {
       $sql = $sql . " and g1.beginn > NOW() - INTERVAL 12 MONTH";
     }
-    $sql = $sql . "     and g1.level = nov_level.level and g1.nov_mode = " . $mode . ")";
-    $sql = $sql . " and u.mobile = '" . $mobile . "'";
+    $sql = $sql . "     and g1.level = nov_level.level and g1.nov_mode = ?)";
+    $params[] = (int)$mode;
+    $sql = $sql . " and u.mobile = ?";
+    $params[] = $mobile;
 
     if ($period == 0) {
       $sql = $sql . " and g.beginn > NOW() - INTERVAL 12 MONTH";
@@ -151,13 +590,17 @@ function readHighscoreFromDb($level, $mobile, $user_id, $mode, $period)
 
 
     if ($level > 0) {
-      $sql = $sql . " and nov_level.level = " . $level;
+      $sql = $sql . " and nov_level.level = ?";
+      $params[] = (int)$level;
     }
 
-    $sql = $sql . " and nov_mode = " . $mode . " order by g.score desc, name";
+    $sql = $sql . " and nov_mode = ? order by g.score desc, name LIMIT 50";
+    $params[] = (int)$mode;
   }
 
-  foreach ($pdo->query($sql) as $row) {
+  $statement = $pdo->prepare($sql);
+  $statement->execute($params);
+  while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
     $i = $i + 1;
     $time = strtotime($row['ende']);
     $formatTime = date("d.m.y", $time);
@@ -171,12 +614,9 @@ function readHighscoreFromDb($level, $mobile, $user_id, $mode, $period)
     $myObj->user_name = $row['name'];
 
     $myArray[] = $myObj;
-
-    if ($i >= 50)
-      break;
   }
 
-  echo json_encode($myArray);
+  return $myArray;
 }
 
 // -----------------------------------------------------------------------------
@@ -186,6 +626,7 @@ function readRankingPosition($level, $mobile, $user_id, $mode)
 {
   global $pdo;
   $sql = null;
+  $params = [];
   $i = 0;
   $position = -1;
 
@@ -193,28 +634,30 @@ function readRankingPosition($level, $mobile, $user_id, $mode)
   $sql = $sql . " from nov_user as u inner join game as g on g.user_id = u.id";
   $sql = $sql . " inner join nov_level on g.level = nov_level.level";
   $sql = $sql . " where g.score > 0  and g.score = (select max(g1.score) from game as g1";
-  $sql = $sql . " where g1.user_id = u.id AND g1.level = nov_level.level and g1.beginn > NOW() - INTERVAL 12 MONTH and g1.nov_mode = " . $mode . ")";
-  $sql = $sql . " AND u.mobile = '" . $mobile . "'";
-  $sql = $sql . " and nov_level.level = " . $level;
-  $sql = $sql . " and g.nov_mode = " . $mode;
-  $sql = $sql . " order by g.score desc";
+  $sql = $sql . " where g1.user_id = u.id AND g1.level = nov_level.level and g1.beginn > NOW() - INTERVAL 12 MONTH and g1.nov_mode = ?)";
+  $params[] = (int)$mode;
+  $sql = $sql . " AND u.mobile = ?";
+  $params[] = $mobile;
+  $sql = $sql . " and nov_level.level = ?";
+  $params[] = (int)$level;
+  $sql = $sql . " and g.nov_mode = ?";
+  $params[] = (int)$mode;
+  $sql = $sql . " order by g.score desc LIMIT 100";
 
-  dbLog("readRankingPosition, sql = " .  $sql);
+  dbLog("readRankingPosition");
 
-
-  foreach ($pdo->query($sql) as $row) {
+  $statement = $pdo->prepare($sql);
+  $statement->execute($params);
+  while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
     $i = $i + 1;
 
     if ($row['id'] == $user_id) {
       $position = $i;
       break;
     }
-
-    if ($i >= 100)
-      break;
   }
 
-  echo $position;
+  return $position;
 }
 
 // -----------------------------------------------------------------------------
@@ -223,16 +666,59 @@ function createGuestUser($mobile)
 {
   global $pdo;
   $user_id = null;
-  $mobile = resolveMobileFlag($mobile);
+  $mobile = resolveMobileFlag();
 
-  $sql = "INSERT INTO nov_user (mobile) VALUES ('" . $mobile . "')";
-  $pdo->query($sql);
-  $user_id = $pdo->lastInsertId();
+  try {
+    $pdo->beginTransaction();
 
-  $sql = "UPDATE nov_user set name = 'guest" . $user_id . "', created = now() WHERE id = " . $user_id;
-  $pdo->query($sql);
+    $statement = $pdo->prepare("INSERT INTO nov_user (mobile) VALUES (?)");
+    $statement->execute([$mobile]);
+    $user_id = $pdo->lastInsertId();
+
+    $statement = $pdo->prepare("UPDATE nov_user set name = ?, created = now() WHERE id = ?");
+    $statement->execute(['guest' . $user_id, (int)$user_id]);
+
+    $pdo->commit();
+  } catch (Throwable $exception) {
+    if ($pdo->inTransaction()) {
+      $pdo->rollBack();
+    }
+    throw $exception;
+  }
 
   return $user_id;
+}
+
+// -----------------------------------------------------------------------------
+
+function readUserScoresFromDb($userId)
+{
+  global $pdo;
+
+  $scores = [
+    array_fill(0, 8, 0),
+    array_fill(0, 8, 0)
+  ];
+
+  $statement = $pdo->prepare(
+    "SELECT level, nov_mode, MAX(score) AS max_score
+     FROM game
+     WHERE user_id = ? AND level BETWEEN 1 AND 8 AND nov_mode BETWEEN 1 AND 2
+     GROUP BY level, nov_mode"
+  );
+  $statement->execute([(int)$userId]);
+
+  while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+    $modeIndex = (int)$row['nov_mode'] - 1;
+    $levelIndex = (int)$row['level'] - 1;
+
+    if ($modeIndex >= 0 && $modeIndex < 2 && $levelIndex >= 0 && $levelIndex < 8) {
+      $score = $row['max_score'];
+      $scores[$modeIndex][$levelIndex] = $score === null ? 0 : (int)$score;
+    }
+  }
+
+  return $scores;
 }
 
 // -----------------------------------------------------------------------------
@@ -240,7 +726,9 @@ function createGuestUser($mobile)
 function getUserFromDb($id, $mobile)
 {
   global $pdo;
-  $sql = "SELECT id, name, credits, level, language, mode FROM nov_user WHERE id = '" . $id . "'";
+  $authenticatedUserId = getAuthenticatedUserIdOrNull();
+  $lookupUserId = $authenticatedUserId !== null ? (int)$authenticatedUserId : 0;
+
   $user_id = null;
   $user_name = null;
   $user_scores = array();
@@ -250,15 +738,19 @@ function getUserFromDb($id, $mobile)
   $user_mode = null;
   $user_games = 0;
 
-  foreach ($pdo->query($sql) as $row) {
-    $user_id = $row['id'];
-    $user_name = $row['name'];
-    $user_credits = $row['credits'];
-    $user_level = $row['level'];
-    $user_language = $row['language'];
-    $user_mode = $row['mode'];
+  if ($lookupUserId > 0) {
+    $statement = $pdo->prepare("SELECT id, name, credits, level, language, mode FROM nov_user WHERE id = ?");
+    $statement->execute([$lookupUserId]);
+    while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+      $user_id = $row['id'];
+      $user_name = $row['name'];
+      $user_credits = $row['credits'];
+      $user_level = $row['level'];
+      $user_language = $row['language'];
+      $user_mode = $row['mode'];
 
-    break;
+      break;
+    }
   }
 
   // Keep the persisted device flag in sync with the current client.
@@ -269,9 +761,11 @@ function getUserFromDb($id, $mobile)
 
   if ($user_id == null) {
     $user_id = createGuestUser($mobile);
+    setAuthenticatedUserId($user_id);
 
-    $sql = "SELECT id, name, credits, level, language, mode FROM nov_user WHERE id = '" . $user_id . "'";
-    foreach ($pdo->query($sql) as $row) {
+    $statement = $pdo->prepare("SELECT id, name, credits, level, language, mode FROM nov_user WHERE id = ?");
+    $statement->execute([(int)$user_id]);
+    while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
       $user_id = $row['id'];
       $user_name = $row['name'];
       $user_credits = $row['credits'];
@@ -297,38 +791,18 @@ function getUserFromDb($id, $mobile)
   /* TODO: anzahl levels dynamisch */
   /* TODO: anzahl modes dynamisch */
 
-  for ($j = 0; $j <= 1; ++$j) {
-    for ($i = 1; $i <= 8; ++$i) {
-      $sql = "select u.id,
-            (select max(g.score) 
-             from game as g
-             where g.user_id = u.id
-               and g.level = " . $i . "
-               and g.nov_mode = " . $j + 1 . "
-               and u.id = " . $user_id . ") as score
-            from nov_user as u
-            order by score desc";
+  $user_scores = readUserScoresFromDb((int)$user_id);
 
-      foreach ($pdo->query($sql) as $row) {
-        $score = $row['score'];
-        if ($score == null)
-          $score = 0;
-
-        $user_scores[$j][] = $score;
-        break;
-      }
-    }
-  }
-
-  $sql = "SELECT count(*) as cnt FROM game WHERE ende is not null AND user_id = " . $user_id;
-  foreach ($pdo->query($sql) as $row) {
+  $statement = $pdo->prepare("SELECT count(*) as cnt FROM game WHERE ende is not null AND user_id = ?");
+  $statement->execute([(int)$user_id]);
+  while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
     $user_games = (int)$row['cnt'];
     break;
   }
 
   $retValue->user_scores = $user_scores;
   $retValue->user_games = $user_games;
-  echo json_encode($retValue);
+  return $retValue;
 }
 
 // -----------------------------------------------------------------------------
@@ -336,15 +810,14 @@ function getUserFromDb($id, $mobile)
 function createUserOnDb($user_name, $user_email, $user_password, $mobile, $activation_code, $old_user_id)
 {
   global $pdo;
-  global $pw_salt;
-  $sql = null;
   $user_id = null;
   $retValue = new stdClass();
-  $mobile = resolveMobileFlag($mobile);
+  $mobile = resolveMobileFlag();
 
   $user_id = -1;
-  $sql = "SELECT id FROM nov_user WHERE name = '" . $user_name . "'";
-  foreach ($pdo->query($sql) as $row) {
+  $statement = $pdo->prepare("SELECT id FROM nov_user WHERE name = ?");
+  $statement->execute([$user_name]);
+  while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
     $user_id = $row['id'];
     break;
   }
@@ -353,13 +826,13 @@ function createUserOnDb($user_name, $user_email, $user_password, $mobile, $activ
     // name already exists:
     $retValue->user_id = 0;
     $retValue->error_message = "Der Benutzer existiert bereits."; // error_message wird nicht verarbeitet
-    echo json_encode($retValue);
-    return;
+    return $retValue;
   }
 
   $user_id = -1;
-  $sql = "SELECT id FROM nov_user WHERE email = '" . $user_email . "' AND mobile = '" . $mobile . "'";
-  foreach ($pdo->query($sql) as $row) {
+  $statement = $pdo->prepare("SELECT id FROM nov_user WHERE email = ? AND mobile = ?");
+  $statement->execute([$user_email, $mobile]);
+  while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
     $user_id = $row['id'];
     break;
   }
@@ -368,22 +841,41 @@ function createUserOnDb($user_name, $user_email, $user_password, $mobile, $activ
     // email already exists:
     $retValue->user_id = 0;
     $retValue->error_message = "Die EMail-Adresse existiert bereits."; // error_message wird nicht verarbeitet
-    echo json_encode($retValue);
-    return;
+    return $retValue;
   }
 
-  $sql = "INSERT INTO nov_user (uuid) VALUES ('no_uuid')";
-  $pdo->query($sql);
-  $user_id = $pdo->lastInsertId();
+  try {
+    $pdo->beginTransaction();
 
-  $sql = "UPDATE nov_user set name = '" . $user_name . "', email = '" . $user_email . "', password = '" . crypt($user_password, $pw_salt) . "', mobile =  '" . $mobile . "',";
-  $sql = $sql . " activation_code = '" . crypt($activation_code, $pw_salt) . "',";
-  $sql = $sql . " active = 'N', created = now(), level = 1, credits = 0, old_user_id = " . $old_user_id . ", language = 'de' WHERE id = " . $user_id;
-  $pdo->query($sql);
+    $statement = $pdo->prepare("INSERT INTO nov_user (uuid) VALUES (?)");
+    $statement->execute(['no_uuid']);
+    $user_id = $pdo->lastInsertId();
+
+    $statement = $pdo->prepare(
+      "UPDATE nov_user set name = ?, email = ?, password = ?, mobile = ?, activation_code = ?, activation_expiry = DATE_ADD(now(), INTERVAL 72 HOUR), activation_used_at = NULL, active = 'N', created = now(), level = 1, credits = 0, old_user_id = ?, language = 'de' WHERE id = ?"
+    );
+    $statement->execute([
+      $user_name,
+      $user_email,
+      hashPasswordValue($user_password),
+      $mobile,
+      hashTokenValue($activation_code),
+      (int)$old_user_id,
+      (int)$user_id
+    ]);
+
+    $pdo->commit();
+  } catch (Throwable $exception) {
+    if ($pdo->inTransaction()) {
+      $pdo->rollBack();
+    }
+    throw $exception;
+  }
+
   $retValue->user_id = $user_id;
   $retValue->error_message = null;
 
-  echo json_encode($retValue);
+  return $retValue;
 }
 
 // -----------------------------------------------------------------------------
@@ -391,45 +883,43 @@ function createUserOnDb($user_name, $user_email, $user_password, $mobile, $activ
 function resetPassword($user_name, $user_email, $mobile, $activation_code)
 {
   global $pdo;
-  global $pw_salt;
-  $sql = null;
   $user_id = null;
   $retValue = new stdClass();
 
 
   $user_id = -1;
-  $sql = "SELECT id FROM nov_user WHERE name = '" . $user_name . "' AND email = '" . $user_email . "' AND mobile = '" . $mobile . "'";
-  foreach ($pdo->query($sql) as $row) {
+  $statement = $pdo->prepare("SELECT id FROM nov_user WHERE name = ? AND email = ? AND mobile = ? AND active = 'Y'");
+  $statement->execute([$user_name, $user_email, $mobile]);
+  while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
     $user_id = $row['id'];
     break;
   }
 
   if ($user_id != -1) {
-    $sql = "UPDATE nov_user set activation_code = '" . crypt($activation_code, $pw_salt) . "' WHERE id = " . $user_id;
-    $pdo->query($sql);
+    $statement = $pdo->prepare("UPDATE nov_user set activation_code = ?, activation_expiry = DATE_ADD(now(), INTERVAL 2 HOUR), activation_used_at = NULL WHERE id = ?");
+    $statement->execute([hashTokenValue($activation_code), (int)$user_id]);
   }
 
   $retValue->user_id = $user_id;
-  echo json_encode($retValue);
-  return;
+  return $retValue;
 }
 
 // -----------------------------------------------------------------------------
 
-function login($user_name, $password, $mobile)
+function login($user_name, $password, $mobile, $legacySalt)
 {
   global $pdo;
-  global $pw_salt;
-  $sql = null;
+  $salt = (string)$legacySalt;
   $user_id = null;
   $user_password = null;
+  $user_scores = array();
   $retValue = new stdClass();
 
   $user_id = -1;
-  $sql = "SELECT id, password, credits, level, language FROM nov_user ";
-  $sql =  $sql . "WHERE name = '" . $user_name . "' AND active = 'Y'";
+  $statement = $pdo->prepare("SELECT id, password, credits, level, language FROM nov_user WHERE name = ? AND active = 'Y'");
+  $statement->execute([$user_name]);
 
-  foreach ($pdo->query($sql) as $row) {
+  while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
     $user_id = $row['id'];
     $user_password = $row['password'];
     $user_credits = $row['credits'];
@@ -438,11 +928,17 @@ function login($user_name, $password, $mobile)
     break;
   }
 
-  if ($user_id == -1 || !password_verify($password, $user_password)) {
+  if ($user_id == -1 || !verifyPasswordValue($password, $user_password, $salt)) {
     $retValue->error_message = "Diese Kombination aus Username und Passwort ist ungültig."; // error_message wird nicht verarbeitet
     $retValue->user_id = 0;
-    echo json_encode($retValue);
-    return;
+    return $retValue;
+  }
+
+  setAuthenticatedUserId($user_id);
+
+  if (needsPasswordRehash($user_password)) {
+    $statement = $pdo->prepare("UPDATE nov_user SET password = ? WHERE id = ?");
+    $statement->execute([hashPasswordValue($password), (int)$user_id]);
   }
 
   if ($mobile === 'Y' || $mobile === 'N') {
@@ -462,32 +958,11 @@ function login($user_name, $password, $mobile)
   //TODO scores
   /* TODO: anzahl levels dynamisch */
 
-  for ($j = 0; $j <= 1; ++$j) {
-    for ($i = 1; $i <= 8; ++$i) {
-      $sql = "select u.id,
-            (select max(g.score) 
-             from game as g
-             where g.user_id = u.id
-               and g.level = " . $i . "
-               and g.nov_mode = " . $j + 1 . "
-               and u.id = " . $user_id . ") as score
-            from nov_user as u
-            order by score desc";
-
-      foreach ($pdo->query($sql) as $row) {
-        $score = $row['score'];
-        if ($score == null)
-          $score = 0;
-
-        $user_scores[$j][] = $score;
-        break;
-      }
-    }
-  }
+  $user_scores = readUserScoresFromDb((int)$user_id);
 
   $retValue->user_scores = $user_scores;
 
-  echo json_encode($retValue);
+  return $retValue;
 }
 
 
@@ -496,8 +971,8 @@ function login($user_name, $password, $mobile)
 function saveLevelToDb($user_id, $level)
 {
   global $pdo;
-  $sql = "UPDATE nov_user set level = " . $level . " WHERE id = " . $user_id;
-  $pdo->query($sql);
+  $statement = $pdo->prepare("UPDATE nov_user set level = ? WHERE id = ?");
+  $statement->execute([(int)$level, (int)$user_id]);
 }
 
 // -----------------------------------------------------------------------------
@@ -508,22 +983,21 @@ function saveUserNameToDb($id, $name)
 
   // Prevent guest usernames
   if (strtolower(substr($name, 0, 4)) === "user") {
-    echo "N";
-    return;
+    return "N";
   }
 
 
   // check if the user name already exists:
-  $sql = "SELECT id FROM nov_user WHERE  id <> " . $id . " AND lower (name) = lower ('" . $name . "')";
-  foreach ($pdo->query($sql) as $row) {
-    echo "N";
-    return;
+  $statement = $pdo->prepare("SELECT id FROM nov_user WHERE id <> ? AND lower(name) = lower(?)");
+  $statement->execute([(int)$id, $name]);
+  while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+    return "N";
   }
 
   // update user name:
-  $sql = "UPDATE nov_user set name = '" . $name . "' WHERE id = " . $id;
-  $pdo->query($sql);
-  echo "Y";
+  $statement = $pdo->prepare("UPDATE nov_user set name = ? WHERE id = ?");
+  $statement->execute([$name, (int)$id]);
+  return "Y";
 }
 
 // -----------------------------------------------------------------------------
@@ -535,9 +1009,9 @@ function saveUserSettingsToDb($id, $mode)
   dbLog('saveUserSettingsToDb, id = ' . $id . ', mode = ' . $mode);
 
   // update current playing mode:
-  $sql = "UPDATE nov_user set mode = '" . $mode . "' WHERE id = " . $id;
-  $pdo->query($sql);
-  echo "Y";
+  $statement = $pdo->prepare("UPDATE nov_user set mode = ? WHERE id = ?");
+  $statement->execute([$mode, (int)$id]);
+  return "Y";
 }
 
 // -----------------------------------------------------------------------------
@@ -546,22 +1020,26 @@ function startGameOnDb($user_id, $nov_release, $level, $mode)
 {
   global $pdo;
 
-  // Create initial record
-  $statement = $pdo->prepare("INSERT INTO game (user_id) VALUES (?)");
-  $statement->execute([$user_id]);
+  try {
+    $pdo->beginTransaction();
 
-  // Get the created game ID
-  $sql = "SELECT id FROM game WHERE user_id = ? AND level IS NULL ORDER BY id DESC";
-  $statement = $pdo->prepare($sql);
-  $statement->execute([$user_id]);
-  $row = $statement->fetch();
-  $game_id = $row['id'];
+    // Create initial record and use the generated ID directly to avoid race conditions.
+    $statement = $pdo->prepare("INSERT INTO game (user_id, ip) VALUES (?,?)");
+    $statement->execute([$user_id, getIp()]);
+    $game_id = (int)$pdo->lastInsertId();
 
-  // Update record with game details
-  $statement = $pdo->prepare("UPDATE game SET nov_release = ?, level = ?, beginn = now(), nov_mode = ? WHERE id = ?");
-  $statement->execute([$nov_release, $level, $mode, $game_id]);
+    // Update record with game details.
+    $statement = $pdo->prepare("UPDATE game SET nov_release = ?, level = ?, beginn = now(), nov_mode = ? WHERE id = ?");
+    $statement->execute([$nov_release, $level, $mode, $game_id]);
 
-  echo $game_id;
+    $pdo->commit();
+    return $game_id;
+  } catch (Throwable $exception) {
+    if ($pdo->inTransaction()) {
+      $pdo->rollBack();
+    }
+    throw $exception;
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -571,7 +1049,7 @@ function stopGameOnDb($game_id, $score)
   global $pdo;
   $statement = $pdo->prepare("UPDATE game SET score = ?, ende = now() WHERE id = ? AND ende IS NULL");
   $statement->execute([$score, $game_id]);
-  echo getIp();
+  return getIp();
 }
 
 // -----------------------------------------------------------------------------
@@ -581,70 +1059,115 @@ function updateGameOnDb($game_id, $score)
   global $pdo;
   $statement = $pdo->prepare("UPDATE game SET score_live = ?, timestamp_live = now() WHERE id = ? AND ende IS NULL");
   $statement->execute([$score, $game_id]);
-  echo getIp();
+  return getIp();
 }
 
 // -----------------------------------------------------------------------------
 
-function activate($activation_code)
+function activate($activation_code, $legacySalt)
 {
   global $pdo;
-  global $pw_salt;
+  $salt = (string)$legacySalt;
   $user_id = 0;
   $old_user_id = 0;
 
-  $sql = "SELECT id, old_user_id FROM nov_user WHERE activation_code = '" . crypt($activation_code, $pw_salt) . "' AND active = 'N' AND activated_at IS NULL";
+  $user = findUserByActivationToken($pdo, $activation_code, $salt, true);
 
-  foreach ($pdo->query($sql) as $row) {
-    $user_id = $row['id'];
-    $old_user_id = $row['old_user_id'];
-    break;
+  if ($user != null) {
+    $user_id = (int)$user['id'];
+    $old_user_id = (int)$user['old_user_id'];
   }
 
   if ($user_id > 0) {
-    $statement = $pdo->prepare("UPDATE nov_user SET activated_at = now(), active = 'Y' WHERE id = ?");
-    $statement->execute([$user_id]);
+    try {
+      $pdo->beginTransaction();
+
+      $statement = $pdo->prepare("UPDATE nov_user SET activated_at = now(), active = 'Y', activation_used_at = now(), activation_code = NULL, activation_expiry = NULL WHERE id = ? AND activation_code IS NOT NULL AND activation_expiry IS NOT NULL AND activation_expiry >= now() AND activation_used_at IS NULL");
+      $statement->execute([$user_id]);
+
+      if ($statement->rowCount() !== 1) {
+        $pdo->rollBack();
+        return 0;
+      }
+
+      if ($old_user_id > 0) {
+        $statement = $pdo->prepare("UPDATE game SET user_id = ? WHERE user_id = ?");
+        $statement->execute([$user_id, $old_user_id]);
+      }
+
+      $pdo->commit();
+    } catch (Throwable $exception) {
+      if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+      }
+      throw $exception;
+    }
   }
 
-  if ($old_user_id > 0) {
-    $statement = $pdo->prepare("UPDATE game SET user_id = ? WHERE user_id = ?");
-    $statement->execute([$user_id, $old_user_id]);
-  }
-
-  echo $user_id;
+  return $user_id;
 }
 
 // -----------------------------------------------------------------------------
 
-function getChangePasswordUser($activation_code)
+function getChangePasswordUser($activation_code, $legacySalt)
 {
   global $pdo;
-  global $pw_salt;
+  $salt = (string)$legacySalt;
   $user_id = 0;
+  $rotated_activation_code = null;
 
-  $sql = "SELECT id FROM nov_user WHERE activation_code = '" . crypt($activation_code, $pw_salt) . "'";
+  $user = findUserByActivationToken($pdo, $activation_code, $salt, false);
+  if ($user != null) {
+    $user_id = (int)$user['id'];
 
-  foreach ($pdo->query($sql) as $row) {
-    $user_id = $row['id'];
-    break;
+    try {
+      $pdo->beginTransaction();
+
+      $rotated_activation_code = createPlainToken();
+      $statement = $pdo->prepare("UPDATE nov_user SET activation_code = ?, activation_expiry = DATE_ADD(now(), INTERVAL 30 MINUTE), activation_used_at = NULL WHERE id = ? AND activation_code IS NOT NULL AND activation_expiry IS NOT NULL AND activation_expiry >= now() AND activation_used_at IS NULL");
+      $statement->execute([hashTokenValue($rotated_activation_code), $user_id]);
+
+      if ($statement->rowCount() !== 1) {
+        $pdo->rollBack();
+        $user_id = 0;
+        $rotated_activation_code = null;
+      } else {
+        $pdo->commit();
+      }
+    } catch (Throwable $exception) {
+      if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+      }
+      throw $exception;
+    }
   }
 
   $retValue = new stdClass();
   $retValue->user_id = $user_id;
-  echo json_encode($retValue);
+  $retValue->activation_code = $rotated_activation_code;
+  return $retValue;
 }
 
 // -----------------------------------------------------------------------------
 
-function updatePassword($activation_code, $user_password)
+function updatePassword($activation_code, $user_password, $legacySalt)
 {
   global $pdo;
-  global $pw_salt;
+  $salt = (string)$legacySalt;
 
-  $statement = $pdo->prepare("UPDATE nov_user SET password = ? WHERE activation_code = ?");
-  $statement->execute([crypt($user_password, $pw_salt), crypt($activation_code, $pw_salt)]);
+  $user = findUserByActivationToken($pdo, $activation_code, $salt, false);
+  if ($user == null) {
+    return "invalid_token";
+  }
 
-  echo "ok";
+  $statement = $pdo->prepare("UPDATE nov_user SET password = ?, activation_used_at = now(), activation_code = NULL, activation_expiry = NULL WHERE id = ? AND activation_code IS NOT NULL AND activation_expiry IS NOT NULL AND activation_expiry >= now() AND activation_used_at IS NULL");
+  $statement->execute([hashPasswordValue($user_password), (int)$user['id']]);
+
+  if ($statement->rowCount() !== 1) {
+    return "invalid_token";
+  }
+
+  return "ok";
 }
 
 // -----------------------------------------------------------------------------
@@ -654,7 +1177,7 @@ function saveLanguageToDb($user_id, $language)
   global $pdo;
   $statement = $pdo->prepare("UPDATE nov_user SET language = ? WHERE id = ?");
   $statement->execute([$language, $user_id]);
-  echo "ok";
+  return "ok";
 }
 
 // -----------------------------------------------------------------------------
@@ -680,29 +1203,26 @@ function getUserInfo($user_id)
   $lastGame = null;
   $nrGames = null;
 
-  $sql = "select min(g.beginn) as min_beginn";
-  $sql = $sql . " from game as g";
-  $sql = $sql . " where g.score > 0  and g.user_id = " . $user_id;
+  $statement = $pdo->prepare("select min(g.beginn) as min_beginn from game as g where g.score > 0 and g.user_id = ?");
+  $statement->execute([(int)$user_id]);
 
-  foreach ($pdo->query($sql) as $row) {
+  while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
     $firstGame = novDateToString($row['min_beginn']);
     break;
   }
 
-  $sql = "select max(g.beginn) as max_beginn";
-  $sql = $sql . " from game as g";
-  $sql = $sql . " where g.score > 0  and g.user_id = " . $user_id;
+  $statement = $pdo->prepare("select max(g.beginn) as max_beginn from game as g where g.score > 0 and g.user_id = ?");
+  $statement->execute([(int)$user_id]);
 
-  foreach ($pdo->query($sql) as $row) {
+  while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
     $lastGame = novDateToString($row['max_beginn']);
     break;
   }
 
-  $sql = "select count(*) as cnt";
-  $sql = $sql . " from game as g";
-  $sql = $sql . " where g.ende is not null and g.user_id = " . $user_id;
+  $statement = $pdo->prepare("select count(*) as cnt from game as g where g.ende is not null and g.user_id = ?");
+  $statement->execute([(int)$user_id]);
 
-  foreach ($pdo->query($sql) as $row) {
+  while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
     $nrGames = $row['cnt'];
     break;
   }
@@ -712,7 +1232,7 @@ function getUserInfo($user_id)
     "nrGames" => $nrGames
   ];
 
-  echo json_encode($response);
+  return $response;
 }
 
 // -----------------------------------------------------------------------------
@@ -741,7 +1261,7 @@ function getNovotrisInfo()
     "nrUsers" => $nrUsers,
     "nrGames" => $nrGames
   ];
-  echo json_encode($response);
+  return $response;
 }
 
 // -----------------------------------------------------------------------------
@@ -750,122 +1270,106 @@ function getNovotrisInfo()
 header('Content-Type: application/json');
 
 // Receive data from JavaScript
-$input = json_decode(file_get_contents('php://input'), true);
+$request = normalizeRequestPayload();
 
-$functionname = $input['functionname'] ?? $_POST["functionname"];
-$db_name = $input['db_name'] ?? $_POST["db_name"];
+$functionname = $request['functionname'] ?? null;
 
-dbLog('functionname = ' . $functionname . ', db_name = ' . $db_name);
+if (!is_string($functionname) || trim($functionname) === '') {
+  jsonError(400, 'bad_request', 'Missing functionname');
+}
 
-$pw_salt = '$1$novotris$';
+dbLog('functionname = ' . $functionname);
 
-createPdo($db_name);
+$pwSalt = null;
 
-switch ($functionname) {
+try {
+  $pwSalt = getEnvOrDefault('NOVOTRIS_PW_SALT', '');
+  $pdo = createPdo();
+} catch (Throwable $e) {
+  http_response_code(500);
+  echo json_encode([
+    'error' => 'Server configuration error'
+  ]);
+  exit;
+}
 
-  // getestet:
-  case 'logToDb':
-    logToDb($_POST['nov_release'], $_POST['aktion'], $_POST['params'], $_POST['log_order']);
-    break;
-
-  // getestet:
-  case 'readHighscoreFromDb':
-    readHighscoreFromDb($_POST['level'], $_POST['mobile'], $_POST['user_id'], $_POST['mode'], $_POST['period']);
-    break;
-
-  // getestet:
-  case 'readRankingPosition':
-    //readRankingPosition($_POST['level'], $_POST['mobile'], $_POST['user_id'], $_POST['mode']);
-    readRankingPosition($input['level'], $input['mobile'], $input['user_id'], $input['mode']);
-    break;
-
-  // getestet:
-  case 'getUserFromDb':
-    getUserFromDb($input['id'] ?? $_POST['id'], $input['mobile'] ?? $_POST['mobile']);
-    break;
-
-  // getestet:
-  case 'saveUserNameToDb':
-    saveUserNameToDb($_POST['id'], $_POST['name']);
-    break;
-
-  case 'saveUserSettingsToDb':
-    saveUserSettingsToDb($input['id'], $input['mode']);
-    break;
-
-  // getestet:
-  case 'startGameOnDb':
-    startGameOnDb($_POST['user_id'], $_POST['nov_release'], $_POST['level'], $_POST['mode']);
-    break;
-
-  // getestet:
-  case 'stopGameOnDb':
-    $game_id = $input['game_id'] ?? $_POST["game_id"];
-    $score = $input['score'] ?? $_POST["score"];
-    stopGameOnDb($game_id, $score);
-    break;
-
-  case 'updateGameOnDb':
-    $game_id = $input['game_id'] ?? $_POST["game_id"];
-    $score = $input['score'] ?? $_POST["score"];
-    updateGameOnDb($game_id, $score);
-    break;
-
-  // getestet:
-  case 'saveLevelToDb':
-    saveLevelToDb($_POST['user_id'], $_POST['level']);
-    break;
-
-  case 'createUserOnDb':
-    createUserOnDb(
-      $_POST['user_name'],
-      $_POST['user_email'],
-      $_POST['user_password'],
-      $_POST['mobile'],
-      $_POST['activation_code'],
-      $_POST['old_user_id']
+$repository = new DbRepository($pdo);
+$service = new DbService($repository);
+$controller = new DbController($service, [
+  'logToDb' => function ($request) {
+    logToDb($request['nov_release'], $request['aktion'], $request['params'], $request['log_order']);
+    return null;
+  },
+  'readHighscoreFromDb' => function ($request) {
+    return readHighscoreFromDb($request['level'], $request['mobile'], $request['user_id'], $request['mode'], $request['period']);
+  },
+  'readRankingPosition' => function ($request) {
+    return readRankingPosition($request['level'], $request['mobile'], $request['user_id'], $request['mode']);
+  },
+  'getUserFromDb' => function ($request) {
+    return getUserFromDb($request['id'] ?? null, $request['mobile'] ?? null);
+  },
+  'saveUserNameToDb' => function ($request) {
+    return saveUserNameToDb($request['id'], $request['name']);
+  },
+  'saveUserSettingsToDb' => function ($request) {
+    return saveUserSettingsToDb($request['id'], $request['mode']);
+  },
+  'startGameOnDb' => function ($request) {
+    return startGameOnDb($request['user_id'], $request['nov_release'], $request['level'], $request['mode']);
+  },
+  'stopGameOnDb' => function ($request) {
+    return stopGameOnDb($request['game_id'], $request['score']);
+  },
+  'updateGameOnDb' => function ($request) {
+    return updateGameOnDb($request['game_id'], $request['score']);
+  },
+  'saveLevelToDb' => function ($request) {
+    saveLevelToDb($request['user_id'], $request['level']);
+    return null;
+  },
+  'createUserOnDb' => function ($request) {
+    return createUserOnDb(
+      $request['user_name'],
+      $request['user_email'],
+      $request['user_password'],
+      $request['mobile'],
+      $request['activation_code'],
+      $request['old_user_id']
     );
-    break;
+  },
+  'login' => function ($request) use ($pwSalt) {
+    return login($request['user_name'], $request['password'], $request['mobile'], $pwSalt);
+  },
+  'activate' => function ($request) use ($pwSalt) {
+    return activate($request['activation_code'], $pwSalt);
+  },
+  'resetPassword' => function ($request) {
+    return resetPassword($request['user_name'], $request['user_email'], $request['mobile'], $request['activation_code']);
+  },
+  'getChangePasswordUser' => function ($request) use ($pwSalt) {
+    return getChangePasswordUser($request['activation_code'], $pwSalt);
+  },
+  'updatePassword' => function ($request) use ($pwSalt) {
+    return updatePassword($request['activation_code'], $request['user_password'], $pwSalt);
+  },
+  'saveLanguageToDb' => function ($request) {
+    return saveLanguageToDb($request['user_id'], $request['language']);
+  },
+  'getUserInfo' => function ($request) {
+    return getUserInfo($request['user_id']);
+  },
+  'getNovotrisInfo' => function ($request) {
+    return getNovotrisInfo();
+  }
+]);
 
-  // getestet:
-  case 'login':
-    login($_POST['user_name'], $_POST['password'], $_POST['mobile']);
-    break;
-
-  case 'activate':
-    activate($_POST['activation_code']);
-    break;
-
-  // getestet:
-  case 'resetPassword':
-    resetPassword($_POST['user_name'], $_POST['user_email'], $_POST['mobile'], $_POST['activation_code']);
-    break;
-
-  case 'getChangePasswordUser':
-    getChangePasswordUser($_POST['activation_code']);
-    break;
-
-  case 'updatePassword':
-    $activation_code = $input['activation_code'] ?? $_POST["activation_code"];
-    $user_password = $input['user_password'] ?? $_POST["user_password"];
-    updatePassword($activation_code, $user_password);
-    break;
-
-  // getestet:
-  case 'saveLanguageToDb':
-    $user_id = $input['user_id'] ?? $_POST["user_id"];
-    $language = $input['language'] ?? $_POST["language"];
-    saveLanguageToDb($user_id, $language);
-    break;
-
-  // getestet:
-  case 'getUserInfo':
-    getUserInfo($input['user_id']);
-    break;
-
-  case 'getNovotrisInfo':
-    getNovotrisInfo();
-    break;
+try {
+  validateRequiredRequestFields($functionname, $request);
+  $responsePayload = $controller->dispatch($functionname, $request);
+  emitSuccessResponse($responsePayload);
+} catch (Throwable $e) {
+  handleThrowableAsJson($e);
 }
 
 // -----------------------------------------------------------------------------

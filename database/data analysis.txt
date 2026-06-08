@@ -5,3 +5,10 @@ select u.id,
 from nov_user u
 where (select count(*) from game g where g.user_id = u.id) > 5
 order by u.id desc
+
+/* last cancelled games */
+select u.id, u.name, g.beginn, g.level, g.timestamp_live, g.score_live
+from nov_user u, game g
+where g.user_id = u.id
+  and g.score is null
+  order by g.id desc

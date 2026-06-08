@@ -21,6 +21,9 @@
 	<url>
 		<loc>https://novotris.bplaced.net/de/ranking.php</loc>
 	</url>
+  <url>
+		<loc>https://novotris.bplaced.net/de/impressum.php</loc>
+	</url>
 
 	<url>
 		<loc>https://novotris.bplaced.net/en/</loc>
@@ -42,6 +45,9 @@
 	</url>
 	<url>
 		<loc>https://novotris.bplaced.net/en/ranking.php</loc>
+	</url>
+  <url>
+		<loc>https://novotris.bplaced.net/en/impressum.php</loc>
 	</url>
 
 </urlset>

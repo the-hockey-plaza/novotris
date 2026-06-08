@@ -14,6 +14,8 @@ class User {
 		this.level = 1;
 		this.maxlevel = 1;
 		this.gamesPlayed = 0;
+		this.firstGameDate = "-";
+		this.firstGameDateUserId = -1;
 		this.mode = glModeClassic;
 		this.language = "de";
 		this.highscores = [
@@ -74,6 +76,14 @@ class User {
 			this.level = storedUser.level;
 			this.maxlevel = storedUser.maxlevel;
 			this.gamesPlayed = Number(storedUser.gamesPlayed) || 0;
+			if (
+				typeof storedUser.firstGameDate === 'string' &&
+				storedUser.firstGameDate.length > 0 &&
+				Number(storedUser.firstGameDateUserId) === Number(this.id)
+			)
+				this.firstGameDate = storedUser.firstGameDate;
+			if (Number(storedUser.firstGameDateUserId) === Number(this.id))
+				this.firstGameDateUserId = Number(this.id);
 			this.highscores = storedUser.highscores;
 			this.language = storedUser.language;
 			await this.loadFromDb(false);
@@ -245,6 +255,46 @@ class User {
 		return Number(this.gamesPlayed) || 0;
 	}
 
+	async getFirstGameDate(forceRefresh = false) {
+		if (
+			!forceRefresh &&
+			typeof this.firstGameDate === 'string' &&
+			this.firstGameDate.length > 0 &&
+			this.firstGameDate !== "-" &&
+			Number(this.firstGameDateUserId) === Number(this.id)
+		)
+			return this.firstGameDate;
+
+		if (!this.isCreated())
+			return "-";
+
+		try {
+			const response = await fetch('../php/db.php', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ db_name: glDbName, functionname: 'getUserInfo', user_id: this.id })
+			});
+
+			if (!response.ok) {
+				throw new Error('HTTP-Fehler: ' + response.status);
+			}
+
+			const result = await response.json();
+			if (result && typeof result.firstGame === 'string' && result.firstGame.length > 0)
+				this.firstGameDate = result.firstGame;
+			else
+				this.firstGameDate = "-";
+			this.firstGameDateUserId = Number(this.id);
+
+			this.saveToLocalStorage();
+			return this.firstGameDate;
+		}
+		catch (error) {
+			console.error('getFirstGameDate error:', error);
+			return this.firstGameDate || "-";
+		}
+	}
+
 	incrementGamesPlayed() {
 		this.gamesPlayed = this.getGamesPlayed() + 1;
 		this.saveToLocalStorage();
@@ -330,6 +380,11 @@ class User {
 	loadFromDbSuccess(result, forceCreate) {
 		//	let userDataDb = JSON.parse(result);
 		let userDataDb = result;
+
+		if (Number(this.firstGameDateUserId) !== Number(userDataDb.user_id)) {
+			this.firstGameDate = "-";
+			this.firstGameDateUserId = -1;
+		}
 
 		this.id = userDataDb.user_id;
 		this.name = userDataDb.user_name;
@@ -540,10 +595,11 @@ class User {
 		//	let userData = JSON.parse(result);
 		let userData = result;
 		let userId = userData.user_id;
+		let rotatedActivationCode = userData.activation_code;
 
-		if (userId > 0) {
+		if (userId > 0 && typeof rotatedActivationCode === 'string' && rotatedActivationCode.length > 0) {
 			glUser.id = userId;
-			window.location.href = 'change-password.html?changepassword=' + activationCode;
+			window.location.href = 'change-password.html?changepassword=' + encodeURIComponent(rotatedActivationCode);
 		}
 	}
 
@@ -581,6 +637,8 @@ class User {
 		this.gast_id = this.id;
 		this.id = userData.user_id;
 		this.name = userData.user_name;
+		this.firstGameDate = "-";
+		this.firstGameDateUserId = -1;
 		//TODO
 		this.highscores = userData.user_scores;
 		this.level = 1;

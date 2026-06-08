@@ -282,6 +282,9 @@ var classDialog = {
 		}
 		msg += '<br><br><b>' + getText("level_info_mode") + ' "speed"</b><br>' + getText("level_info_text", glLevelNeedsScoreModeSpeed, maxLevelModeSpeed);
 
+		if (glUser.getGamesPlayed() < 5)
+			msg += '<br><br><span style="color: red;">' + getText("short_help_text") + '</span>';
+
 		classDialog.showMessageDialog(getText("level_info_title"), msg);
 	},
 
