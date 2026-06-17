@@ -13,12 +13,100 @@ require_once __DIR__ . '/db/DbService.php';
 require_once __DIR__ . '/db/DbRepository.php';
 require_once __DIR__ . '/db/NovotrisHttpException.php';
 
+const NOVOTRIS_LEVEL_MIN = 1;
+const NOVOTRIS_LEVEL_MAX = 8;
+const NOVOTRIS_MODE_MIN = 1;
+const NOVOTRIS_MODE_MAX = 2;
+const NOVOTRIS_LOG_VALUE_MAX_LENGTH = 512;
+
 // -----------------------------------------------------------------------------
 
-function dbLog($msg)
+function sanitizeLogText($value)
+{
+  $text = (string)$value;
+
+  // Mask common secret-bearing key/value patterns.
+  $patterns = [
+    '/(password\s*[=:]\s*)([^\s,;\]\}]+)/i',
+    '/(user_password\s*[=:]\s*)([^\s,;\]\}]+)/i',
+    '/(token\s*[=:]\s*)([^\s,;\]\}]+)/i',
+    '/(activation_code\s*[=:]\s*)([^\s,;\]\}]+)/i',
+    '/(db_name\s*[=:]\s*)([^\s,;\]\}]+)/i',
+    '/(NOVOTRIS_DB_PASSWORD\s*[=:]\s*)([^\s,;\]\}]+)/i'
+  ];
+
+  $replacements = [
+    '$1[REDACTED]',
+    '$1[REDACTED]',
+    '$1[REDACTED]',
+    '$1[REDACTED]',
+    '$1[REDACTED]',
+    '$1[REDACTED]'
+  ];
+
+  $text = preg_replace($patterns, $replacements, $text);
+
+  if (strlen($text) > NOVOTRIS_LOG_VALUE_MAX_LENGTH) {
+    $text = substr($text, 0, NOVOTRIS_LOG_VALUE_MAX_LENGTH) . '...[TRUNCATED]';
+  }
+
+  return $text;
+}
+
+// -----------------------------------------------------------------------------
+
+function normalizeLogValue($value)
+{
+  if ($value === null) {
+    return 'null';
+  }
+
+  if (is_bool($value)) {
+    return $value ? 'true' : 'false';
+  }
+
+  if (is_scalar($value)) {
+    return sanitizeLogText((string)$value);
+  }
+
+  $encoded = json_encode($value);
+  if ($encoded === false) {
+    return '[UNSERIALIZABLE]';
+  }
+
+  return sanitizeLogText($encoded);
+}
+
+// -----------------------------------------------------------------------------
+
+function dbLog($msg, array $context = [])
 {
   $timestamp = date('Y-m-d H:i:s', time());
-  file_put_contents('db-log.txt', "[" . $timestamp . "]" . "\t" . $msg . PHP_EOL, FILE_APPEND | LOCK_EX);
+  $line = sanitizeLogText((string)$msg);
+
+  if (!empty($context)) {
+    $parts = [];
+    foreach ($context as $key => $value) {
+      $keyName = preg_replace('/[^a-zA-Z0-9_\-]/', '_', (string)$key);
+      if ($keyName === '') {
+        $keyName = 'ctx';
+      }
+      $parts[] = $keyName . '=' . normalizeLogValue($value);
+    }
+    $line = $line . ' | ' . implode(' ', $parts);
+  }
+
+  file_put_contents('db-log.txt', "[" . $timestamp . "]" . "\t" . $line . PHP_EOL, FILE_APPEND | LOCK_EX);
+}
+
+// -----------------------------------------------------------------------------
+
+function dbLogEvent($event, $status = 'ok', array $context = [])
+{
+  $baseContext = [
+    'status' => $status
+  ];
+  dbLog('event=' . sanitizeLogText((string)$event), array_merge($baseContext, $context));
 }
 
 // -----------------------------------------------------------------------------
@@ -110,6 +198,43 @@ function getEnvOrDefault($name, $default)
   }
 
   return $value;
+}
+
+// -----------------------------------------------------------------------------
+
+function getGameplayConfig()
+{
+  static $config = null;
+  if ($config !== null) {
+    return $config;
+  }
+
+  $levelMin = NOVOTRIS_LEVEL_MIN;
+  $levelMax = NOVOTRIS_LEVEL_MAX;
+  $modeMin = NOVOTRIS_MODE_MIN;
+  $modeMax = NOVOTRIS_MODE_MAX;
+
+  // Fallbacks keep API output stable if constants are changed to invalid values.
+  if ($levelMin < 1 || $levelMax < $levelMin) {
+    $levelMin = 1;
+    $levelMax = 8;
+  }
+
+  if ($modeMin < 1 || $modeMax < $modeMin) {
+    $modeMin = 1;
+    $modeMax = 2;
+  }
+
+  $config = [
+    'level_min' => $levelMin,
+    'level_max' => $levelMax,
+    'level_count' => $levelMax - $levelMin + 1,
+    'mode_min' => $modeMin,
+    'mode_max' => $modeMax,
+    'mode_count' => $modeMax - $modeMin + 1
+  ];
+
+  return $config;
 }
 
 // -----------------------------------------------------------------------------
@@ -309,7 +434,9 @@ function handleThrowableAsJson(Throwable $e)
     jsonError(400, 'bad_request', $e->getMessage());
   }
 
-  dbLog('Unhandled exception: ' . get_class($e) . ' - ' . $e->getMessage());
+  dbLogEvent('unhandled_exception', 'error', [
+    'exception_class' => get_class($e)
+  ]);
   jsonError(500, 'internal_error', 'Unexpected server error');
 }
 
@@ -504,8 +631,10 @@ function logToDb($nov_release, $aktion, $params, $log_order)
 {
   global $pdo;
   $datetime = date('Y-m-d H:i:s');
+  $safeParams = sanitizeLogText($params);
+  $safeAction = sanitizeLogText($aktion);
   $statement = $pdo->prepare("INSERT INTO nov_log (timestamp, ip, nov_release, aktion, params, log_order) VALUES (?,?,?,?,?,?)");
-  $statement->execute([$datetime, getIp(), $nov_release, $aktion, $params, $log_order]);
+  $statement->execute([$datetime, getIp(), $nov_release, $safeAction, $safeParams, $log_order]);
 }
 
 // -----------------------------------------------------------------------------
@@ -548,7 +677,11 @@ function readHighscoreFromDb($level, $mobile, $user_id, $mode, $period)
   $i = 0;
   $myArray = array();
 
-  dbLog("readHighscoreFromDb");
+  dbLogEvent('readHighscoreFromDb', 'ok', [
+    'level' => (int)$level,
+    'mode' => (int)$mode,
+    'period' => (int)$period
+  ]);
 
   if ($user_id > 0) {
     $sql = "SELECT ende, nov_release, game.level, score, name FROM game LEFT JOIN nov_user ON game.user_id = nov_user.id";
@@ -644,7 +777,10 @@ function readRankingPosition($level, $mobile, $user_id, $mode)
   $params[] = (int)$mode;
   $sql = $sql . " order by g.score desc LIMIT 100";
 
-  dbLog("readRankingPosition");
+  dbLogEvent('readRankingPosition', 'ok', [
+    'level' => (int)$level,
+    'mode' => (int)$mode
+  ]);
 
   $statement = $pdo->prepare($sql);
   $statement->execute($params);
@@ -694,31 +830,82 @@ function createGuestUser($mobile)
 function readUserScoresFromDb($userId)
 {
   global $pdo;
+  $gameplayConfig = getGameplayConfig();
+  $levelMin = $gameplayConfig['level_min'];
+  $levelMax = $gameplayConfig['level_max'];
+  $levelCount = $gameplayConfig['level_count'];
+  $modeMin = $gameplayConfig['mode_min'];
+  $modeMax = $gameplayConfig['mode_max'];
+  $modeCount = $gameplayConfig['mode_count'];
 
-  $scores = [
-    array_fill(0, 8, 0),
-    array_fill(0, 8, 0)
-  ];
+  $scores = [];
+  for ($modeIndex = 0; $modeIndex < $modeCount; $modeIndex++) {
+    $scores[] = array_fill(0, $levelCount, 0);
+  }
 
   $statement = $pdo->prepare(
     "SELECT level, nov_mode, MAX(score) AS max_score
      FROM game
-     WHERE user_id = ? AND level BETWEEN 1 AND 8 AND nov_mode BETWEEN 1 AND 2
+     WHERE user_id = ? AND level BETWEEN ? AND ? AND nov_mode BETWEEN ? AND ?
      GROUP BY level, nov_mode"
   );
-  $statement->execute([(int)$userId]);
+  $statement->execute([(int)$userId, $levelMin, $levelMax, $modeMin, $modeMax]);
 
   while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-    $modeIndex = (int)$row['nov_mode'] - 1;
-    $levelIndex = (int)$row['level'] - 1;
+    $modeIndex = (int)$row['nov_mode'] - $modeMin;
+    $levelIndex = (int)$row['level'] - $levelMin;
 
-    if ($modeIndex >= 0 && $modeIndex < 2 && $levelIndex >= 0 && $levelIndex < 8) {
+    if ($modeIndex >= 0 && $modeIndex < $modeCount && $levelIndex >= 0 && $levelIndex < $levelCount) {
       $score = $row['max_score'];
       $scores[$modeIndex][$levelIndex] = $score === null ? 0 : (int)$score;
     }
   }
 
   return $scores;
+}
+
+// -----------------------------------------------------------------------------
+
+function readUserProfileById($userId)
+{
+  global $pdo;
+
+  $statement = $pdo->prepare("SELECT id, name, credits, level, language, mode FROM nov_user WHERE id = ?");
+  $statement->execute([(int)$userId]);
+  $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+  if ($row === false) {
+    return null;
+  }
+
+  return $row;
+}
+
+// -----------------------------------------------------------------------------
+
+function updateUserMobileFlagIfProvided($userId, $mobile)
+{
+  global $pdo;
+
+  if ($userId == null) {
+    return;
+  }
+
+  if ($mobile === 'Y' || $mobile === 'N') {
+    $statement = $pdo->prepare("UPDATE nov_user SET mobile = ? WHERE id = ?");
+    $statement->execute([$mobile, (int)$userId]);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+function normalizeUserCredits($credits)
+{
+  if ($credits == null) {
+    return 0;
+  }
+
+  return (int)$credits;
 }
 
 // -----------------------------------------------------------------------------
@@ -739,57 +926,46 @@ function getUserFromDb($id, $mobile)
   $user_games = 0;
 
   if ($lookupUserId > 0) {
-    $statement = $pdo->prepare("SELECT id, name, credits, level, language, mode FROM nov_user WHERE id = ?");
-    $statement->execute([$lookupUserId]);
-    while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-      $user_id = $row['id'];
-      $user_name = $row['name'];
-      $user_credits = $row['credits'];
-      $user_level = $row['level'];
-      $user_language = $row['language'];
-      $user_mode = $row['mode'];
-
-      break;
+    $userProfile = readUserProfileById($lookupUserId);
+    if ($userProfile !== null) {
+      $user_id = $userProfile['id'];
+      $user_name = $userProfile['name'];
+      $user_credits = $userProfile['credits'];
+      $user_level = $userProfile['level'];
+      $user_language = $userProfile['language'];
+      $user_mode = $userProfile['mode'];
     }
   }
 
   // Keep the persisted device flag in sync with the current client.
-  if ($user_id != null && ($mobile === 'Y' || $mobile === 'N')) {
-    $statement = $pdo->prepare("UPDATE nov_user SET mobile = ? WHERE id = ?");
-    $statement->execute([$mobile, $user_id]);
-  }
+  updateUserMobileFlagIfProvided($user_id, $mobile);
 
   if ($user_id == null) {
     $user_id = createGuestUser($mobile);
     setAuthenticatedUserId($user_id);
 
-    $statement = $pdo->prepare("SELECT id, name, credits, level, language, mode FROM nov_user WHERE id = ?");
-    $statement->execute([(int)$user_id]);
-    while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-      $user_id = $row['id'];
-      $user_name = $row['name'];
-      $user_credits = $row['credits'];
-      $user_level = $row['level'];
-      $user_language = $row['language'];
-      $user_mode = $row['mode'];
-      break;
+    $userProfile = readUserProfileById((int)$user_id);
+    if ($userProfile !== null) {
+      $user_id = $userProfile['id'];
+      $user_name = $userProfile['name'];
+      $user_credits = $userProfile['credits'];
+      $user_level = $userProfile['level'];
+      $user_language = $userProfile['language'];
+      $user_mode = $userProfile['mode'];
     }
   }
 
-  dbLog("getUserFromDb, user_mode = " . $user_mode);
+  dbLogEvent('getUserFromDb', 'ok', [
+    'user_mode' => $user_mode
+  ]);
 
   $retValue = new stdClass();
   $retValue->user_id = $user_id;
   $retValue->user_name = $user_name;
-  if ($user_credits == null)
-    $user_credits = 0;
-  $retValue->user_credits = $user_credits;
+  $retValue->user_credits = normalizeUserCredits($user_credits);
   $retValue->user_level = $user_level;
   $retValue->user_language = $user_language;
   $retValue->user_mode = $user_mode;
-
-  /* TODO: anzahl levels dynamisch */
-  /* TODO: anzahl modes dynamisch */
 
   $user_scores = readUserScoresFromDb((int)$user_id);
 
@@ -941,22 +1117,14 @@ function login($user_name, $password, $mobile, $legacySalt)
     $statement->execute([hashPasswordValue($password), (int)$user_id]);
   }
 
-  if ($mobile === 'Y' || $mobile === 'N') {
-    $statement = $pdo->prepare("UPDATE nov_user SET mobile = ? WHERE id = ?");
-    $statement->execute([$mobile, $user_id]);
-  }
+  updateUserMobileFlagIfProvided($user_id, $mobile);
 
   $retValue->error_message = null;
   $retValue->user_id = $user_id;
   $retValue->user_name = $user_name;
-  if ($user_credits == null)
-    $user_credits = 0;
-  $retValue->user_credits = $user_credits;
+  $retValue->user_credits = normalizeUserCredits($user_credits);
   $retValue->user_level = $user_level;
   $retValue->user_language = $user_language;
-
-  //TODO scores
-  /* TODO: anzahl levels dynamisch */
 
   $user_scores = readUserScoresFromDb((int)$user_id);
 
@@ -1006,7 +1174,9 @@ function saveUserSettingsToDb($id, $mode)
 {
   global $pdo;
 
-  dbLog('saveUserSettingsToDb, id = ' . $id . ', mode = ' . $mode);
+  dbLogEvent('saveUserSettingsToDb', 'ok', [
+    'mode' => (int)$mode
+  ]);
 
   // update current playing mode:
   $statement = $pdo->prepare("UPDATE nov_user set mode = ? WHERE id = ?");
@@ -1278,7 +1448,9 @@ if (!is_string($functionname) || trim($functionname) === '') {
   jsonError(400, 'bad_request', 'Missing functionname');
 }
 
-dbLog('functionname = ' . $functionname);
+dbLogEvent('dispatch', 'start', [
+  'functionname' => $functionname
+]);
 
 $pwSalt = null;
 

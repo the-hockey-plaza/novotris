@@ -264,20 +264,20 @@ var classDialog = {
 	},
 
 	showLevelDialog: function () {
-		let maxLevelModeClassic = 1;
-		let maxLevelModeSpeed = 1;
+		let maxLevelModeClassic = glMinLevelGlobal;
+		let maxLevelModeSpeed = glMinLevelGlobal;
 		let msg;
 
 		// mode classic:
 		for (i = 0; i < glMaxLevelGlobal; ++i) {
-			if (glUser.getModeHighscore(1, i) >= glLevelNeedsScoreModeClassic)
+			if (glUser.getModeHighscore(glModeClassic, i + glMinLevelGlobal) >= glLevelNeedsScoreModeClassic)
 				++maxLevelModeClassic;
 		}
 		msg = '<b>' + getText("level_info_mode") + ' "classic"</b><br>' + getText("level_info_text", glLevelNeedsScoreModeClassic, maxLevelModeClassic);
 
 		// mode speed:
 		for (i = 0; i < glMaxLevelGlobal; ++i) {
-			if (glUser.getModeHighscore(2, i) >= glLevelNeedsScoreModeSpeed)
+			if (glUser.getModeHighscore(glModeSpeed, i + glMinLevelGlobal) >= glLevelNeedsScoreModeSpeed)
 				++maxLevelModeSpeed;
 		}
 		msg += '<br><br><b>' + getText("level_info_mode") + ' "speed"</b><br>' + getText("level_info_text", glLevelNeedsScoreModeSpeed, maxLevelModeSpeed);

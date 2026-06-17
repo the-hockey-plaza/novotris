@@ -185,10 +185,10 @@ Nachweis 4.3:
 
 ### Maßnahmen
 
-5.1 Magic Numbers durch Konfiguration oder datengetriebene Werte ersetzen.
-5.2 Doppelte Logik in gemeinsame Funktionen/Services extrahieren.
-5.3 Verbindliche Namens- und SQL-Stilkonventionen festlegen.
-5.4 Logging-Policy einfuehren und sensitive Inhalte aus Logs entfernen.
+5.1 [erledigt] Magic Numbers durch Konfiguration oder datengetriebene Werte ersetzen.
+5.2 [erledigt] Doppelte Logik in gemeinsame Funktionen/Services extrahieren.
+5.3 [erledigt] Verbindliche Namens- und SQL-Stilkonventionen festlegen.
+5.4 [erledigt] Logging-Policy einfuehren und sensitive Inhalte aus Logs entfernen.
 
 ## 6. Positiv aufgefallen
 
@@ -202,6 +202,9 @@ Nachweis 4.3:
 2. Sofort: [erledigt] DB-Credentials und Salt aus Code entfernen; Secrets in Environment.
 3. Sofort: [erledigt] Authentisierung/Autorisierung pro Aktion einbauen.
 4. Kurzfristig: [erledigt] Passwort- und Token-Handling auf moderne, zeitgemaesse Verfahren umstellen.
-5. Kurzfristig: Transaktionen fuer Mehrschritt-Operationen.
-6. Mittelfristig: Datei in Schichten aufteilen (Controller/Service/Repository) und API-Input vereinheitlichen.
-7. Offen: Expliziten Logout-Endpoint mit serverseitiger Session-Beendigung und Session-Timeout einfuehren (nicht nur beim Verlassen der Seite).
+5. Kurzfristig: [erledigt] Transaktionen fuer Mehrschritt-Operationen.
+6. Mittelfristig: [erledigt] Datei in Schichten aufteilen (Controller/Service/Repository) und API-Input vereinheitlichen.
+7. Offen (hoch): Expliziten Logout-Endpoint mit serverseitiger Session-Beendigung und Session-Timeout einfuehren (nicht nur beim Verlassen der Seite).
+8. Offen (mittel): Legacy-Responses (`"Y"`, `"N"`, `"ok"`) schrittweise auf ein einheitliches JSON-Antwortschema migrieren.
+9. Offen (mittel): SQL-Stilkonventionen bei verbleibenden Legacy-Queries (z. B. `select` -> `SELECT`) bei naechsten Touches konsequent angleichen.
+10. Offen (mittel): Regressions-/Smoke-Tests fuer kritische API-Flows (Login, Start/Stop Game, Passwort-Reset) etablieren.

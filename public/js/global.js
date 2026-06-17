@@ -2,7 +2,7 @@
  * global.js
  */
 
-const glRelease = "4.2.1";
+const glRelease = "4.3.0";
 const glSubKey = "2.1"
 const glHighscoreKey = "novotris." + glSubKey + ".highscore";
 const glMaxLevelKey = "novotris." + glSubKey + ".maxlevel";
@@ -14,8 +14,13 @@ const glMainCanvas = document.getElementById('mainCanvas');
 
 const glPadding = 13;
 
+const glMinLevelGlobal = 1;
 const glMaxLevelGlobal = 6;
+const glLevelCountGlobal = glMaxLevelGlobal - glMinLevelGlobal + 1;
 
+const glMinModeGlobal = 1;
+const glMaxModeGlobal = 2;
+const glModeCountGlobal = glMaxModeGlobal - glMinModeGlobal + 1;
 const glModeClassic = 1;
 const glModeSpeed = 2;
 

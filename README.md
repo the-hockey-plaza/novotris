@@ -1,5 +1,9 @@
 Initial commit corresponds to novotris version 4.1.1b.
 
+## Coding Standards
+
+Verbindliche Namens-, SQL- und API-Response-Konventionen stehen in `coding-standards.md`.
+
 ## Umgebungsvariablen Setup (bplaced/Linux Shared Hosting)
 
 Die Datei public/php/db.php erwartet diese Variablen zur Laufzeit:

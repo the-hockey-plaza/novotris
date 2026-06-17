@@ -208,14 +208,14 @@ class User {
 	*/
 
 	setHighscore(level, score) {
-		this.highscores[glUser.getMode() - 1][level - 1] = score;
+		this.highscores[glUser.getMode() - glMinModeGlobal][level - glMinLevelGlobal] = score;
 	}
 
 	getHighscore(level) {
-		if (!Array.isArray(this.highscores) || !Array.isArray(this.highscores[glUser.getMode() - 1]))
+		if (!Array.isArray(this.highscores) || !Array.isArray(this.highscores[glUser.getMode() - glMinModeGlobal]))
 			return 0;
 
-		let value = this.highscores[glUser.getMode() - 1][level - 1];
+		let value = this.highscores[glUser.getMode() - glMinModeGlobal][level - glMinLevelGlobal];
 		if (typeof value === 'undefined' || value === null)
 			return 0;
 
@@ -223,7 +223,7 @@ class User {
 	}
 
 	getModeHighscore(mode, level) {
-		return this.highscores[mode - 1][level - 1];
+		return this.highscores[mode - glMinModeGlobal][level - glMinLevelGlobal];
 	}
 
 	setLevel(level) {
@@ -675,16 +675,16 @@ class User {
 	}
 
 	calculateMaxLevel() {
-		var maxLevel = 1;
+		var maxLevel = glMinLevelGlobal;
 		const mode = glUser.getMode();
 		let levelNeedsScore;
 
-		if (mode == 1)
+		if (mode == glModeClassic)
 			levelNeedsScore = glIsMobile ? glLevelNeedsScoreMobile : glLevelNeedsScoreModeClassic;
 		else
 			levelNeedsScore = glLevelNeedsScoreModeSpeed;
 
-		for (var i = 1; i <= glMaxLevelGlobal; ++i) {
+		for (var i = glMinLevelGlobal; i <= glMaxLevelGlobal; ++i) {
 			if (this.getModeHighscore(mode, i) >= levelNeedsScore)
 				++maxLevel;
 			else
