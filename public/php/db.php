@@ -916,6 +916,15 @@ function getUserFromDb($id, $mobile)
   $authenticatedUserId = getAuthenticatedUserIdOrNull();
   $lookupUserId = $authenticatedUserId !== null ? (int)$authenticatedUserId : 0;
 
+  // Backward-compatible fallback for guests: when the PHP session is new,
+  // reuse the client-stored id before creating a new guest account.
+  if ($lookupUserId <= 0) {
+    $requestedUserId = (int)$id;
+    if ($requestedUserId > 0) {
+      $lookupUserId = $requestedUserId;
+    }
+  }
+
   $user_id = null;
   $user_name = null;
   $user_scores = array();
@@ -934,6 +943,11 @@ function getUserFromDb($id, $mobile)
       $user_level = $userProfile['level'];
       $user_language = $userProfile['language'];
       $user_mode = $userProfile['mode'];
+
+      // Rebind session to resolved user id so subsequent authenticated actions work.
+      if ($authenticatedUserId === null || (int)$authenticatedUserId !== (int)$user_id) {
+        setAuthenticatedUserId($user_id);
+      }
     }
   }
 
