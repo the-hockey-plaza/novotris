@@ -119,33 +119,33 @@ function getText(key, p1, p2, p3, p4) {
 		case 'score_highscore':
 			switch (lang) {
 				case "de":
-					return "Du hast in diesem Spiel einen Score von <b>" + p1 + "</b> und damit einen neuen Highscore erreicht!";
+					return "Du hast in diesem Spiel einen Score von <span style='color:" + glNovotrisColor + "'>" + p1 + "</span> und damit einen <span style='color:" + glNovotrisColor + "'>neuen Highscore</span> erreicht!";
 				case "en":
-					return "You have reached a score of <b>" + p1 + "</b> in this game, which is a new high score!";
+					return "You have reached a score of <span style='color:" + glNovotrisColor + "'>" + p1 + "</span> in this game, which is a <span style='color:" + glNovotrisColor + "'>new high score</span>!";
 			}
 
 		case 'score':
 			switch (lang) {
 				case "de":
-					return "Du hast in diesem Spiel einen Score von <b>" + p1 + "</b> erreicht.";
+					return "Du hast in diesem Spiel einen Score von <span style='color:" + glNovotrisColor + "'>" + p1 + "</span> erreicht.";
 				case "en":
-					return "You have reached a score of <b>" + p1 + "</b> in this game.";
+					return "You have reached a score of <span style='color:" + glNovotrisColor + "'>" + p1 + "</span> in this game.";
 			}
 
 		case 'improved_ranking':
 			switch (lang) {
 				case "de":
-					return "Au&szlig;erdem hast du dich in der 12-Monats-Rangliste auf Platz <b>" + p1 + "</b> verbessert!";
+					return "Au&szlig;erdem hast du dich in der 12-Monats-Rangliste auf Platz <span style='color:" + glNovotrisColor + "'>" + p1 + "</span> verbessert!";
 				case "en":
-					return "You also moved up in the 12 months rankings to <b>" + p1 + "</b>!";
+					return "You also moved up in the 12 months rankings to <span style='color:" + glNovotrisColor + "'>" + p1 + "</span>!";
 			}
 
 		case 'score_next_level_unlock':
 			switch (lang) {
 				case "de":
-					return "Nur noch <b>" + p1 + "</b> Punkte bis zur Freischaltung von Level <b>" + p2 + "</b>!";
+					return "Nur noch <span style='color:" + glNovotrisColor + "'>" + p1 + "</span> Punkte bis zur Freischaltung von Level <span style='color:" + glNovotrisColor + "'>" + p2 + "</span>!";
 				case "en":
-					return "Only <b>" + p1 + "</b> points left to unlock level <b>" + p2 + "</b>!";
+					return "Only <span style='color:" + glNovotrisColor + "'>" + p1 + "</span> points left to unlock level <span style='color:" + glNovotrisColor + "'>" + p2 + "</span>!";
 			}
 
 		case 'changed_password':
@@ -397,9 +397,9 @@ function getText(key, p1, p2, p3, p4) {
 		case 'level_info_text':
 			switch (lang) {
 				case "de":
-					return p1 + " Punkte geben jeweils den nächsten Level frei.<br>Dein höchster Level: <b>" + p2 + "</b>";
+					return p1 + " Punkte geben jeweils den nächsten Level frei.<br>Dein höchster Level: <span style='color:" + glNovotrisColor + "'>" + p2 + "</span>";
 				case "en":
-					return p1 + " points unlock the next level.<br>Your highest level: <b>" + p2 + "</b>";
+					return p1 + " points unlock the next level.<br>Your highest level: <span style='color:" + glNovotrisColor + "'>" + p2 + "</span>";
 			}
 
 		case 'short_help_text':

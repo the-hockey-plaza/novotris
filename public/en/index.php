@@ -91,7 +91,7 @@
 						</td>
 						<td width="40%">
 							<p style="margin-top: 10" align="center">
-								<a href="<?= $nov_url_news ?>">
+								<a href="<?= $nov_url_news ?>" data-tooltip="Current updates, changelog and interesting Tetris facts.">
 									<picture>
 										<source srcset="../images/newspaper.webp" type="image/webp"><img
 											src="../images/newspaper.jpg" width="140"
@@ -106,7 +106,7 @@
 					<tr>
 						<td width="40%">
 							<p style="margin-top: 25" align="center">
-								<a href="<?= $nov_url_alternatives ?>">
+								<a href="<?= $nov_url_alternatives ?>" data-tooltip="Compare other free Tetris variants online.">
 									<picture>
 										<source srcset="../images/running.webp" type="image/webp"><img
 											src="../images/running.jpg" width="140"
@@ -139,7 +139,7 @@
 						</td>
 						<td width="40%">
 							<p style="margin-top: 10" align="center">
-								<a href="<?= $nov_url_bonanza ?>">
+								<a href="<?= $nov_url_bonanza ?>" data-tooltip="Curated links, stories and trivia about Tetris.">
 									<picture>
 										<source srcset="../images/globe.webp" type="image/webp"><img
 											src="../images/globe.jpg" width="140"
@@ -203,6 +203,8 @@
 		src="../js/swipe.js?v=<?php echo filemtime('../js/swipe.js'); ?>"></script>
 	<script
 		src="../js/dialog.js?v=<?php echo filemtime('../js/dialog.js'); ?>"></script>
+	<script
+		src="../js/tooltip.js?v=<?php echo filemtime('../js/tooltip.js'); ?>"></script>
 
 	<script>
 		document.addEventListener('DOMContentLoaded', onContentLoaded, false);

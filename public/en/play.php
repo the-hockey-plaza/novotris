@@ -99,7 +99,7 @@
 			<div id="play-status-message" class="play-status-message" aria-live="polite"></div>
 
 			<div class="novBody play-layout">
-				<div id="div-play-frame" class="play-touch-surface play-stage">
+				<div id="div-play-frame" class="play-touch-surface play-stage" data-tooltip="Controls: Arrow keys move/rotate, Spacebar drops. Mobile: swipe and tap.">
 					<div>
 						<canvas id="mainCanvas" class="play-touch-surface play-canvas"></canvas>
 					</div>
@@ -115,11 +115,11 @@
 							<div id="txt_speed" class="game-data-text">1234</div>
 						</div>
 						<div class="play-stat">
-							<div id="lbl_score" class="game-data-label play-top-gap-sm">Score</div>
+							<div id="lbl_score" class="game-data-label play-top-gap-sm">Score <span class="tooltip-icon" data-tooltip="Your current score. You earn points per block and based on your game mode.">ℹ</span></div>
 							<div id="txt_score" class="game-data-text">1234</div>
 						</div>
 						<div class="play-stat">
-							<div id="lbl_highscore" class="game-data-label play-top-gap-sm">Highscore</div>
+							<div id="lbl_highscore" class="game-data-label play-top-gap-sm">Highscore <span class="tooltip-icon" data-tooltip="Your best score for this level and mode.">ℹ</span></div>
 							<div id="txt_highscore" class="game-data-text">1234</div>
 						</div>
 					</div>
@@ -127,7 +127,7 @@
 					<div class="play-sidebar-controls">
 						<div class="play-control">
 							<div class="game-data-label play-top-gap-sm">
-								Level<br> <select id="drp-play-level" class="drpMenu play-select">
+								Level <span class="tooltip-icon" data-tooltip="Choose the difficulty. New levels unlock as you reach higher scores.">ℹ</span><br> <select id="drp-play-level" class="drpMenu play-select">
 									<option>1</option>
 									<option>2</option>
 									<option>3</option>
@@ -140,7 +140,7 @@
 
 						<div class="play-control">
 							<div class="game-data-label">
-								Mode<br> <select id="drp-play-mode" class="drpMenu play-select">
+								Mode <span class="tooltip-icon" data-tooltip="Classic: stable points per block. Speed: more points for quick drops.">ℹ</span><br> <select id="drp-play-mode" class="drpMenu play-select">
 									<option>classic</option>
 									<option>speed</option>
 								</select>
@@ -149,6 +149,7 @@
 
 						<div class="play-control play-start-wrap">
 							<button class="animated-border-btn" id="do_start" onclick="do_start();">Start</button>
+							<span class="tooltip-icon" data-tooltip="Start the game. Tip: Press P to start, pause, and resume.">ℹ</span>
 						</div>
 					</div>
 				</div>
@@ -273,6 +274,8 @@
 		src="../js/swipe.js?v=<?php echo filemtime('../js/swipe.js'); ?>"></script>
 	<script
 		src="../js/dialog.js?v=<?php echo filemtime('../js/dialog.js'); ?>"></script>
+	<script
+		src="../js/tooltip.js?v=<?php echo filemtime('../js/tooltip.js'); ?>"></script>
 
 	<script>
 		document.addEventListener('DOMContentLoaded', onContentLoaded, false);
