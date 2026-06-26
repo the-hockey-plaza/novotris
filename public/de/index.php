@@ -92,7 +92,7 @@
 						</td>
 						<td width="40%">
 							<p style="margin-top: 10" align="center">
-								<a href="news.php">
+								<a href="news.php" data-tooltip="Aktuelle Updates, Changelog und interessante Tetris-Fakten.">
 									<picture>
 										<source srcset="../images/newspaper.webp" type="image/webp"><img
 											src="../images/newspaper.jpg" width="140"
@@ -107,7 +107,7 @@
 					<tr>
 						<td width="40%">
 							<p style="margin-top: 25" align="center">
-								<a href="alternatives.php">
+								<a href="alternatives.php" data-tooltip="Vergleiche weitere kostenlose Tetris-Varianten im Browser.">
 									<picture>
 										<source srcset="../images/running.webp" type="image/webp"><img
 											src="../images/running.jpg" width="140"
@@ -141,7 +141,7 @@
 						</td>
 						<td width="40%">
 							<p style="margin-top: 10" align="center">
-								<a href="bonanza.php">
+								<a href="bonanza.php" data-tooltip="Kuratierte Links, Stories und Wissenswertes rund um Tetris.">
 									<picture>
 										<source srcset="../images/globe.webp" type="image/webp"><img
 											src="../images/globe.jpg" width="140"
@@ -205,6 +205,8 @@
 		src="../js/swipe.js?v=<?php echo filemtime('../js/swipe.js'); ?>"></script>
 	<script
 		src="../js/dialog.js?v=<?php echo filemtime('../js/dialog.js'); ?>"></script>
+	<script
+		src="../js/tooltip.js?v=<?php echo filemtime('../js/tooltip.js'); ?>"></script>
 
 	<script>
 		document.addEventListener('DOMContentLoaded', onContentLoaded, false);
