@@ -478,8 +478,7 @@ class User {
 
 	registerSuccess(result, email, activationCode) {
 		console.log("result: " + result);
-		let userData = JSON.parse(result);
-		let userId = userData.user_id;
+		let userId = result.user_id;
 
 		if (userId == 0) {
 			document.getElementById('lbl_registration_error_message').innerHTML = getText("registration_invalid");
