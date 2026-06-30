@@ -56,7 +56,7 @@
       <div class="novBody">
         <div class="help-text">
           <br> Armin Steidlinger <br> Softwareentwicklung <br> <br>
-          Heinrich-Heine-Ring 159 <br>D-76199 Karlsruhe<br>
+          <!-- Heinrich-Heine-Ring 159 <br> -->D-76199 Karlsruhe<br>
           Deutschland <br> <br> novotris (at) steidlinger.de
         </div>
       </div>
