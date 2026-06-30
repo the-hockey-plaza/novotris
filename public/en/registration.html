@@ -55,7 +55,7 @@
 					style="font-size: 12pt; font-weight: bold; color: red"> </span> <br>
 				
 
-				<br> <span style="font-size: 12pt; font-weight: bold">Username</span><br>
+				<br> <span style="font-size: 12pt; font-weight: bold">Username <span class="tooltip-icon" data-tooltip="This name will appear in the ranking. Choose a memorable name.">ℹ</span></span><br>
 				<input type="text" id="input_registration_user_name" class="inpText"
 					onkeyup="classDialog.keyUp()" name="input_registration_user_name"
 					autocomplete="username" pattern="[a-zA-Z0-9äöüßÄÖÜ\-]*" size="30"
@@ -65,7 +65,7 @@
 					onkeyup="classDialog.keyUp()" name="input_registration_email"
 					autocomplete="email" pattern="[a-zA-Z0-9äöüßÄÖÜ\-]*" size="30"
 					maxlength="50"> <br> <span
-					style="font-size: 12pt; font-weight: bold">Password</span><br>
+				style="font-size: 12pt; font-weight: bold">Password <span class="tooltip-icon" data-tooltip="Use a secure password that you don't use on other websites.">ℹ</span></span><br>
 				<input type="password" id="input_registration_password" class="inpText"
 					onkeyup="classDialog.keyUp()" onkeyup="classDialog.keyUp()"
 					name="input_registration_password" autocomplete="new-password"
@@ -81,7 +81,7 @@
 
 					<label
 						style="display: block; padding-left: 25px; text-indent: -20px; width: calc(100% - 80px);">
-						<input id="chk-inherit" type="checkbox" /> Take over previous games
+						<input id="chk-inherit" type="checkbox" /> Take over previous games <span class="tooltip-icon" data-tooltip="Transfers existing guest results to your new account.">ℹ</span>
 					</label>
 					
 					 <label
@@ -89,7 +89,7 @@
 						<input id="chk-privacy" type="checkbox"
 						onclick="classDialog.checkRegistration();" /> I agree to the <a
 						href='terms.html'>terms of use</a> and the <a
-						href='privacy.html'>privacy policy</a> zu
+					href='privacy.html'>privacy policy</a> <span class="tooltip-icon" data-tooltip="Registration cannot be completed without this consent.">ℹ</span>
 					</label>
 				</div>
 				<br>
@@ -98,6 +98,8 @@
 					<button class="dialog-button" style="margin-left: 1px;"
 						onclick="window.location.href='login.html';">Cancel</button>
 					<button class="dialog-button" id="btn_registration_ok"
+						onclick="classDialog.registrationOk();" disabled data-tooltip="The button becomes active when all required fields are correct.">OK</button>
+				</div>
 						onclick="classDialog.registrationOk();" disabled>OK</button>
 				</div>
 
@@ -181,6 +183,7 @@
 	<script src="../js/rendering.js?v=<?php echo filemtime('../js/rendering.js'); ?>"></script>
 	<script src="../js/highscore.js?v=<?php echo filemtime('../js/highscore.js'); ?>"></script>
 	<script src="../js/user.js?v=<?php echo filemtime('../js/user.js'); ?>"></script>
+	<script src="../js/tooltip.js?v=<?php echo filemtime('../js/tooltip.js'); ?>"></script>
 
 	<script>
 		var glUser = new User();

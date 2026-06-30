@@ -2,6 +2,10 @@
 $pageLang = $pageLang ?? ((isset($_SERVER['PHP_SELF']) && strpos($_SERVER['PHP_SELF'], '/en/') !== false) ? 'en' : 'de');
 $footerActive = $footerActive ?? 'play';
 
+$tooltipUser = $pageLang === 'en' ? 'Shows the active player (guest or registered user).' : 'Zeigt den aktiven Spieler an (Gast oder registrierter User).';
+$tooltipLogin = $pageLang === 'en' ? 'Log in or out here. Your status is updated immediately.' : 'Hier meldest du dich an oder ab. Dein Status wird sofort aktualisiert.';
+$tooltipLanguage = $pageLang === 'en' ? 'Change the language for the entire site (deutsch/english).' : 'Sprache fuer die gesamte Seite umstellen (deutsch/english).';
+
 $footerLabelWorld = $footerLabelWorld ?? ($pageLang === 'en' ? 'Tetris World' : 'Tetriswelt');
 $footerLabelPlay = $footerLabelPlay ?? ($pageLang === 'en' ? 'Play' : 'Spielen');
 $footerLabelRanking = $footerLabelRanking ?? ($pageLang === 'en' ? 'Rankings' : 'Ranglisten');
@@ -41,12 +45,12 @@ $footerHelpStyle = $footerActive === 'help' ? 'color: var(--play-color); cursor:
 <div class="novFooter">
   <div class="row-footer-box">
     <a id="footer-user" class="footer-label"
-      style="cursor: pointer;" onclick="showUserInfoDialog();"></a>
+      style="cursor: pointer;" onclick="showUserInfoDialog();" data-tooltip="<?= htmlspecialchars($tooltipUser, ENT_QUOTES, 'UTF-8') ?>"></a>
   </div>
   <div class="row-footer-box">
     <a id="footer-login" class="footer-label"
       onclick="glUser.loginLogout('index.php')"
-      style="cursor: pointer;"></a>
+      style="cursor: pointer;" data-tooltip="<?= htmlspecialchars($tooltipLogin, ENT_QUOTES, 'UTF-8') ?>"></a>
   </div>
   <div class="row-footer-box">
     <a id="footer-version" class="footer-label"
@@ -58,6 +62,7 @@ $footerHelpStyle = $footerActive === 'help' ? 'color: var(--play-color); cursor:
       <option>deutsch</option>
       <option>english</option>
     </select>
+    <span class="tooltip-icon" data-tooltip="<?= htmlspecialchars($tooltipLanguage, ENT_QUOTES, 'UTF-8') ?>">ℹ</span>
   </div>
 </div>
 

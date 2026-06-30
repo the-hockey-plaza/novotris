@@ -7,6 +7,7 @@ var glScoreFinished;
 var glHighscore;
 var glHighscoreFinished;
 var glOldRankingPosition;
+var glHasOvertakenHighscore;
 
 //var glNumberOfTypes;
 var glMaxLevelUser = 1;
@@ -16,6 +17,20 @@ var glUserName;
 var glUserNameTmp;
 
 let scoreLevel;
+
+function setScoreOvertakeHighlight(isActive) {
+	if (!glTxtScore) {
+		return;
+	}
+
+	if (isActive) {
+		glTxtScore.style.backgroundColor = glNovotrisColor;
+		glTxtScore.style.color = glLightTextColor;
+	} else {
+		glTxtScore.style.removeProperty('background-color');
+		glTxtScore.style.removeProperty('color');
+	}
+}
 
 function setBrickWidth(size) {
 	let frame = document.getElementById('div-play-frame');
@@ -66,10 +81,18 @@ function setBrickWidth(size) {
 
 function resetScore() {
 	glScore = 0;
+	glHasOvertakenHighscore = false;
+	setScoreOvertakeHighlight(false);
 }
 
 function increaseScore(points) {
 	glScore += points;
+
+	if (!glHasOvertakenHighscore && getHighscore() > 0 && glScore > getHighscore()) {
+		glHasOvertakenHighscore = true;
+		setScoreOvertakeHighlight(true);
+	}
+
 	showScore();
 
 	if (glScore >= scoreLevel) {
@@ -109,6 +132,7 @@ function getHighscore() {
 
 function showScore() {
 	glTxtScore.innerHTML = glScore;
+	setScoreOvertakeHighlight(!!glHasOvertakenHighscore);
 }
 
 function showHighscore() {
