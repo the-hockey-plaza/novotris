@@ -71,7 +71,7 @@
 								<th class="class-table-ranking rank-col-center" scope="col">User</th>
 								<th class="class-table-ranking rank-col-center" scope="col" width=20%>Datum</th>
 								<th class="class-table-ranking" scope="col" width=10%>L</th>
-								<th class="class-table-ranking" scope="col" width=15%>Score</th>
+								<th class="class-table-ranking" scope="col" width=15%>Score <span class="tooltip-icon" data-tooltip="Higher values are better. When scores are equal, the date decides.">ℹ</span></th>
 							</tr>
 						</thead>
 						<tbody id="table-body-ranking">
@@ -106,14 +106,14 @@
 
 				<div class="ranking-filter-bar">
 					<div class="ranking-filter-item">
-						User: <select id="drp-rnk-auswahl" class="drpMenu">
+						User <span class="tooltip-icon" data-tooltip="Show either all players or just your results.">ℹ</span>: <select id="drp-rnk-auswahl" class="drpMenu">
 							<option>all</option>
 							<option>only me</option>
 						</select>
 					</div>
 
 					<div class="ranking-filter-item">
-						Level: <select id="drp-rnk-level" class="drpMenu">
+						Level <span class="tooltip-icon" data-tooltip="Filter by level to see comparable results.">ℹ</span>: <select id="drp-rnk-level" class="drpMenu">
 							<option>all</option>
 							<option>1</option>
 							<option>2</option>
@@ -125,16 +125,14 @@
 					</div>
 
 					<div class="ranking-filter-item">
-						Mode: <select id="drp-rnk-mode" class="drpMenu">
+						Mode <span class="tooltip-icon" data-tooltip="Classic and Speed are scored separately. Choose the matching mode.">ℹ</span>: <select id="drp-rnk-mode" class="drpMenu">
 							<option>classic</option>
 							<option>speed</option>
 						</select>
 					</div>
 
 					<div class="ranking-filter-item">
-						Zeit: <select id="drp-rnk-period" class="drpMenu">
-							<option>12 months</option>
-							<option>overall</option>
+						Time <span class="tooltip-icon" data-tooltip="12 months shows current form, overall shows best scores across all years.">ℹ</span>: <select id="drp-rnk-period" class="drpMenu">
 						</select>
 					</div>
 				</div>
@@ -201,6 +199,8 @@
 		src="../js/novotris.js?v=<?php echo filemtime('../js/novotris.js'); ?>"></script>
 	<script
 		src="../js/dialog.js?v=<?php echo filemtime('../js/dialog.js'); ?>"></script>
+	<script
+		src="../js/tooltip.js?v=<?php echo filemtime('../js/tooltip.js'); ?>"></script>
 
 	<script>
 		document.addEventListener('DOMContentLoaded', onContentLoaded, false);

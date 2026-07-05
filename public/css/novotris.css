@@ -541,6 +541,61 @@ a.footer-label-only {
 	justify-content: center;
 }
 
+/* ===== TOOLTIP STYLES ===== */
+
+.tooltip-icon {
+	display: inline-block;
+	margin-left: 4px;
+	font-size: 14px;
+	line-height: 1;
+	cursor: help;
+	color: var(--novotris-color);
+	font-weight: bold;
+	user-select: none;
+	vertical-align: middle;
+	border-radius: 50%;
+	width: 18px;
+	height: 18px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	background-color: rgba(90, 137, 191, 0.15);
+	border: 1px solid var(--novotris-color);
+	transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.tooltip-icon:hover {
+	background-color: rgba(90, 137, 191, 0.25);
+	transform: scale(1.1);
+}
+
+#global-tooltip {
+	display: none;
+	position: fixed;
+	background-color: rgba(96, 96, 106, 0.95);
+	color: var(--light-text-color);
+	padding: 10px 12px;
+	border-radius: 6px;
+	font-size: 13px;
+	line-height: 1.4;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+	z-index: 10000;
+	border: 1px solid rgba(232, 173, 205, 0.3);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.15s ease;
+	word-wrap: break-word;
+	white-space: pre-wrap;
+	max-width: 240px;
+}
+
+#global-tooltip.tooltip-visible {
+	opacity: 1;
+}
+
+/* ===== END TOOLTIP STYLES ===== */
+
 @media (min-width: 769px) {
 	.play-layout {
 		justify-content: space-between;

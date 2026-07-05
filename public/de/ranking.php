@@ -67,7 +67,7 @@
 								<th class="class-table-ranking rank-col-center" scope="col">User</th>
 								<th class="class-table-ranking rank-col-center" scope="col" width=20%>Datum</th>
 								<th class="class-table-ranking" scope="col" width=10%>L</th>
-								<th class="class-table-ranking" scope="col" width=15%>Score</th>
+								<th class="class-table-ranking" scope="col" width=15%>Score <span class="tooltip-icon" data-tooltip="Höhere Werte sind besser. Bei gleichem Score entscheidet das Datum.">ℹ</span></th>
 							</tr>
 						</thead>
 						<tbody id="table-body-ranking">
@@ -102,14 +102,14 @@
 
 				<div class="ranking-filter-bar">
 					<div class="ranking-filter-item">
-						User: <select id="drp-rnk-auswahl" class="drpMenu">
+						User <span class="tooltip-icon" data-tooltip="Zeige entweder alle Spieler oder nur deine Ergebnisse.">ℹ</span>: <select id="drp-rnk-auswahl" class="drpMenu">
 							<option>alle</option>
 							<option>nur ich</option>
 						</select>
 					</div>
 
 					<div class="ranking-filter-item">
-						Level: <select id="drp-rnk-level" class="drpMenu">
+						Level <span class="tooltip-icon" data-tooltip="Filtere nach Level, um vergleichbare Ergebnisse zu sehen.">ℹ</span>: <select id="drp-rnk-level" class="drpMenu">
 							<option>alle</option>
 							<option>1</option>
 							<option>2</option>
@@ -121,14 +121,14 @@
 					</div>
 
 					<div class="ranking-filter-item">
-						Modus: <select id="drp-rnk-mode" class="drpMenu">
+						Modus <span class="tooltip-icon" data-tooltip="Classic und Speed werden getrennt gewertet. Wähle den passenden Modus.">ℹ</span>: <select id="drp-rnk-mode" class="drpMenu">
 							<option>classic</option>
 							<option>speed</option>
 						</select>
 					</div>
 
 					<div class="ranking-filter-item">
-						Zeit: <select id="drp-rnk-period" class="drpMenu">
+						Zeit <span class="tooltip-icon" data-tooltip="12 Monate zeigt aktuelle Form, gesamt zeigt Bestleistungen über alle Jahre.">ℹ</span>: <select id="drp-rnk-period" class="drpMenu">
 							<option>12 Monate</option>
 							<option>gesamt</option>
 						</select>
@@ -198,6 +198,8 @@
 		src="../js/novotris.js?v=<?php echo filemtime('../js/novotris.js'); ?>"></script>
 	<script
 		src="../js/dialog.js?v=<?php echo filemtime('../js/dialog.js'); ?>"></script>
+	<script
+		src="../js/tooltip.js?v=<?php echo filemtime('../js/tooltip.js'); ?>"></script>
 
 	<script>
 		document.addEventListener('DOMContentLoaded', onContentLoaded, false);
