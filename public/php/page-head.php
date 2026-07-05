@@ -39,6 +39,7 @@ $alternateXDefaultUrl = $alternateXDefaultUrl ?? '';
 		}
 		gtag('js', new Date());
 
+		gtag('set', 'cookie_domain', window.location.hostname);
 		gtag('config', 'G-9GL47VN2C7');
 	</script>
 

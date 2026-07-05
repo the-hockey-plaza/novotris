@@ -31,9 +31,8 @@
 		}
 		gtag('js', new Date());
 
-		gtag('config', 'G-9GL47VN2C7', {
-			'cookie_domain': 'auto'
-		});
+		gtag('set', 'cookie_domain', window.location.hostname);
+		gtag('config', 'G-9GL47VN2C7');
 	</script>
 
 	<link rel="stylesheet" type="text/css" href="../css/novotris.css" />
@@ -45,12 +44,6 @@
 <!-- ---------------------------------------------------- -->
 
 <body>
-	<!-- Google Tag Manager (noscript) -->
-	<noscript>
-		<iframe src="https://www.googletagmanager.com/ns.html?id=G-9GL47VN2C7"
-			height="0" width="0" style="display: none; visibility: hidden"></iframe>
-	</noscript>
-	<!-- End Google Tag Manager (noscript) -->
 
 	<div class="pseudoBody">
 		<div class="container" id="div-container">
