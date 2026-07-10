@@ -76,7 +76,7 @@ include '../php/page-head.php';
 							href="https://www.silvergames.com/de/tetris/">Silver Games</a></li>
 					<br>
 					<li>Well...<br> <a
-							href="https://www.silvergames.com/de/tetris/">t-online calls
+							href="https://www.t-online.de/spiele/online-spiele/id_77115486/tetra-die-tetris-variante-kostenlos-spielen-bei-t-online.html/">t-online calls
 							it Tetra</a></li>
 					<br>
 				</ul>
