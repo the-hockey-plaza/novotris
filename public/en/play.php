@@ -100,7 +100,7 @@
 			<div id="play-status-message" class="play-status-message" aria-live="polite"></div>
 
 			<div class="novBody play-layout">
-				<div id="div-play-frame" class="play-touch-surface play-stage" data-tooltip="Controls: Arrow keys move/rotate, Spacebar drops. Mobile: swipe and tap.">
+				<div id="div-play-frame" class="play-touch-surface play-stage">
 					<div>
 						<canvas id="mainCanvas" class="play-touch-surface play-canvas"></canvas>
 					</div>

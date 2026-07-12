@@ -83,7 +83,7 @@
 			<div id="play-status-message" class="play-status-message" aria-live="polite"></div>
 
 			<div class="novBody play-layout">
-				<div id="div-play-frame" class="play-touch-surface play-stage" data-tooltip="Steuerung: Pfeiltasten bewegen/drehen, Leertaste droppt sofort. Mobil: wischen und tippen.">
+				<div id="div-play-frame" class="play-touch-surface play-stage">
 					<div>
 						<canvas id="mainCanvas" class="play-touch-surface play-canvas"></canvas>
 					</div>

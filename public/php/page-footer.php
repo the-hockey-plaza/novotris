@@ -4,7 +4,6 @@ $footerActive = $footerActive ?? 'play';
 
 $tooltipUser = $pageLang === 'en' ? 'Shows the active player (guest or registered user).' : 'Zeigt den aktiven Spieler an (Gast oder registrierter User).';
 $tooltipLogin = $pageLang === 'en' ? 'Log in or out here. Your status is updated immediately.' : 'Hier meldest du dich an oder ab. Dein Status wird sofort aktualisiert.';
-$tooltipLanguage = $pageLang === 'en' ? 'Change the language for the entire site (deutsch/english).' : 'Sprache fuer die gesamte Seite umstellen (deutsch/english).';
 
 $footerLabelWorld = $footerLabelWorld ?? ($pageLang === 'en' ? 'Tetris World' : 'Tetriswelt');
 $footerLabelPlay = $footerLabelPlay ?? ($pageLang === 'en' ? 'Play' : 'Spielen');
@@ -62,7 +61,6 @@ $footerHelpStyle = $footerActive === 'help' ? 'color: var(--play-color); cursor:
       <option>deutsch</option>
       <option>english</option>
     </select>
-    <span class="tooltip-icon" data-tooltip="<?= htmlspecialchars($tooltipLanguage, ENT_QUOTES, 'UTF-8') ?>">ℹ</span>
   </div>
 </div>
 
