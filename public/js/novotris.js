@@ -722,7 +722,7 @@ function stop_game() {
 
 function showGameOverDialog(newRankingPosition) {
 	const msgParts = [];
-	const isNewHighscore = glScoreFinished > glHighscoreFinished;
+	const isNewHighscore = (glScoreFinished > glHighscoreFinished) && (glHighscoreFinished > 0);
 
 	if (isNewHighscore)
 		// msgText = "Du hast in diesem Spiel einen Score von <b>" + glScoreFinished + "</b> und damit einen neuen Highscore erreicht!";
@@ -1018,6 +1018,7 @@ async function stopGameOnDb(score) {
 		mailContent = "alert type: <b>stopGame</b><br>";
 		mailContent += "ip: <b>" + result + "</b><br>";
 		mailContent += "user_name: <b>" + glUser.getName() + "</b><br>";
+		mailContent += "language: <b>" + glUser.getLanguage() + "</b><br>";
 		mailContent += "first_game: <b>" + await glUser.getFirstGameDate() + "</b><br>";
 		mailContent += "games_played: <b>" + glUser.getGamesPlayed() + "</b><br>";
 		mailContent += "mobile: <b>" + isMobile + "</b><br>";
