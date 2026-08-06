@@ -51,9 +51,9 @@ var glBtnDialogCancel;
 // Laufband-Texte: Jeder Eintrag hat einen Text, ein Sprachkürzel, einen maximalen Level und eine Mindestanzahl Spiele
 const glMarqueeMessages = [
 	// Deutsch
-	{ lang: "de", text: "Mit den Pfeiltasten steuerst du die Steine!", maxLevel: 1, gamesPlayed: 0 },
+	{ lang: "de", text: "Mit den Pfeiltasten oder Wischen steuerst du die Steine!", maxLevel: 1, gamesPlayed: 0 },
 	{ lang: "de", text: "Level und Modus wählen und los geht's!", maxLevel: 1, gamesPlayed: 0 },
-	{ lang: "de", text: "Drehe die Steine mit der 'Pfeil nach oben'-Taste!", maxLevel: 1, gamesPlayed: 0 },
+	{ lang: "de", text: "Drehe die Steine mit der 'Pfeil nach oben'-Taste oder tippe auf den Bildschirm!", maxLevel: 1, gamesPlayed: 0 },
 	{ lang: "de", text: "Fülle Reihen, um Punkte zu sammeln!", maxLevel: 1, gamesPlayed: 2 },
 	{ lang: "de", text: "Je mehr Reihen, desto mehr Punkte!", maxLevel: 1, gamesPlayed: 5 },
 	{ lang: "de", text: "Verwende die Taste 'P' zum Pausieren und Fortsetzen!", maxLevel: 1, gamesPlayed: 10 },
@@ -66,8 +66,8 @@ const glMarqueeMessages = [
 	{ lang: "de", text: "Teile deinen Highscore mit Freunden!", maxLevel: 2, gamesPlayed: 15 },
 	// Englisch
 	{ lang: "en", text: "Level and mode selection, then let's go!", maxLevel: 1, gamesPlayed: 0 },
-	{ lang: "en", text: "Use the arrow keys to move the pieces!", maxLevel: 1, gamesPlayed: 0 },
-	{ lang: "en", text: "Rotate pieces with the 'Up Arrow' key!", maxLevel: 1, gamesPlayed: 0 },
+	{ lang: "en", text: "Use the arrow keys or swipe to move the pieces!", maxLevel: 1, gamesPlayed: 0 },
+	{ lang: "en", text: "Rotate pieces with the 'Up Arrow' key or tap the screen!", maxLevel: 1, gamesPlayed: 0 },
 	{ lang: "en", text: "Fill rows to score points!", maxLevel: 1, gamesPlayed: 2 },
 	{ lang: "en", text: "The more rows, the more points!", maxLevel: 1, gamesPlayed: 5 },
 	{ lang: "en", text: "Use the 'P' key to pause and resume!", maxLevel: 1, gamesPlayed: 10 },

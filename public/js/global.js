@@ -2,7 +2,7 @@
  * global.js
  */
 
-const glRelease = "4.3.0";
+const glRelease = "4.3.1";
 const glSubKey = "2.1"
 const glHighscoreKey = "novotris." + glSubKey + ".highscore";
 const glMaxLevelKey = "novotris." + glSubKey + ".maxlevel";
@@ -410,7 +410,21 @@ function getText(key, p1, p2, p3, p4) {
 					return "Just give it a try and use the arrow keys!";
 			}
 
+		case 'mobile_entry_title':
+			switch (lang) {
+				case "de":
+					return "Novotris auf Mobilgeräten";
+				case "en":
+					return "Novotris on mobile devices";
+			}
 
+		case 'mobile_entry_text':
+			switch (lang) {
+				case "de":
+					return "Rechts und links verschieben: Wischen" + "<br>Steine drehen: Tippen" + "<br>Schneller fallen lassen: Wischen nach unten oder Tippen auf die untersten beiden Reihen";
+				case "en":
+					return "Move left and right: Swipe" + "<br>Rotate pieces: Tap" + "<br>Make pieces fall faster: Swipe down or tap the bottom two rows";
+			}
 	}
 }
 
