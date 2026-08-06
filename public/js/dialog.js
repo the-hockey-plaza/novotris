@@ -263,6 +263,17 @@ var classDialog = {
 		});
 	},
 
+	showPlayEntryDialog: function () {
+		if (!shouldShowPlayEntryDialog())
+			return;
+
+		if (glIsMobile && glUser.getGamesPlayed() < 3) {
+			classDialog.showMessageDialog(getText("mobile_entry_title"), getText("mobile_entry_text"));
+		} else {
+			classDialog.showLevelDialog();
+		}
+	},
+
 	showLevelDialog: function () {
 		let maxLevelModeClassic = glMinLevelGlobal;
 		let maxLevelModeSpeed = glMinLevelGlobal;

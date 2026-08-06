@@ -34,6 +34,20 @@ var glTooltipSystem = {
       }
     });
 
+    if (this.isMobile) {
+      document.addEventListener('touchstart', (e) => {
+        if (this.activeTooltip && !e.target.closest('[data-tooltip]')) {
+          this.hideTooltip();
+        }
+      }, { passive: true });
+
+      document.addEventListener('click', (e) => {
+        if (this.activeTooltip && !e.target.closest('[data-tooltip]')) {
+          this.hideTooltip();
+        }
+      });
+    }
+
     // Close tooltip on window scroll
     window.addEventListener('scroll', () => {
       if (this.activeTooltip) {
@@ -62,6 +76,14 @@ var glTooltipSystem = {
     element.addEventListener('blur', () => this.hideTooltip(), true);
   },
 
+  toggleTooltip: function (element) {
+    if (this.activeTooltip === element) {
+      this.hideTooltip();
+    } else {
+      this.showTooltip(element);
+    }
+  },
+
   attachMobileTooltip: function (element) {
     const tooltipIcon = element.querySelector('.tooltip-icon');
 
@@ -71,21 +93,24 @@ var glTooltipSystem = {
       tooltipIcon.addEventListener('touchstart', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        this.showTooltip(tooltipIcon);
+        this.toggleTooltip(tooltipIcon);
       });
       tooltipIcon.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        this.showTooltip(tooltipIcon);
+        this.toggleTooltip(tooltipIcon);
       });
     } else {
       // Direct tap on element
       element.addEventListener('touchstart', (e) => {
-        if (this.activeTooltip === element) {
-          this.hideTooltip();
-        } else {
-          this.showTooltip(element);
-        }
+        e.preventDefault();
+        e.stopPropagation();
+        this.toggleTooltip(element);
+      });
+      element.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.toggleTooltip(element);
       });
     }
   },
