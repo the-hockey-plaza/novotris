@@ -570,6 +570,10 @@ a.footer-label-only {
 	transform: scale(1.1);
 }
 
+.tooltip-icon.tooltip-mobile-disabled {
+	display: none;
+}
+
 #global-tooltip {
 	display: none;
 	position: fixed;

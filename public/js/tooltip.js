@@ -47,6 +47,11 @@ var glTooltipSystem = {
   },
 
   attachTooltip: function (element) {
+    if (this.isMobile && element.getAttribute('data-tooltip-mobile') === 'false') {
+      element.classList.add('tooltip-mobile-disabled');
+      return;
+    }
+
     if (this.isMobile) {
       this.attachMobileTooltip(element);
     } else {

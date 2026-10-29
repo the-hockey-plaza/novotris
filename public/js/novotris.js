@@ -299,6 +299,7 @@ function playSetTitle(msg, size, forceShow) {
 }
 function do_start() {
 	if (glCnvMessage.hidden === false) return;
+	syncUserSelectionFromPreviewControls();
 	if (v_status === cStatusRunning || v_status === cStatusPause) {
 		do_pause();
 		return;
@@ -699,6 +700,7 @@ function removeFullRow(j, isFull) {
 /*----------------------------------------------------------------------------*/
 
 function stop_game() {
+	syncUserSelectionFromPreviewControls();
 	glScoreFinished = glScore;
 	glHighscoreFinished = getHighscore();
 	if (glUser && typeof glUser.incrementGamesPlayed === 'function') {
@@ -730,7 +732,7 @@ function showGameOverDialog(newRankingPosition) {
 	else
 		msgParts.push(getText("score", glScoreFinished));
 
-	if (isNewHighscore) {
+	if (isNewHighscore || (glHighscoreFinished == 0 && glScoreFinished > 0)) {
 		const mode = glUser.getMode();
 		const levelNeedsScore = mode == glModeSpeed ? glLevelNeedsScoreModeSpeed : (glIsMobile ? glLevelNeedsScoreMobile : glLevelNeedsScoreModeClassic);
 		const scoreHintThreshold = levelNeedsScore * 0.7;
@@ -1084,6 +1086,29 @@ function onContentLoaded() {
 
 function onFullscreenChanged(event) {
 	return;
+}
+
+function syncUserSelectionFromPreviewControls() {
+	if (!glUser) {
+		return;
+	}
+
+	if (glDropLevel && glDropLevel.selectedIndex >= 0) {
+		const selectedLevel = glDropLevel.selectedIndex + glMinLevelGlobal;
+		if (selectedLevel !== glUser.getLevel()) {
+			glUser.setLevel(selectedLevel);
+		}
+	}
+
+	if (glDropMode && glDropMode.selectedIndex >= 0) {
+		const selectedMode = glDropMode.selectedIndex + glMinModeGlobal;
+		if (selectedMode !== glUser.getMode()) {
+			glUser.setMode(selectedMode);
+			glUser.saveToLocalStorage();
+			glUser.saveUserSettingsToDb(glUser.getId(), selectedMode)
+				.catch((error) => console.error("saveUserSettingsToDb failed during mode sync:", error));
+		}
+	}
 }
 
 function novInit() {

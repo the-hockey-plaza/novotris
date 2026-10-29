@@ -111,7 +111,7 @@
 					<div class="play-sidebar-controls">
 						<div class="play-control">
 							<div class="game-data-label play-top-gap-sm">
-								Level <span class="tooltip-icon" data-tooltip="Wähle den Schwierigkeitsgrad. Neue Level schaltest du über deinen Highscore frei.">ℹ</span><br> <select id="drp-play-level" class="drpMenu play-select">
+								Level <span class="tooltip-icon" data-tooltip-mobile="false" data-tooltip="Wähle den Schwierigkeitsgrad. Neue Level schaltest du über deinen Highscore frei.">ℹ</span><br> <select id="drp-play-level" class="drpMenu play-select">
 									<option>1</option>
 									<option>2</option>
 									<option>3</option>
@@ -124,7 +124,7 @@
 
 						<div class="play-control">
 							<div class="game-data-label">
-								Modus <span class="tooltip-icon" data-tooltip="Classic: stabile Punkte pro Stein. Speed: mehr Punkte bei schnellem Fallenlassen.">ℹ</span><br> <select id="drp-play-mode" class="drpMenu play-select">
+								Modus <span class="tooltip-icon" data-tooltip-mobile="false" data-tooltip="Classic: stabile Punkte pro Stein. Speed: mehr Punkte bei schnellem Fallenlassen.">ℹ</span><br> <select id="drp-play-mode" class="drpMenu play-select">
 									<option>classic</option>
 									<option>speed</option>
 								</select>
@@ -133,7 +133,7 @@
 
 						<div class="play-control play-start-wrap">
 							<button class="animated-border-btn" id="do_start" onclick="do_start();">Start</button>
-							<span class="tooltip-icon" data-tooltip="Spiel starten. Tipp: Mit P kannst du starten, pausieren und fortsetzen.">ℹ</span>
+							<span class="tooltip-icon" data-tooltip-mobile="false" data-tooltip="Spiel starten. Tipp: Mit P kannst du starten, pausieren und fortsetzen.">ℹ</span>
 						</div>
 					</div>
 
