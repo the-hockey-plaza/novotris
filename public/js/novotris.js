@@ -739,7 +739,10 @@ function showGameOverDialog(newRankingPosition) {
 		const currentLevel = glUser.getLevel();
 		const nextLevel = currentLevel + 1;
 
-		if (nextLevel <= glMaxLevelGlobal && glScoreFinished >= scoreHintThreshold && glScoreFinished < levelNeedsScore) {
+		if (nextLevel <= glMaxLevelGlobal && glHighscoreFinished < levelNeedsScore && glScoreFinished >= levelNeedsScore) {
+			msgParts.push(getText("level_unlocked", nextLevel));
+		}
+		else if (nextLevel <= glMaxLevelGlobal && glScoreFinished >= scoreHintThreshold && glScoreFinished < levelNeedsScore) {
 			const pointsToNextLevel = levelNeedsScore - glScoreFinished;
 			msgParts.push(getText("score_next_level_unlock", pointsToNextLevel, nextLevel));
 		}

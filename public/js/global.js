@@ -140,6 +140,14 @@ function getText(key, p1, p2, p3, p4) {
 					return "You also moved up in the 12 months rankings to <span style='color:" + glNovotrisColor + "'>" + p1 + "</span>!";
 			}
 
+		case 'level_unlocked':
+			switch (lang) {
+				case "de":
+					return "Du bist jetzt f&uuml;r Level <span style='color:" + glNovotrisColor + "'>" + p1 + "</span> freigeschaltet!";
+				case "en":
+					return "You have now unlocked level <span style='color:" + glNovotrisColor + "'>" + p1 + "</span>!";
+			}
+
 		case 'score_next_level_unlock':
 			switch (lang) {
 				case "de":
