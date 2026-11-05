@@ -332,9 +332,7 @@
 			if (glUser.getId() > 0) {
 				novInit();
 				choose_level();
-				if (shouldShowPlayEntryDialog()) {
-					classDialog.showLevelDialog();
-				}
+				classDialog.showPlayEntryDialog();
 			}
 
 			stabilizeInitialPlayLayout();
